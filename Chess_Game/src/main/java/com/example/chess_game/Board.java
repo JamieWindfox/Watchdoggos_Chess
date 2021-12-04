@@ -15,7 +15,7 @@ public class Board {
         for (int rowNum = 7; rowNum >= 0; rowNum--) {
             for (int colAlphabet = 0; colAlphabet < 8; colAlphabet++) {
                 this.fields[7 - rowNum][colAlphabet]
-                        = new Field((char) (colAlphabet + ASCII_OFFSET) + Integer.toString(rowNum + 1));
+                        = new Field((char) (colAlphabet + ASCII_OFFSET) + Integer.toString(rowNum + 1), colAlphabet, rowNum);
             }
         }
     }
