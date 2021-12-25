@@ -9,43 +9,37 @@ import javafx.scene.control.ButtonType;
 
 public class NewGameButton extends Button {
 
+    private boolean createNewGame = false;
+
     public NewGameButton() {
         setText("New Game");
         setWrapText(true);
         setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                System.out.println("INFO: Player clicked on 'New Game'");
                 // if there is a game running, ask if the players want to save it before starting a new one
-                boolean createNewGame = buildSaveGameDialog();
-
-
+                createNewGame = buildDiscardGameDialog();
             }
         });
     }
 
-    private boolean buildSaveGameDialog() {
+    private boolean buildDiscardGameDialog() {
         Alert saveGameDialog = new Alert(Alert.AlertType.NONE);
-        saveGameDialog.setTitle("Save current game");
-        saveGameDialog.setContentText("Warning: The current game is still running.\nDo you want to save it before starting a new one?");
+        saveGameDialog.setTitle("Discard current game");
+        saveGameDialog.setContentText("Warning: The current game is still running.\nDo you want to resign in the current game and start a new one?");
 
         // Set the buttons for the dialog
         saveGameDialog.getButtonTypes().setAll(
                 new ButtonType("Yes", ButtonBar.ButtonData.YES),
-                new ButtonType("No", ButtonBar.ButtonData.NO),
                 new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE)
         );
 
-        // gets the clicked result; if the window is closed without a button being clicked it counts as "NO"
-        ButtonType result = saveGameDialog.showAndWait().orElse(ButtonType.NO);
+        // gets the clicked result; if the window is closed without a button being clicked it counts as "Cancel"
+        ButtonType result = saveGameDialog.showAndWait().orElse(ButtonType.CANCEL);
 
-        if(ButtonType.YES.equals(result)) {
-            // open filechooser to let the player save the game
-            return true;
-        }
-        else if(ButtonType.NO.equals(result)) {
-            return true;
-        }
-        return false;
+        System.out.println("INFO: Player selection if they want to discard and resign game: " + result.getText());
+        return (ButtonBar.ButtonData.YES.equals(result.getButtonData()));
     }
 
 }
