@@ -1,10 +1,11 @@
 package com.example.chess_game;
 
 import guiElements.NewGameButton;
+import guiElements.ResignGameButton;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -14,11 +15,12 @@ public class ChessGameMain extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        StackPane pane = new StackPane();
-        NewGameButton newGameButton = new NewGameButton();
-        pane.getChildren().add(newGameButton);
+        HBox hBox = new HBox();
+        Button newGameButton = new NewGameButton();
+        Button resignGameButton = new ResignGameButton();
+        hBox.getChildren().addAll(newGameButton, resignGameButton);
 
-        Scene scene = new Scene(pane, 320, 240);
+        Scene scene = new Scene(hBox, 320, 240);
         stage.setTitle("Watchdoggos Chess!");
         stage.setScene(scene);
         stage.show();

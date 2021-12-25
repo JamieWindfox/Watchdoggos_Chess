@@ -18,8 +18,8 @@ public class NewGameButton extends Button {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("INFO: Player clicked on 'New Game'");
-                // if there is a game running, ask if the players want to save it before starting a new one
-                createNewGame = buildDiscardGameDialog();
+                // if there is a game running, ask if the players want to resign the current one
+                buildDiscardGameDialog();
             }
         });
     }
@@ -39,7 +39,12 @@ public class NewGameButton extends Button {
         ButtonType result = saveGameDialog.showAndWait().orElse(ButtonType.CANCEL);
 
         System.out.println("INFO: Player selection if they want to discard and resign game: " + result.getText());
-        return (ButtonBar.ButtonData.YES.equals(result.getButtonData()));
+        createNewGame = ButtonBar.ButtonData.YES.equals(result.getButtonData());
+        return createNewGame;
+    }
+
+    public boolean isCreateNewGame() {
+        return createNewGame;
     }
 
 }
