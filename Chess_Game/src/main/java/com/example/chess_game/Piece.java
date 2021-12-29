@@ -1,27 +1,18 @@
 package com.example.chess_game;
+
 import javafx.scene.image.Image;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Set;
 
 public abstract class Piece {
     public static final int WHITE = 0, BLACK = 1;
     private int color;
     private Image image;
-    private Field currentField;
 
-    public Piece( int paraColor, Field paraField ) //TODO: Image hinzufügen
+    public Piece(int paraColor) //TODO: Image hinzufügen
     {
         this.color = paraColor;
-        this.currentField = paraField;
         //this.image = paraImage;
-    }
-
-    public Field getCurrentField() {
-        return currentField;
-    }
-
-    public void setCurrentField(Field currentField) {
-        this.currentField = currentField;
     }
 
     public int getColor() {
@@ -42,5 +33,9 @@ public abstract class Piece {
         return image;
     }*/
 
-    public abstract List<Field> getMovements(Board b);
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
+
+    public abstract Set<Field> getValidMoves(Field[][] fields, Field currentField);
 }

@@ -1,64 +1,38 @@
 package com.example.chess_game;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Pawn extends Piece {
 
-    public Pawn(int color, Field position) {
-        super(color,position);
+    public Pawn(int color) {
+        super(color);
     }
 
     @Override
-    public List<Field> getMovements(Board b) {
-        List<Field> movementList = new ArrayList<>();
-
-        Field[][] board = b.getFields();
+    public Set<Field> getValidMoves(Field[][] fields, Field currentField) {
+        Set<Field> validMoves = new HashSet<>();
         int pieceColor = this.getColor();
-        int x = this.getCurrentField().getX();
-        int y = this.getCurrentField().getY();
+        boolean atStart = (pieceColor == WHITE && currentField.getRow() == 1)
+                || (pieceColor == BLACK && currentField.getRow() == 6);
 
-        int newYPosition = 0;
-        if ( pieceColor == WHITE )
-        {
-            newYPosition = y - 1;
+        int moveCounter = pieceColor == WHITE ? 1 : -1;
+        Field field = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
+        if (isFieldEmpty(field)) {
+            validMoves.add(field);
 
-            //TODO: Überprüfen ob es schon mal bewegt wurde, wenn nicht y+2
-
-            /*if ( y + 2 < 8 )
-            {
-                movementList.add( board[y+2][x] );
-            }*/
-
-        }
-        else
-        {
-            newYPosition = y - 1;
-
-            //TODO: Überprüfen ob es schon mal bewegt wurde, wenn nicht y-2
-
-            /*if ( y - 2 < 8 )
-            {
-                movementList.add( board[y+2][x] );
-            }*/
+            if (atStart) {
+                moveCounter = pieceColor == WHITE ? moveCounter + 1 : moveCounter - 1;
+                field = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
+                if (isFieldEmpty(field)) validMoves.add(field);
+            }
         }
 
-        if ( newYPosition >= 0 && newYPosition < 8 )
-        {
-            movementList.add( board[newYPosition][x] );
-        }
+        return validMoves;
+    }
 
-        if ( x + 1 < 8 && newYPosition >= 0 && newYPosition < 8 )
-        {
-            movementList.add( board[newYPosition][x+1] );
-        }
-
-        if ( x - 1 >= 0 && newYPosition >= 0 && newYPosition < 8 )
-        {
-            movementList.add( board[newYPosition][x-1] );
-        }
-        
-        return movementList;
+    private boolean isFieldEmpty(Field f) {
+        return f.getPiece() == null;
     }
 }
 
