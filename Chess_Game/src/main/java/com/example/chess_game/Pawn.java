@@ -5,27 +5,34 @@ import java.util.Set;
 
 public class Pawn extends Piece {
 
+    private Set<Field> validMoves;
+
     public Pawn(int color) {
         super(color);
     }
 
     @Override
     public Set<Field> getValidMoves(Field[][] fields, Field currentField) {
-        Set<Field> validMoves = new HashSet<>();
+        // TODO check boundaries
+        validMoves = new HashSet<>();
         int pieceColor = this.getColor();
         boolean atStart = (pieceColor == WHITE && currentField.getRow() == 1)
                 || (pieceColor == BLACK && currentField.getRow() == 6);
 
         int moveCounter = pieceColor == WHITE ? 1 : -1;
-        Field field = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
-        if (isFieldEmpty(field)) {
-            validMoves.add(field);
+        Field oneFieldForward = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
+        Field takePieceLeft = fields[currentField.getRow() + moveCounter][currentField.getColumn() - moveCounter];
+        Field takePieceRight = fields[currentField.getRow() + moveCounter][currentField.getColumn() + moveCounter];
 
-            if (atStart) {
-                moveCounter = pieceColor == WHITE ? moveCounter + 1 : moveCounter - 1;
-                field = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
-                if (isFieldEmpty(field)) validMoves.add(field);
-            }
+        evaluateField(oneFieldForward, true);
+        evaluateField(takePieceLeft, false);
+        evaluateField(takePieceRight, false);
+
+
+        if (isFieldEmpty(oneFieldForward) && atStart) {
+            moveCounter = pieceColor == WHITE ? moveCounter + 1 : moveCounter - 1;
+            oneFieldForward = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
+            evaluateField(oneFieldForward, true);
         }
 
         return validMoves;
@@ -33,6 +40,14 @@ public class Pawn extends Piece {
 
     private boolean isFieldEmpty(Field f) {
         return f.getPiece() == null;
+    }
+
+    private void evaluateField(Field field, boolean shouldFieldBeEmpty) {
+        if (shouldFieldBeEmpty && isFieldEmpty(field)) {
+            validMoves.add(field);
+        } else if (!shouldFieldBeEmpty && !isFieldEmpty(field) && this.getColor() != field.getPiece().getColor()) {
+            validMoves.add(field);
+        }
     }
 }
 
