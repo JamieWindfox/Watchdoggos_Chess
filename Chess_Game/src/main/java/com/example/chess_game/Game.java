@@ -1,6 +1,5 @@
 package com.example.chess_game;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 public class Game {
@@ -15,28 +14,44 @@ public class Game {
         this.testGame();
     }
 
+    /**
+     * For testing purposes
+     * See examples below to make further moves
+     * - Get a piece from the board
+     * - Get the valid moves from that piece
+     * - Choose a valid move's field name e.g. "e4" that the piece should move to
+     * - Update the board
+     * - Print the board
+     */
     public void testGame() {
         board.printField();
-        Piece whitePiece = this.board.getFields()[1][0].getPiece();
-        Set<Field> validMoves = whitePiece.getValidMoves(board.getFields(), board.getPieceLocation(whitePiece));
+
+        // White's turn
+        Piece piece = this.board.getFields()[1][3].getPiece();
+        Set<Field> validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece));
         System.out.println("Valid pawn moves for white Turn 1: " + validMoves.size());
-        board.update(new ArrayList<>(validMoves).get(1), whitePiece);
+        board.update(moveToField(validMoves, "d4"), piece);
         board.printField();
 
-        Piece blackPiece = this.board.getFields()[6][0].getPiece();
-        validMoves = blackPiece.getValidMoves(board.getFields(), board.getPieceLocation(blackPiece));
+        // Black's turn
+        piece = this.board.getFields()[6][4].getPiece();
+        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece));
         System.out.println("Valid pawn moves for black Turn 1: " + validMoves.size());
-        board.update(new ArrayList<>(validMoves).get(1), blackPiece);
+        board.update(moveToField(validMoves, "e5"), piece);
         board.printField();
-
-        Piece whitePieceTurn2 = this.board.getFields()[3][0].getPiece();
-        validMoves = whitePieceTurn2.getValidMoves(board.getFields(), board.getPieceLocation(whitePieceTurn2));
-        System.out.println("Valid pawn moves for white Turn 2: " + validMoves.size());
-
-        Piece blackPieceTurn2 = this.board.getFields()[3][0].getPiece();
-        validMoves = blackPieceTurn2.getValidMoves(board.getFields(), board.getPieceLocation(blackPieceTurn2));
-        System.out.println("Valid pawn moves for black Turn 2: " + validMoves.size());
     }
 
-
+    /**
+     * For testing purposes
+     *
+     * @param validMoves The available set of valid fields
+     * @param name       The name of the field e.g. e4
+     * @return Field the piece is being moved to
+     */
+    private Field moveToField(Set<Field> validMoves, String name) {
+        return validMoves.stream()
+                .filter(field -> field.getFieldName().equals(name))
+                .findFirst()
+                .orElseThrow();
+    }
 }
