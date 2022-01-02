@@ -1,6 +1,8 @@
 package com.example.chess_game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Board {
@@ -8,10 +10,12 @@ public class Board {
     private final Field[][] fields;
     private static final int ASCII_OFFSET = 97;
     private final Map<Piece, Field> pieceLocation;
+    private final List<String> moves;
 
     public Board(Player white, Player black) {
         this.fields = new Field[8][8];
         this.pieceLocation = new HashMap<>();
+        this.moves = new ArrayList<>();
         initFields(white, black);
     }
 
@@ -50,6 +54,10 @@ public class Board {
         return pieceLocation.get(p);
     }
 
+    public List<String> getMoves() {
+        return this.moves;
+    }
+
     public void printField() {
         for (int rowNum = 0; rowNum < 8; rowNum++) {
             for (int colAlphabet = 0; colAlphabet < 8; colAlphabet++) {
@@ -66,6 +74,9 @@ public class Board {
     public void update(Field newField, Piece piece) {
         Field oldField = pieceLocation.remove(piece);
         pieceLocation.put(piece, newField);
+
+        moves.add(piece.getMoveAnnotation(oldField, newField, newField.getPiece() != null));
+
         fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
         fields[newField.getRow()][newField.getColumn()].setPiece(piece);
     }

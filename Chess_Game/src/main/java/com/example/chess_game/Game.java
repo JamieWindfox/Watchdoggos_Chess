@@ -39,6 +39,15 @@ public class Game {
         System.out.println("Valid pawn moves for black Turn 1: " + validMoves.size());
         board.update(moveToField(validMoves, "e5"), piece);
         board.printField();
+
+        // White's turn
+        piece = this.board.getFields()[3][3].getPiece();
+        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece));
+        System.out.println("Valid pawn moves for white Turn 2: " + validMoves.size());
+        board.update(moveToField(validMoves, "e5"), piece);
+        board.printField();
+
+        System.out.println("Move history: " + this.board.getMoves());
     }
 
     /**

@@ -6,7 +6,7 @@ import java.util.Set;
 
 public abstract class Piece {
     public static final int WHITE = 0, BLACK = 1;
-    private int color;
+    private final int color;
     private Image image;
 
     public Piece(int paraColor) //TODO: Image hinzufügen
@@ -38,4 +38,6 @@ public abstract class Piece {
     }
 
     public abstract Set<Field> getValidMoves(Field[][] fields, Field currentField);
+
+    public abstract String getMoveAnnotation(Field oldField, Field newField, boolean isCapture);
 }

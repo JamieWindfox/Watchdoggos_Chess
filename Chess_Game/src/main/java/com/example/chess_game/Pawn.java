@@ -38,6 +38,11 @@ public class Pawn extends Piece {
         return validMoves;
     }
 
+    @Override
+    public String getMoveAnnotation(Field oldField, Field newField, boolean isCapture) {
+        return isCapture ? oldField.getFieldName().charAt(0) + "x" + newField.getFieldName() : newField.getFieldName();
+    }
+
     private boolean isFieldEmpty(Field f) {
         return f.getPiece() == null;
     }
