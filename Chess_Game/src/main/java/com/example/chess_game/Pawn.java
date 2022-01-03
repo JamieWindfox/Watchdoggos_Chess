@@ -10,21 +10,24 @@ public class Pawn extends Piece {
 
     @Override
     public Set<Field> getValidMoves(Field[][] fields, Field currentField, List<String> pastMoves) {
-        // TODO check boundaries
+        // todo promotion
         validMoves = new HashSet<>();
         int pieceColor = this.getColor();
         boolean atStart = (pieceColor == WHITE && currentField.getRow() == 1)
                 || (pieceColor == BLACK && currentField.getRow() == 6);
 
         int moveCounter = pieceColor == WHITE ? 1 : -1;
+        if (pieceColor == WHITE ? currentField.getColumn() > 0 : currentField.getColumn() < 7) {
+            Field takePieceLeft = fields[currentField.getRow() + moveCounter][currentField.getColumn() - moveCounter];
+            evaluateField(takePieceLeft, false);
+        }
+        if (pieceColor == WHITE ? currentField.getColumn() < 7 : currentField.getColumn() > 0) {
+            Field takePieceRight = fields[currentField.getRow() + moveCounter][currentField.getColumn() + moveCounter];
+            evaluateField(takePieceRight, false);
+        }
+
         Field oneFieldForward = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
-        Field takePieceLeft = fields[currentField.getRow() + moveCounter][currentField.getColumn() - moveCounter];
-        Field takePieceRight = fields[currentField.getRow() + moveCounter][currentField.getColumn() + moveCounter];
-
         evaluateField(oneFieldForward, true);
-        evaluateField(takePieceLeft, false);
-        evaluateField(takePieceRight, false);
-
 
         if (isFieldEmpty(oneFieldForward) && atStart) {
             moveCounter = pieceColor == WHITE ? moveCounter + 1 : moveCounter - 1;

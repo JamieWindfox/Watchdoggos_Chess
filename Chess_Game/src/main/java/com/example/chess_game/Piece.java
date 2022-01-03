@@ -8,7 +8,7 @@ import java.util.Set;
 
 public abstract class Piece {
     public static final int WHITE = 0, BLACK = 1;
-    private final int color;
+    private int color;
     private Image image;
     public Set<Field> validMoves;
 
@@ -23,6 +23,9 @@ public abstract class Piece {
         return color;
     }
 
+    public void setColor(int color) {
+        this.color = color;
+    }
     /*public Image getImage()
     {
         if ( this.color == WHITE )
