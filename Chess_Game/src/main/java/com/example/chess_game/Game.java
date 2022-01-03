@@ -28,23 +28,39 @@ public class Game {
 
         // White's turn
         Piece piece = this.board.getFields()[1][3].getPiece();
-        Set<Field> validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece));
+        Set<Field> validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
         System.out.println("Valid pawn moves for white Turn 1: " + validMoves.size());
         board.update(moveToField(validMoves, "d4"), piece);
         board.printField();
 
         // Black's turn
         piece = this.board.getFields()[6][4].getPiece();
-        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece));
+        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
         System.out.println("Valid pawn moves for black Turn 1: " + validMoves.size());
         board.update(moveToField(validMoves, "e5"), piece);
         board.printField();
 
         // White's turn
         piece = this.board.getFields()[3][3].getPiece();
-        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece));
+        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
         System.out.println("Valid pawn moves for white Turn 2: " + validMoves.size());
         board.update(moveToField(validMoves, "e5"), piece);
+        board.printField();
+
+        System.out.println("Move history: " + this.board.getMoves());
+
+        // Black's turn
+        piece = this.board.getFields()[6][5].getPiece();
+        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
+        System.out.println("Valid pawn moves for black Turn 2: " + validMoves.size());
+        board.update(moveToField(validMoves, "f5"), piece);
+        board.printField();
+
+        // White's turn
+        piece = this.board.getFields()[4][4].getPiece();
+        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
+        System.out.println("Valid pawn moves for white Turn 3: " + validMoves.size());
+        board.update(moveToField(validMoves, "f6"), piece);
         board.printField();
 
         System.out.println("Move history: " + this.board.getMoves());

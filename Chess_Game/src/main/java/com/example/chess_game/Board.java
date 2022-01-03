@@ -75,7 +75,17 @@ public class Board {
         Field oldField = pieceLocation.remove(piece);
         pieceLocation.put(piece, newField);
 
-        moves.add(piece.getMoveAnnotation(oldField, newField, newField.getPiece() != null));
+        // Check if move was an En Passant
+        if (piece instanceof Pawn && newField.getPiece() == null
+                && oldField.getColumn() != newField.getColumn()) {
+            Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == Piece.BLACK ? 1 : -1)][newField.getColumn()];
+            if (capturedPawnField.getPiece() instanceof Pawn) {
+                pieceLocation.remove(capturedPawnField.getPiece());
+                fields[capturedPawnField.getRow()][capturedPawnField.getColumn()].setPiece(null);
+            }
+        }
+
+        moves.add(piece.getMoveAnnotation(oldField, newField));
 
         fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
         fields[newField.getRow()][newField.getColumn()].setPiece(piece);
