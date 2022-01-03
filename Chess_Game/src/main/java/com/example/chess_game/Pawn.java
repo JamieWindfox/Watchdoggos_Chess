@@ -4,8 +4,6 @@ import java.util.*;
 
 public class Pawn extends Piece {
 
-    private Set<Field> validMoves;
-
     public Pawn(int color) {
         super(color);
     }
@@ -59,18 +57,6 @@ public class Pawn extends Piece {
     public String getMoveAnnotation(Field oldField, Field newField) {
         return newField.getPiece() != null || (newField.getPiece() == null && oldField.getColumn() != newField.getColumn())
                 ? oldField.getFieldName().charAt(0) + "x" + newField.getFieldName() : newField.getFieldName();
-    }
-
-    private boolean isFieldEmpty(Field f) {
-        return f.getPiece() == null;
-    }
-
-    private void evaluateField(Field field, boolean shouldFieldBeEmpty) {
-        if (shouldFieldBeEmpty && isFieldEmpty(field)) {
-            validMoves.add(field);
-        } else if (!shouldFieldBeEmpty && !isFieldEmpty(field) && this.getColor() != field.getPiece().getColor()) {
-            validMoves.add(field);
-        }
     }
 }
 

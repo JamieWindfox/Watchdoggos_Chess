@@ -27,23 +27,34 @@ public class Board {
                         = new Field((char) (colAlphabet + ASCII_OFFSET) + Integer.toString(rowNum + 1), rowNum, colAlphabet);
 
                 this.fields[rowNum][colAlphabet] = currentField;
-                if (rowNum == 6) {
-                    setPieceOnBoard(Pawn.class, Piece.BLACK, currentField, black);
-                }
-                if (rowNum == 1) {
-                    setPieceOnBoard(Pawn.class, Piece.WHITE, currentField, white);
+                switch (rowNum) {
+                    case 0 -> initPieces(colAlphabet, Piece.WHITE, currentField, white);
+                    case 1 -> setPieceOnBoard(Pawn.class, Piece.WHITE, currentField, white);
+                    case 6 -> setPieceOnBoard(Pawn.class, Piece.BLACK, currentField, black);
+                    case 7 -> initPieces(colAlphabet, Piece.BLACK, currentField, black);
                 }
             }
         }
     }
 
-    private void setPieceOnBoard(Class<? extends Piece> piece, int color, Field fieldToPlace, Player player) {
-        if (piece == Pawn.class) {
-            Pawn p = new Pawn(color);
-            fieldToPlace.setPiece(p);
-            pieceLocation.put(p, fieldToPlace);
-            player.addPiece(p);
+    private void initPieces(int col, int color, Field fieldToPlace, Player player) {
+        switch (col) {
+            case 4 -> setPieceOnBoard(King.class, color, fieldToPlace, player);
         }
+    }
+
+    private void setPieceOnBoard(Class<? extends Piece> piece, int color, Field fieldToPlace, Player player) {
+        Piece p = null;
+        if (piece == Pawn.class) {
+            p = new Pawn(color);
+        }
+        if (piece == King.class) {
+            p = new King(color);
+        }
+
+        fieldToPlace.setPiece(p);
+        pieceLocation.put(p, fieldToPlace);
+        player.addPiece(p);
     }
 
     public Field[][] getFields() {
