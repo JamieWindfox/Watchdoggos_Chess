@@ -2,7 +2,6 @@ package com.example.chess_game;
 
 import javafx.scene.image.Image;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,13 +100,37 @@ public class Board {
             }
         }
 
-        moves.add(piece.getMoveAnnotation(oldField, newField));
-
+        String moveAnnotation = piece.getMoveAnnotation(oldField, newField);
         fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
         fields[newField.getRow()][newField.getColumn()].setPiece(piece);
+
+        String checkAnnotation = "";
+        int enemyColor = piece.getColor() == Piece.WHITE ? Piece.BLACK : Piece.WHITE;
+        if (isKingInCheck(enemyColor)) {
+            checkAnnotation = "+";
+        }
+        moves.add(moveAnnotation + checkAnnotation);
     }
 
     public Image getBoardImage() {
         return boardImage;
+    }
+
+    public King getKing(int color) {
+        return (King) pieceLocation.keySet()
+                .stream()
+                .filter(piece -> piece instanceof King && piece.getColor() == color)
+                .findFirst()
+                .get();
+    }
+
+    public boolean isKingInCheck(int color) {
+        return pieceLocation.keySet()
+                .stream()
+                .filter(piece -> !(piece instanceof King) && piece.getColor() != color)
+                .anyMatch(piece ->
+                        piece.getValidMoves(fields, pieceLocation.get(piece), moves)
+                                .stream()
+                                .anyMatch(validFields -> validFields.getFieldName().equals(pieceLocation.get(getKing(color)).getFieldName())));
     }
 }

@@ -39,7 +39,8 @@ public class King extends Piece {
         } else if (newField.getRow() - oldField.getRow() == -2) {
             return "O-O-O";
         }
-        return "K" + newField.getFieldName();
+        String newFieldName = newField.getFieldName();
+        return newField.getPiece() != null ? "Kx" + newFieldName : "K" + newFieldName;
     }
 
     private boolean isPieceProtected(Field[][] fields, Field field) {

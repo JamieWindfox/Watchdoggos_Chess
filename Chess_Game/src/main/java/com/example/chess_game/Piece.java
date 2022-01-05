@@ -1,7 +1,6 @@
 package com.example.chess_game;
 
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 import java.util.HashSet;
 import java.util.List;
@@ -57,16 +56,12 @@ public abstract class Piece {
         } else if (!shouldFieldBeEmpty && !isFieldEmpty(field) && this.getColor() != field.getPiece().getColor()) {
             validMoves.add(field);
         }
-        // TODO invalid move if king can capture but it's protected by another piece
     }
 
     // Jamie, 05.01.22: To add to the preceeding two methods, I put this here
     // Checks if the given coordinates are in the board
     public static boolean areCoordinatesValid(int row, int column) {
-        boolean valid = true;
-        if(row < 0 || row > 7) valid = false;
-        if(column < 0 || column > 7) valid = false;
-        return valid;
+        return row >= 0 && row <= 7 && column >= 0 && column <= 7;
     }
 
     public String getName() {
@@ -77,5 +72,7 @@ public abstract class Piece {
 
     public abstract String getMoveAnnotation(Field oldField, Field newField);
 
-    public Image getImage() { return image; }
+    public Image getImage() {
+        return image;
+    }
 }

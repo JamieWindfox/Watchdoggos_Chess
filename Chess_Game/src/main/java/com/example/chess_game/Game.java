@@ -111,10 +111,15 @@ public class Game {
         piece = this.board.getFields()[4][5].getPiece();
         validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
         System.out.println("Valid king moves for black Turn 5: " + validMoves.size());
+        board.update(moveToField(validMoves, "f4"), piece);
+        board.printField();
 
-        for (Field field : validMoves) {
-            System.out.println("Valid moves: " + field.getFieldName());
-        }
+        // White's turn
+        piece = this.board.getFields()[1][4].getPiece();
+        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
+        System.out.println("Valid king moves for white Turn 6: " + validMoves.size());
+        board.update(moveToField(validMoves, "e3"), piece);
+        board.printField();
 
         System.out.println("Move history: " + this.board.getMoves());
     }
