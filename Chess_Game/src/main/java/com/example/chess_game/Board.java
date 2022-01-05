@@ -1,5 +1,8 @@
 package com.example.chess_game;
 
+import javafx.scene.image.Image;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,11 +14,13 @@ public class Board {
     private static final int ASCII_OFFSET = 97;
     private final Map<Piece, Field> pieceLocation;
     private final List<String> moves;
+    private final Image boardImage;
 
     public Board(Player white, Player black) {
         this.fields = new Field[8][8];
         this.pieceLocation = new HashMap<>();
         this.moves = new ArrayList<>();
+        this.boardImage = new Image("graphics/ChessBoard.png");
         initFields(white, black);
     }
 
@@ -100,5 +105,9 @@ public class Board {
 
         fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
         fields[newField.getRow()][newField.getColumn()].setPiece(piece);
+    }
+
+    public Image getBoardImage() {
+        return boardImage;
     }
 }

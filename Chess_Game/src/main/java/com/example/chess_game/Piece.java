@@ -1,6 +1,7 @@
 package com.example.chess_game;
 
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 import java.util.HashSet;
 import java.util.List;
@@ -12,12 +13,12 @@ public abstract class Piece {
     private Image image;
     public Set<Field> validMoves;
 
-    // Why do we give the colour as an integer, it would be more intuitive to use if we just use the enum
+    // Why do we give the colour as an integer, it would be more intuitive to use if we just use an enum
     public Piece(int paraColor) //TODO: Image hinzufügen
     {
         this.color = paraColor;
         this.validMoves = new HashSet<>();
-        //this.image = paraImage;
+        this.image = new Image("graphics/" + (color == 0 ? "white_" : "black_") + getClass().getSimpleName().toLowerCase() + ".png");
     }
 
     public int getColor() {
@@ -75,4 +76,6 @@ public abstract class Piece {
     public abstract Set<Field> getValidMoves(Field[][] fields, Field currentField, List<String> pastMoves);
 
     public abstract String getMoveAnnotation(Field oldField, Field newField);
+
+    public Image getImage() { return image; }
 }

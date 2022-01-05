@@ -1,5 +1,7 @@
 package com.example.chess_game;
 
+import javafx.scene.image.Image;
+
 import java.util.Set;
 
 public class Game {
@@ -130,4 +132,7 @@ public class Game {
                 .findFirst()
                 .orElseThrow();
     }
+
+
+    public Image getBoardImage() { return board.getBoardImage(); }
 }
