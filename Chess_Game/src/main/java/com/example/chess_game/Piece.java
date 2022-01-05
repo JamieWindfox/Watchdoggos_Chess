@@ -41,20 +41,14 @@ public abstract class Piece {
         return image;
     }*/
 
-    // Jamie, 05.01.22: Why is this method in the Piece class and not in Board? f.getPiece could also be called from
-    // evaluate field directly, in my optinion it makes no sense to just call one method from another
-    public boolean isFieldEmpty(Field f) {
-        return f.getPiece() == null;
-    }
-
     // Jamie, 05.01.22: Why is this method in the Piece class and not in Board?
     // Besides that I would rename the method to make clear that if the evaluation succeeds, the field is added
     // to validMoves. E.g. "evaluateAndAddField(...)"
-    public void evaluateField(Field field, boolean shouldFieldBeEmpty) {
-        if (shouldFieldBeEmpty && isFieldEmpty(field)) {
-            validMoves.add(field);
-        } else if (!shouldFieldBeEmpty && !isFieldEmpty(field) && this.getColor() != field.getPiece().getColor()) {
-            validMoves.add(field);
+    public void validateAndAddMove(Field moveToField, boolean isCapture) {
+        if (!isCapture && moveToField.getPiece() == null) {
+            validMoves.add(moveToField);
+        } else if (isCapture && moveToField.getPiece() != null && this.getColor() != moveToField.getPiece().getColor()) {
+            validMoves.add(moveToField);
         }
     }
 

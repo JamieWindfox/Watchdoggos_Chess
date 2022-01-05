@@ -17,18 +17,19 @@ public class Knight extends Piece {
         validMoves = new HashSet<>();
 
         Set<Pair<Integer, Integer>> possibleCoordinates = new HashSet<>();
-        possibleCoordinates.add(new Pair<Integer, Integer>(currentField.getRow()-2, currentField.getColumn()-1));
-        possibleCoordinates.add(new Pair<Integer, Integer>(currentField.getRow()-2, currentField.getColumn()+1));
-        possibleCoordinates.add(new Pair<Integer, Integer>(currentField.getRow()+2, currentField.getColumn()-1));
-        possibleCoordinates.add(new Pair<Integer, Integer>(currentField.getRow()+2, currentField.getColumn()+1));
-        possibleCoordinates.add(new Pair<Integer, Integer>(currentField.getRow()-1, currentField.getColumn()-2));
-        possibleCoordinates.add(new Pair<Integer, Integer>(currentField.getRow()+1, currentField.getColumn()-2));
-        possibleCoordinates.add(new Pair<Integer, Integer>(currentField.getRow()-1, currentField.getColumn()+2));
-        possibleCoordinates.add(new Pair<Integer, Integer>(currentField.getRow()+1, currentField.getColumn()+2));
+        possibleCoordinates.add(new Pair<>(currentField.getRow() - 2, currentField.getColumn() - 1));
+        possibleCoordinates.add(new Pair<>(currentField.getRow() - 2, currentField.getColumn() + 1));
+        possibleCoordinates.add(new Pair<>(currentField.getRow() + 2, currentField.getColumn() - 1));
+        possibleCoordinates.add(new Pair<>(currentField.getRow() + 2, currentField.getColumn() + 1));
+        possibleCoordinates.add(new Pair<>(currentField.getRow() - 1, currentField.getColumn() - 2));
+        possibleCoordinates.add(new Pair<>(currentField.getRow() + 1, currentField.getColumn() - 2));
+        possibleCoordinates.add(new Pair<>(currentField.getRow() - 1, currentField.getColumn() + 2));
+        possibleCoordinates.add(new Pair<>(currentField.getRow() + 1, currentField.getColumn() + 2));
 
         for (Pair<Integer, Integer> coordinate : possibleCoordinates) {
-            if(areCoordinatesValid(coordinate.getKey(), coordinate.getValue())) {
-                evaluateField(fields[coordinate.getKey()][coordinate.getValue()], false);
+            if (areCoordinatesValid(coordinate.getKey(), coordinate.getValue())) {
+                validateAndAddMove(fields[coordinate.getKey()][coordinate.getValue()], false);
+                validateAndAddMove(fields[coordinate.getKey()][coordinate.getValue()], true);
             }
         }
         return validMoves;
@@ -37,7 +38,7 @@ public class Knight extends Piece {
 
     @Override
     public String getMoveAnnotation(Field oldField, Field newField) {
-        return newField.getPiece() != null || (newField.getPiece() == null && oldField.getColumn() != newField.getColumn())
-                ? oldField.getFieldName().charAt(0) + "x" + newField.getFieldName() : newField.getFieldName();
+        String newFieldName = newField.getFieldName();
+        return newField.getPiece() != null ? "Nx" + newFieldName : "N" + newFieldName;
     }
 }

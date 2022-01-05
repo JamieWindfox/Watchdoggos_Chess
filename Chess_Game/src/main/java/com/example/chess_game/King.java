@@ -20,10 +20,9 @@ public class King extends Piece {
                         currentField.getColumn() + colDiff < 0 || currentField.getColumn() + colDiff > 7 ||
                         (rowDiff == 0 && colDiff == 0)) continue;
                 Field field = fields[currentField.getRow() + rowDiff][currentField.getColumn() + colDiff];
-                if (field.getPiece() == null) {
-                    evaluateField(field, true);
-                } else if (field.getPiece() != null && !isPieceProtected(fields, field)) {
-                    evaluateField(field, false);
+                validateAndAddMove(field, false);
+                if (field.getPiece() != null && !isPieceProtected(fields, field)) {
+                    validateAndAddMove(field, true);
                 }
                 // todo Castling
                 // todo check on every piece if "valid moves" lead to self-check
