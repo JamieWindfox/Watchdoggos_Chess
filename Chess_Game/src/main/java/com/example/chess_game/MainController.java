@@ -6,16 +6,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainController extends Application implements Initializable {
@@ -37,53 +37,23 @@ public class MainController extends Application implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         game = new Game();
-
         imageview_board.setImage(game.getBoardImage());
-
-        button_new_game.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("INFO: Player clicked on 'New Game'");
-                // ask if the player really wants to start a new game
-                if (showDiscardGameDialog()) game = new Game();
-            }
-        });
-
-        button_resign.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("INFO: Player clicked on 'Resign'");
-                // if there is a game running, ask if the player really wants to resign
-                showResignGameDialog();
-            }
-        });
-
-        button_previous_moves.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("INFO: Player clicked on 'Show Previous Moves'");
-                showPreviousMovesDialog();
-            }
-        });
-
     }
 
     @Override
     public void start(Stage stage) throws IOException {
-
         FXMLLoader fxmlLoader = new FXMLLoader(MainController.class.getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setTitle("Watchdoggos Chess!");
         stage.setScene(scene);
         stage.show();
-
     }
 
-    public static void main(String[] args) {
-        launch();
-    }
+    @FXML
+    public void btnNewGameClicked() {
+        System.out.println("INFO: Player clicked on 'New Game'");
 
-    private boolean showDiscardGameDialog() {
+        // ask if the player really wants to start a new game
         Alert saveGameDialog = new Alert(Alert.AlertType.NONE);
         saveGameDialog.setTitle("Discard current game");
         saveGameDialog.setContentText("Warning: The current game is still running.\nDo you want to resign in the current game and start a new one?");
@@ -98,10 +68,13 @@ public class MainController extends Application implements Initializable {
         ButtonType result = saveGameDialog.showAndWait().orElse(ButtonType.CANCEL);
 
         System.out.println("INFO: Player selection if they want to discard and resign game: " + result.getText());
-        return ButtonBar.ButtonData.YES.equals(result.getButtonData());
+        if(ButtonBar.ButtonData.YES.equals(result.getButtonData())) game = new Game();
     }
 
-    public  boolean showResignGameDialog() {
+    @FXML
+    public void btnResignClicked() {
+        System.out.println("INFO: Player clicked on 'Resign'");
+        // if there is a game running, ask if the player really wants to resign
         Alert resignGameDialog = new Alert(Alert.AlertType.NONE);
         resignGameDialog.setTitle("Resign current game");
         resignGameDialog.setContentText("Do you want to resign in the current game?");
@@ -116,13 +89,36 @@ public class MainController extends Application implements Initializable {
         ButtonType result = resignGameDialog.showAndWait().orElse(ButtonType.NO);
 
         System.out.println("INFO: Player selection if they want to resign game: " + result.getText());
-        return ButtonBar.ButtonData.YES.equals(result.getButtonData());
+        // TODO do something with dialog output
+        ButtonBar.ButtonData.YES.equals(result.getButtonData());
     }
 
-    private void showPreviousMovesDialog() {
+    @FXML
+    public void btnPreviousMovesClicked() {
+        System.out.println("INFO: Player clicked on 'Show Previous Moves'");
+
+        // Show Dialog of previous moves
         Alert resignGameDialog = new Alert(Alert.AlertType.NONE);
         resignGameDialog.setTitle("Previous Moves");
-        resignGameDialog.setContentText("PLACEHOLDER\nFOR\nPREVIOUS\nMOVES");
+
+        List<String> moves = game.getMoves();
+        TextFlow textFlow = new TextFlow();
+        Text text;
+        for (int i = 0; i < moves.size(); i++) {
+            // Show Number of round (one round means turn for both)
+            if (i % 2 == 0) {
+                text = new Text(String.format("%d. ", i / 2 + 1));
+                text.setStyle("-fx-font-weight: bold");
+                textFlow.getChildren().add(text);
+            }
+
+            // Show move
+            textFlow.getChildren().add(new Text(moves.get(i) + " "));
+
+            // Create Line Breaks
+            if (i > 0 && ((i + 1) % 10 == 0)) textFlow.getChildren().add(new Text(System.lineSeparator()));
+        }
+        resignGameDialog.getDialogPane().setContent(textFlow);
 
         // Set the buttons for the dialog
         resignGameDialog.getButtonTypes().setAll(
@@ -131,5 +127,9 @@ public class MainController extends Application implements Initializable {
 
         // gets the clicked result; if the window is closed without a button being clicked it counts as "Ok"
         ButtonType result = resignGameDialog.showAndWait().orElse(ButtonType.YES);
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }

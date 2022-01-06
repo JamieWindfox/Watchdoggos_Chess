@@ -2,6 +2,7 @@ package com.example.chess_game;
 
 import javafx.scene.image.Image;
 
+import java.util.List;
 import java.util.Set;
 
 public class Game {
@@ -151,4 +152,6 @@ public class Game {
 
 
     public Image getBoardImage() { return board.getBoardImage(); }
+
+    public List<String> getMoves() { return board.getMoves(); }
 }
