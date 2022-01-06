@@ -150,4 +150,35 @@ public class Board {
                                 .anyMatch(validFields ->
                                         validFields.getFieldName().equals(pieceLocation.get(getKing(enemyColor)).getFieldName())));
     }
+
+    /**
+     * Determines if pieces are located between two given fields.
+     *
+     * @param fields The fields array of the game board
+     * @param field1 Field 1 - Order does not matter
+     * @param field2 Field 2 - Order does not matter
+     * @return True if at least one piece is located between the fields. Pieces on each field are not evaluated.
+     */
+    public boolean isPieceBetweenFields(Field[][] fields, Field field1, Field field2) {
+        int rowDiff = Math.max(field1.getRow(), field2.getRow()) - Math.min(field1.getRow(), field2.getRow());
+        int colDiff = Math.max(field1.getColumn(), field2.getColumn()) - Math.min(field1.getColumn(), field2.getColumn());
+        if (rowDiff == 0) { // Pieces are in the same row
+            for (int i = Math.min(field1.getColumn(), field2.getColumn()) + 1; i < Math.max(field1.getColumn(), field2.getColumn()); i++)
+                if(fields[field1.getRow()][i].getPiece() != null) return true;
+        } else if (colDiff == 0) { // Pieces are in the same column
+            for (int i = Math.min(field1.getRow(), field2.getRow()) + 1; i < Math.max(field1.getRow(), field2.getRow()); i++)
+                if(fields[i][field1.getColumn()] != null) return true;
+        } else if (rowDiff == colDiff) { // Pieces are diagonal to each other
+            if (field1.getRow() < field2.getRow()) {
+                if (field1.getColumn() < field2.getColumn()) {
+                    for(int i = 1; (i + field1.getColumn()) < field2.getColumn(); i++)
+                        if(fields[field1.getRow() + i][field1.getColumn() + i] != null) return true;
+                } else {
+                    for(int i = 1; (field1.getColumn() - i) > field2.getColumn(); i++)
+                        if(fields[field1.getRow() + i][field1.getColumn() - i] != null) return true;
+                }
+            } else return isPieceBetweenFields(fields, field2, field1);
+        }
+        return false;
+    }
 }

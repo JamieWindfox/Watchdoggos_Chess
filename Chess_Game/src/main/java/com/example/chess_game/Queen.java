@@ -7,12 +7,12 @@ import java.util.Set;
 
 public class Queen extends Piece {
 
-    public Queen(int paraColor) {
+    public Queen(Color paraColor) {
         super(paraColor);
     }
 
     @Override
-    public Set<Field> getValidMoves(Field[][] fields, Field currentField, List<String> pastMoves) {
+    public Set<Field> getValidMoves(Board board, Field currentField) {
         validMoves = new HashSet<>();
         for (int rowDiff = -(currentField.getRow()); rowDiff <= (7 - currentField.getRow()); rowDiff++) {
             for (int colDiff = -(currentField.getColumn()); colDiff <= (7 - currentField.getColumn()); colDiff++) {
@@ -20,12 +20,11 @@ public class Queen extends Piece {
 
                 // Moves on same row or column or diagonally
                 if (rowDiff == 0 || colDiff == 0 || Math.abs(colDiff) == Math.abs(rowDiff)) {
-                    Field field = fields[currentField.getRow() + rowDiff][currentField.getColumn() + colDiff];
-                    if (!isFieldEmpty(field) && field.getPiece().getColor() == this.getColor()) continue;
-                    if (isPieceBetweenFields(fields, currentField, field)) continue;
+                    Field field = board.getFields()[currentField.getRow() + rowDiff][currentField.getColumn() + colDiff];
+                    if (field.getPiece() != null && field.getPiece().getColor() == this.getColor()) continue;
+                    if (board.isPieceBetweenFields(board.getFields(), currentField, field)) continue;
 
-                    evaluateField(field, true);
-                    evaluateField(field, false);
+                    validateAndAddMove(field);
                 }
             }
         }
