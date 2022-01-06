@@ -28,8 +28,7 @@ public class Knight extends Piece {
 
         for (Pair<Integer, Integer> coordinate : possibleCoordinates) {
             if (areCoordinatesValid(coordinate.getKey(), coordinate.getValue())) {
-                validateAndAddMove(fields[coordinate.getKey()][coordinate.getValue()], false);
-                validateAndAddMove(fields[coordinate.getKey()][coordinate.getValue()], true);
+                validateAndAddMove(fields[coordinate.getKey()][coordinate.getValue()]);
             }
         }
         return validMoves;

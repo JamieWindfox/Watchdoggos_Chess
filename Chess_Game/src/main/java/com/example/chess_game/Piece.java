@@ -43,12 +43,11 @@ public abstract class Piece {
      * and once validated those moves will be added to the set of current valid moves
      *
      * @param moveToField The field that the piece is moving to
-     * @param isCapture   To annotate whether the move is a capture or not
      */
-    public void validateAndAddMove(Field moveToField, boolean isCapture) {
-        if (!isCapture && moveToField.getPiece() == null) {
+    public void validateAndAddMove(Field moveToField) {
+        if (moveToField.getPiece() == null) {
             validMoves.add(moveToField);
-        } else if (isCapture && moveToField.getPiece() != null && this.color != moveToField.getPiece().getColor()) {
+        } else if (moveToField.getPiece() != null && this.color != moveToField.getPiece().getColor()) {
             validMoves.add(moveToField);
         }
     }

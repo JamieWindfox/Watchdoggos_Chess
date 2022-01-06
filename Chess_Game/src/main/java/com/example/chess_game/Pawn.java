@@ -20,20 +20,20 @@ public class Pawn extends Piece {
         int moveCounter = pieceColor == Color.WHITE ? 1 : -1;
         if (pieceColor == Color.WHITE ? currentField.getColumn() > 0 : currentField.getColumn() < 7) {
             Field takePieceLeft = fields[currentField.getRow() + moveCounter][currentField.getColumn() - moveCounter];
-            validateAndAddMove(takePieceLeft, true);
+            validateAndAddMove(takePieceLeft);
         }
         if (pieceColor == Color.WHITE ? currentField.getColumn() < 7 : currentField.getColumn() > 0) {
             Field takePieceRight = fields[currentField.getRow() + moveCounter][currentField.getColumn() + moveCounter];
-            validateAndAddMove(takePieceRight, true);
+            validateAndAddMove(takePieceRight);
         }
 
         Field oneFieldForward = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
-        validateAndAddMove(oneFieldForward, false);
+        validateAndAddMove(oneFieldForward);
 
         if (oneFieldForward.getPiece() == null && atStart) {
             moveCounter = pieceColor == Color.WHITE ? moveCounter + 1 : moveCounter - 1;
             oneFieldForward = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
-            validateAndAddMove(oneFieldForward, false);
+            validateAndAddMove(oneFieldForward);
         }
 
         // En passant rule
