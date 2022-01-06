@@ -115,11 +115,22 @@ public class Game {
         board.printField();
 
         // White's turn
-        piece = this.board.getFields()[1][4].getPiece();
+        piece = this.board.getFields()[0][5].getPiece();
         validMoves = piece.getValidMoves(board, board.getPieceLocation(piece));
-        System.out.println("Valid king moves for white Turn 6: " + validMoves.size());
-        board.update(moveToField(validMoves, "e3"), piece);
+        System.out.println("Valid bishop moves for white Turn 6: " + validMoves.size());
+        board.update(moveToField(validMoves, "g2"), piece);
         board.printField();
+
+        // Black's turn
+        piece = this.board.getFields()[7][3].getPiece();
+        validMoves = piece.getValidMoves(board, board.getPieceLocation(piece));
+        System.out.println("Valid queen moves for black Turn 6: " + validMoves.size());
+        board.update(moveToField(validMoves, "f6"), piece);
+
+        for (Field vm :
+                validMoves) {
+            System.out.println(vm.getFieldName());
+        }
 
         System.out.println("Move history: " + this.board.getMoves());
     }
