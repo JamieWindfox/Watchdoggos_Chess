@@ -3,7 +3,6 @@ package com.example.chess_game;
 import javafx.scene.image.Image;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public abstract class Piece {
@@ -62,7 +61,7 @@ public abstract class Piece {
         return this.getClass().getSimpleName();
     }
 
-    public abstract Set<Field> getValidMoves(Field[][] fields, Field currentField, List<String> pastMoves);
+    public abstract Set<Field> getValidMoves(Board board, Field currentField);
 
     public abstract String getMoveAnnotation(Field oldField, Field newField);
 

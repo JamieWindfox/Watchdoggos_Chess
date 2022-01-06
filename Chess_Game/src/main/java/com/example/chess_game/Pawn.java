@@ -9,9 +9,10 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public Set<Field> getValidMoves(Field[][] fields, Field currentField, List<String> pastMoves) {
+    public Set<Field> getValidMoves(Board board, Field currentField) {
         // todo promotion
         validMoves = new HashSet<>();
+        Field[][] fields = board.getFields();
         int pieceColor = this.getColor();
         boolean atStart = (pieceColor == WHITE && currentField.getRow() == 1)
                 || (pieceColor == BLACK && currentField.getRow() == 6);
@@ -36,6 +37,7 @@ public class Pawn extends Piece {
         }
 
         // En passant rule
+        List<String> pastMoves = board.getMoves();
         if ((currentField.getRow() == 3 && pieceColor == BLACK || currentField.getRow() == 4 && pieceColor == WHITE)
                 && pastMoves.size() > 1) {
             String pastMove = pastMoves.get(pastMoves.size() - 1);

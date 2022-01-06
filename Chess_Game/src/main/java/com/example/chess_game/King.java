@@ -1,8 +1,6 @@
 package com.example.chess_game;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class King extends Piece {
@@ -12,8 +10,9 @@ public class King extends Piece {
     }
 
     @Override
-    public Set<Field> getValidMoves(Field[][] fields, Field currentField, List<String> pastMoves) {
+    public Set<Field> getValidMoves(Board board, Field currentField) {
         validMoves = new HashSet<>();
+        Field[][] fields = board.getFields();
         for (int rowDiff = -1; rowDiff <= 1; rowDiff++) {
             for (int colDiff = -1; colDiff <= 1; colDiff++) {
                 if (currentField.getRow() + rowDiff < 0 || currentField.getRow() + rowDiff > 7 ||
@@ -21,7 +20,7 @@ public class King extends Piece {
                         (rowDiff == 0 && colDiff == 0)) continue;
                 Field field = fields[currentField.getRow() + rowDiff][currentField.getColumn() + colDiff];
                 validateAndAddMove(field, false);
-                if (field.getPiece() != null && !isPieceProtected(fields, field)) {
+                if (field.getPiece() != null && !isEnemyPieceProtected(board, field)) {
                     validateAndAddMove(field, true);
                 }
                 // todo Castling
@@ -42,28 +41,24 @@ public class King extends Piece {
         return newField.getPiece() != null ? "Kx" + newFieldName : "K" + newFieldName;
     }
 
-    private boolean isPieceProtected(Field[][] fields, Field field) {
-        int oldColor = field.getPiece().getColor();
+    private boolean isEnemyPieceProtected(Board board, Field field) {
+        int enemyColor = field.getPiece().getColor();
         field.getPiece().setColor(this.getColor());
         boolean isProtected = false;
-        for (Field[] column : fields) {
-            for (Field boardField : column) {
-                Piece possiblePiece = boardField.getPiece();
-                if (possiblePiece != null && possiblePiece.getColor() != this.getColor() && boardField != field) {
-                    if (possiblePiece instanceof King) {
-                        isProtected = Math.abs(boardField.getRow() - field.getRow()) == 1 ||
-                                Math.abs(boardField.getColumn() - field.getColumn()) == 1;
-                    } else {
-                        isProtected = possiblePiece.getValidMoves(fields, boardField, new ArrayList<>())
-                                .stream()
-                                .anyMatch(validFields -> validFields.getFieldName().equals(field.getFieldName()));
-                    }
-                    if (isProtected) break;
-                }
+        for (Piece piece : board.getPieces(enemyColor)) {
+            Field boardField = board.getPieceLocation(piece);
+            if (piece instanceof King) {
+                isProtected = Math.abs(boardField.getRow() - field.getRow()) == 1 ||
+                        Math.abs(boardField.getColumn() - field.getColumn()) == 1;
+            } else {
+                isProtected = piece.getValidMoves(board, boardField)
+                        .stream()
+                        .anyMatch(validFields -> validFields.getFieldName().equals(field.getFieldName()));
             }
             if (isProtected) break;
         }
-        field.getPiece().setColor(oldColor);
+
+        field.getPiece().setColor(enemyColor);
         return isProtected;
     }
 }

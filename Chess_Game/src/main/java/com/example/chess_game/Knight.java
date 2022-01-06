@@ -3,7 +3,6 @@ package com.example.chess_game;
 import javafx.util.Pair;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Knight extends Piece {
@@ -13,8 +12,9 @@ public class Knight extends Piece {
     }
 
     @Override
-    public Set<Field> getValidMoves(Field[][] fields, Field currentField, List<String> pastMoves) {
+    public Set<Field> getValidMoves(Board board, Field currentField) {
         validMoves = new HashSet<>();
+        Field[][] fields = board.getFields();
 
         Set<Pair<Integer, Integer>> possibleCoordinates = new HashSet<>();
         possibleCoordinates.add(new Pair<>(currentField.getRow() - 2, currentField.getColumn() - 1));

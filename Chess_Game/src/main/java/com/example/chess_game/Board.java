@@ -2,10 +2,8 @@ package com.example.chess_game;
 
 import javafx.scene.image.Image;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Board {
 
@@ -43,6 +41,7 @@ public class Board {
 
     private void initPieces(int col, int color, Field fieldToPlace, Player player) {
         switch (col) {
+            case 1, 6 -> setPieceOnBoard(Knight.class, color, fieldToPlace, player);
             case 4 -> setPieceOnBoard(King.class, color, fieldToPlace, player);
         }
     }
@@ -54,6 +53,9 @@ public class Board {
         }
         if (piece == King.class) {
             p = new King(color);
+        }
+        if (piece == Knight.class) {
+            p = new Knight(color);
         }
 
         fieldToPlace.setPiece(p);
@@ -67,6 +69,13 @@ public class Board {
 
     public Field getPieceLocation(Piece p) {
         return pieceLocation.get(p);
+    }
+
+    public Set<Piece> getPieces(int color) {
+        return pieceLocation.keySet()
+                .stream()
+                .filter(piece -> piece.getColor() == color)
+                .collect(Collectors.toSet());
     }
 
     public List<String> getMoves() {
@@ -105,8 +114,7 @@ public class Board {
         fields[newField.getRow()][newField.getColumn()].setPiece(piece);
 
         String checkAnnotation = "";
-        int enemyColor = piece.getColor() == Piece.WHITE ? Piece.BLACK : Piece.WHITE;
-        if (isKingInCheck(enemyColor)) {
+        if (isEnemyKingInCheck(piece.getColor())) {
             checkAnnotation = "+";
         }
         moves.add(moveAnnotation + checkAnnotation);
@@ -124,13 +132,15 @@ public class Board {
                 .get();
     }
 
-    public boolean isKingInCheck(int color) {
-        return pieceLocation.keySet()
+    public boolean isEnemyKingInCheck(int attackerColor) {
+        int enemyColor = attackerColor == Piece.WHITE ? Piece.BLACK : Piece.WHITE;
+        return getPieces(attackerColor)
                 .stream()
-                .filter(piece -> !(piece instanceof King) && piece.getColor() != color)
+                .filter(piece -> !(piece instanceof King))
                 .anyMatch(piece ->
-                        piece.getValidMoves(fields, pieceLocation.get(piece), moves)
+                        piece.getValidMoves(this, pieceLocation.get(piece))
                                 .stream()
-                                .anyMatch(validFields -> validFields.getFieldName().equals(pieceLocation.get(getKing(color)).getFieldName())));
+                                .anyMatch(validFields ->
+                                        validFields.getFieldName().equals(pieceLocation.get(getKing(enemyColor)).getFieldName())));
     }
 }
