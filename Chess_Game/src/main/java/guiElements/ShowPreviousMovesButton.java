@@ -10,7 +10,7 @@ import javafx.scene.control.ButtonType;
 public class ShowPreviousMovesButton extends Button {
 
     public ShowPreviousMovesButton() {
-        setText("Show Previous Moves");
+        setText("Prev. Moves");
         setWrapText(true);
         setOnAction(new EventHandler<ActionEvent>() {
             @Override

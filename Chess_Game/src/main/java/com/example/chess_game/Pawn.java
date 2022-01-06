@@ -4,39 +4,41 @@ import java.util.*;
 
 public class Pawn extends Piece {
 
-    public Pawn(int color) {
+    public Pawn(Color color) {
         super(color);
     }
 
     @Override
-    public Set<Field> getValidMoves(Field[][] fields, Field currentField, List<String> pastMoves) {
+    public Set<Field> getValidMoves(Board board, Field currentField) {
         // todo promotion
         validMoves = new HashSet<>();
-        int pieceColor = this.getColor();
-        boolean atStart = (pieceColor == WHITE && currentField.getRow() == 1)
-                || (pieceColor == BLACK && currentField.getRow() == 6);
+        Field[][] fields = board.getFields();
+        Color pieceColor = this.getColor();
+        boolean atStart = (pieceColor == Color.WHITE && currentField.getRow() == 1)
+                || (pieceColor == Color.BLACK && currentField.getRow() == 6);
 
-        int moveCounter = pieceColor == WHITE ? 1 : -1;
-        if (pieceColor == WHITE ? currentField.getColumn() > 0 : currentField.getColumn() < 7) {
+        int moveCounter = pieceColor == Color.WHITE ? 1 : -1;
+        if (pieceColor == Color.WHITE ? currentField.getColumn() > 0 : currentField.getColumn() < 7) {
             Field takePieceLeft = fields[currentField.getRow() + moveCounter][currentField.getColumn() - moveCounter];
-            evaluateField(takePieceLeft, false);
+            validateAndAddMove(takePieceLeft);
         }
-        if (pieceColor == WHITE ? currentField.getColumn() < 7 : currentField.getColumn() > 0) {
+        if (pieceColor == Color.WHITE ? currentField.getColumn() < 7 : currentField.getColumn() > 0) {
             Field takePieceRight = fields[currentField.getRow() + moveCounter][currentField.getColumn() + moveCounter];
-            evaluateField(takePieceRight, false);
+            validateAndAddMove(takePieceRight);
         }
 
         Field oneFieldForward = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
-        evaluateField(oneFieldForward, true);
+        validateAndAddMove(oneFieldForward);
 
-        if (isFieldEmpty(oneFieldForward) && atStart) {
-            moveCounter = pieceColor == WHITE ? moveCounter + 1 : moveCounter - 1;
+        if (oneFieldForward.getPiece() == null && atStart) {
+            moveCounter = pieceColor == Color.WHITE ? moveCounter + 1 : moveCounter - 1;
             oneFieldForward = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
-            evaluateField(oneFieldForward, true);
+            validateAndAddMove(oneFieldForward);
         }
 
         // En passant rule
-        if ((currentField.getRow() == 3 && pieceColor == BLACK || currentField.getRow() == 4 && pieceColor == WHITE)
+        List<String> pastMoves = board.getMoves();
+        if ((currentField.getRow() == 3 && pieceColor == Color.BLACK || currentField.getRow() == 4 && pieceColor == Color.WHITE)
                 && pastMoves.size() > 1) {
             String pastMove = pastMoves.get(pastMoves.size() - 1);
             Optional<Field> enemyPawnField = Arrays.stream(fields[currentField.getRow()])
@@ -56,6 +58,7 @@ public class Pawn extends Piece {
         return validMoves;
     }
 
+    // Jamie, 05.01.22: Could be implemented in superclass
     @Override
     public String getMoveAnnotation(Field oldField, Field newField) {
         return newField.getPiece() != null || (newField.getPiece() == null && oldField.getColumn() != newField.getColumn())

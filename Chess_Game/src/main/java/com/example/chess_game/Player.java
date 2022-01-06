@@ -4,12 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Player {
-    private final int color;
+    private final Color color;
     // time countdown
     private final Set<Piece> pieces;
     private final String name;
 
-    public Player(int color, String name) {
+    public Player(Color color, String name) {
         this.pieces = new HashSet<>();
         this.color = color;
         this.name = name;

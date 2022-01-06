@@ -1,9 +1,9 @@
 package com.example.chess_game;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javafx.scene.image.Image;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Board {
 
@@ -11,11 +11,13 @@ public class Board {
     private static final int ASCII_OFFSET = 97;
     private final Map<Piece, Field> pieceLocation;
     private final List<String> moves;
+    private final Image boardImage;
 
     public Board(Player white, Player black) {
         this.fields = new Field[8][8];
         this.pieceLocation = new HashMap<>();
         this.moves = new ArrayList<>();
+        this.boardImage = new Image("graphics/ChessBoard.png");
         initFields(white, black);
     }
 
@@ -28,16 +30,16 @@ public class Board {
 
                 this.fields[rowNum][colAlphabet] = currentField;
                 switch (rowNum) {
-                    case 0 -> initPieces(colAlphabet, Piece.WHITE, currentField, white);
-                    case 1 -> setPieceOnBoard(Pawn.class, Piece.WHITE, currentField, white);
-                    case 6 -> setPieceOnBoard(Pawn.class, Piece.BLACK, currentField, black);
-                    case 7 -> initPieces(colAlphabet, Piece.BLACK, currentField, black);
+                    case 0 -> initPieces(colAlphabet, Color.WHITE, currentField, white);
+                    case 1 -> setPieceOnBoard(Pawn.class, Color.WHITE, currentField, white);
+                    case 6 -> setPieceOnBoard(Pawn.class, Color.BLACK, currentField, black);
+                    case 7 -> initPieces(colAlphabet, Color.BLACK, currentField, black);
                 }
             }
         }
     }
 
-    private void initPieces(int col, int color, Field fieldToPlace, Player player) {
+    private void initPieces(int col, Color color, Field fieldToPlace, Player player) {
         switch (col) {
             case 0, 7 -> setPieceOnBoard(Rook.class, color, fieldToPlace, player);
             case 1, 6 -> setPieceOnBoard(Knight.class, color, fieldToPlace, player);
@@ -47,7 +49,7 @@ public class Board {
         }
     }
 
-    private void setPieceOnBoard(Class<? extends Piece> pieceClass, int color, Field fieldToPlace, Player player) {
+    private void setPieceOnBoard(Class<? extends Piece> pieceClass, Color color, Field fieldToPlace, Player player) {
         Piece p = null;
         if (pieceClass == Pawn.class) {
             p = new Pawn(color);
@@ -76,6 +78,13 @@ public class Board {
         return pieceLocation.get(p);
     }
 
+    public Set<Piece> getPieces(Color color) {
+        return pieceLocation.keySet()
+                .stream()
+                .filter(piece -> piece.getColor() == color)
+                .collect(Collectors.toSet());
+    }
+
     public List<String> getMoves() {
         return this.moves;
     }
@@ -100,16 +109,45 @@ public class Board {
         // Check if move was an En Passant
         if (piece instanceof Pawn && newField.getPiece() == null
                 && oldField.getColumn() != newField.getColumn()) {
-            Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == Piece.BLACK ? 1 : -1)][newField.getColumn()];
+            Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == Color.BLACK ? 1 : -1)][newField.getColumn()];
             if (capturedPawnField.getPiece() instanceof Pawn) {
                 pieceLocation.remove(capturedPawnField.getPiece());
                 fields[capturedPawnField.getRow()][capturedPawnField.getColumn()].setPiece(null);
             }
         }
 
-        moves.add(piece.getMoveAnnotation(oldField, newField));
-
+        String moveAnnotation = piece.getMoveAnnotation(oldField, newField);
         fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
         fields[newField.getRow()][newField.getColumn()].setPiece(piece);
+
+        String checkAnnotation = "";
+        if (isEnemyKingInCheck(piece.getColor())) {
+            checkAnnotation = "+";
+        }
+        moves.add(moveAnnotation + checkAnnotation);
+    }
+
+    public Image getBoardImage() {
+        return boardImage;
+    }
+
+    public King getKing(Color color) {
+        return (King) pieceLocation.keySet()
+                .stream()
+                .filter(piece -> piece instanceof King && piece.getColor() == color)
+                .findFirst()
+                .get();
+    }
+
+    public boolean isEnemyKingInCheck(Color attackerColor) {
+        Color enemyColor = attackerColor == Color.WHITE ? Color.BLACK : Color.WHITE;
+        return getPieces(attackerColor)
+                .stream()
+                .filter(piece -> !(piece instanceof King))
+                .anyMatch(piece ->
+                        piece.getValidMoves(this, pieceLocation.get(piece))
+                                .stream()
+                                .anyMatch(validFields ->
+                                        validFields.getFieldName().equals(pieceLocation.get(getKing(enemyColor)).getFieldName())));
     }
 }

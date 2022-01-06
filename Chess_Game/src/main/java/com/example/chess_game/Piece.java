@@ -3,54 +3,64 @@ package com.example.chess_game;
 import javafx.scene.image.Image;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public abstract class Piece {
-    public static final int WHITE = 0, BLACK = 1;
-    private int color;
+    private Color color;
     private Image image;
     public Set<Field> validMoves;
 
-    public Piece(int paraColor) //TODO: Image hinzufügen
+    public Piece(Color color) //TODO: Image hinzufügen
     {
-        this.color = paraColor;
+        this.color = color;
         this.validMoves = new HashSet<>();
-        //this.image = paraImage;
+        this.image = new Image("graphics/" + (color == Color.WHITE ? "white_" : "black_") + getClass().getSimpleName().toLowerCase() + ".png");
     }
 
-    public int getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(Color color) {
         this.color = color;
     }
     /*public Image getImage()
     {
         if ( this.color == WHITE )
         {
-            //TODO: Image rausholen mit '_white'
+            //TODO: Image rausholen mit 'white_'
         }
         else
         {
-            //TODO: Image rausholen mit '_white'
+            //TODO: Image rausholen mit 'black_'
         }
 
         return image;
     }*/
 
-    public boolean isFieldEmpty(Field f) {
-        return f.getPiece() == null;
+    /**
+     * A method to validate moves depending on whether they are moves with or without captures
+     * and once validated those moves will be added to the set of current valid moves
+     *
+     * @param moveToField The field that the piece is moving to
+     */
+    public void validateAndAddMove(Field moveToField) {
+        if (moveToField.getPiece() == null) {
+            validMoves.add(moveToField);
+        } else if (moveToField.getPiece() != null && this.color != moveToField.getPiece().getColor()) {
+            validMoves.add(moveToField);
+        }
     }
 
-    public void evaluateField(Field field, boolean shouldFieldBeEmpty) {
-        if (shouldFieldBeEmpty && isFieldEmpty(field)) {
-            validMoves.add(field);
-        } else if (!shouldFieldBeEmpty && !isFieldEmpty(field) && this.getColor() != field.getPiece().getColor()) {
-            validMoves.add(field);
-        }
-        // TODO invalid move if king can capture but it's protected by another piece
+    /**
+     * Method to check the boundaries of a field
+     *
+     * @param row    The given row coordinate
+     * @param column The given column coordinate
+     * @return true if row and column are within boundary - otherwise false
+     */
+    public static boolean areCoordinatesValid(int row, int column) {
+        return row >= 0 && row <= 7 && column >= 0 && column <= 7;
     }
 
     public boolean isPieceBetweenFields(Field[][] fields, Field field1, Field field2) {
@@ -80,7 +90,11 @@ public abstract class Piece {
         return this.getClass().getSimpleName();
     }
 
-    public abstract Set<Field> getValidMoves(Field[][] fields, Field currentField, List<String> pastMoves);
+    public abstract Set<Field> getValidMoves(Board board, Field currentField);
 
     public abstract String getMoveAnnotation(Field oldField, Field newField);
+
+    public Image getImage() {
+        return image;
+    }
 }
