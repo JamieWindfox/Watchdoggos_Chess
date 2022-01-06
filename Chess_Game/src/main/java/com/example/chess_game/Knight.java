@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class Knight extends Piece {
 
-    public Knight(int color) {
+    public Knight(Color color) {
         super(color);
     }
 

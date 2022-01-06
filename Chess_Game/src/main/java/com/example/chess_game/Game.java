@@ -10,8 +10,8 @@ public class Game {
     private final Board board;
 
     public Game() {
-        this.black = new Player(Piece.BLACK, "PlayerBlack");
-        this.white = new Player(Piece.WHITE, "PlayerWhite");
+        this.black = new Player(Color.BLACK, "PlayerBlack");
+        this.white = new Player(Color.WHITE, "PlayerWhite");
         this.board = new Board(white, black);
         this.testGame();
     }

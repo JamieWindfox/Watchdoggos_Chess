@@ -5,8 +5,8 @@ import java.util.Set;
 
 public class King extends Piece {
 
-    public King(int paraColor) {
-        super(paraColor);
+    public King(Color color) {
+        super(color);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class King extends Piece {
     }
 
     private boolean isEnemyPieceProtected(Board board, Field field) {
-        int enemyColor = field.getPiece().getColor();
+        Color enemyColor = field.getPiece().getColor();
         field.getPiece().setColor(this.getColor());
         boolean isProtected = false;
         for (Piece piece : board.getPieces(enemyColor)) {

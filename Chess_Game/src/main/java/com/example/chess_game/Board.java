@@ -30,23 +30,23 @@ public class Board {
 
                 this.fields[rowNum][colAlphabet] = currentField;
                 switch (rowNum) {
-                    case 0 -> initPieces(colAlphabet, Piece.WHITE, currentField, white);
-                    case 1 -> setPieceOnBoard(Pawn.class, Piece.WHITE, currentField, white);
-                    case 6 -> setPieceOnBoard(Pawn.class, Piece.BLACK, currentField, black);
-                    case 7 -> initPieces(colAlphabet, Piece.BLACK, currentField, black);
+                    case 0 -> initPieces(colAlphabet, Color.WHITE, currentField, white);
+                    case 1 -> setPieceOnBoard(Pawn.class, Color.WHITE, currentField, white);
+                    case 6 -> setPieceOnBoard(Pawn.class, Color.BLACK, currentField, black);
+                    case 7 -> initPieces(colAlphabet, Color.BLACK, currentField, black);
                 }
             }
         }
     }
 
-    private void initPieces(int col, int color, Field fieldToPlace, Player player) {
+    private void initPieces(int col, Color color, Field fieldToPlace, Player player) {
         switch (col) {
             case 1, 6 -> setPieceOnBoard(Knight.class, color, fieldToPlace, player);
             case 4 -> setPieceOnBoard(King.class, color, fieldToPlace, player);
         }
     }
 
-    private void setPieceOnBoard(Class<? extends Piece> piece, int color, Field fieldToPlace, Player player) {
+    private void setPieceOnBoard(Class<? extends Piece> piece, Color color, Field fieldToPlace, Player player) {
         Piece p = null;
         if (piece == Pawn.class) {
             p = new Pawn(color);
@@ -71,7 +71,7 @@ public class Board {
         return pieceLocation.get(p);
     }
 
-    public Set<Piece> getPieces(int color) {
+    public Set<Piece> getPieces(Color color) {
         return pieceLocation.keySet()
                 .stream()
                 .filter(piece -> piece.getColor() == color)
@@ -102,7 +102,7 @@ public class Board {
         // Check if move was an En Passant
         if (piece instanceof Pawn && newField.getPiece() == null
                 && oldField.getColumn() != newField.getColumn()) {
-            Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == Piece.BLACK ? 1 : -1)][newField.getColumn()];
+            Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == Color.BLACK ? 1 : -1)][newField.getColumn()];
             if (capturedPawnField.getPiece() instanceof Pawn) {
                 pieceLocation.remove(capturedPawnField.getPiece());
                 fields[capturedPawnField.getRow()][capturedPawnField.getColumn()].setPiece(null);
@@ -124,7 +124,7 @@ public class Board {
         return boardImage;
     }
 
-    public King getKing(int color) {
+    public King getKing(Color color) {
         return (King) pieceLocation.keySet()
                 .stream()
                 .filter(piece -> piece instanceof King && piece.getColor() == color)
@@ -132,8 +132,8 @@ public class Board {
                 .get();
     }
 
-    public boolean isEnemyKingInCheck(int attackerColor) {
-        int enemyColor = attackerColor == Piece.WHITE ? Piece.BLACK : Piece.WHITE;
+    public boolean isEnemyKingInCheck(Color attackerColor) {
+        Color enemyColor = attackerColor == Color.WHITE ? Color.BLACK : Color.WHITE;
         return getPieces(attackerColor)
                 .stream()
                 .filter(piece -> !(piece instanceof King))

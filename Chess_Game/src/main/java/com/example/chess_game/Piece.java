@@ -6,24 +6,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Piece {
-    public static final int WHITE = 0, BLACK = 1;
-    private int color;
+    private Color color;
     private Image image;
     public Set<Field> validMoves;
 
-    // Why do we give the colour as an integer, it would be more intuitive to use if we just use an enum
-    public Piece(int paraColor) //TODO: Image hinzufügen
+    public Piece(Color color) //TODO: Image hinzufügen
     {
-        this.color = paraColor;
+        this.color = color;
         this.validMoves = new HashSet<>();
-        this.image = new Image("graphics/" + (color == 0 ? "white_" : "black_") + getClass().getSimpleName().toLowerCase() + ".png");
+        this.image = new Image("graphics/" + (color == Color.WHITE ? "white_" : "black_") + getClass().getSimpleName().toLowerCase() + ".png");
     }
 
-    public int getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(Color color) {
         this.color = color;
     }
     /*public Image getImage()
@@ -40,19 +38,28 @@ public abstract class Piece {
         return image;
     }*/
 
-    // Jamie, 05.01.22: Why is this method in the Piece class and not in Board?
-    // Besides that I would rename the method to make clear that if the evaluation succeeds, the field is added
-    // to validMoves. E.g. "evaluateAndAddField(...)"
+    /**
+     * A method to validate moves depending on whether they are moves with or without captures
+     * and once validated those moves will be added to the set of current valid moves
+     *
+     * @param moveToField The field that the piece is moving to
+     * @param isCapture   To annotate whether the move is a capture or not
+     */
     public void validateAndAddMove(Field moveToField, boolean isCapture) {
         if (!isCapture && moveToField.getPiece() == null) {
             validMoves.add(moveToField);
-        } else if (isCapture && moveToField.getPiece() != null && this.getColor() != moveToField.getPiece().getColor()) {
+        } else if (isCapture && moveToField.getPiece() != null && this.color != moveToField.getPiece().getColor()) {
             validMoves.add(moveToField);
         }
     }
 
-    // Jamie, 05.01.22: To add to the preceeding two methods, I put this here
-    // Checks if the given coordinates are in the board
+    /**
+     * Method to check the boundaries of a field
+     *
+     * @param row    The given row coordinate
+     * @param column The given column coordinate
+     * @return true if row and column are within boundary - otherwise false
+     */
     public static boolean areCoordinatesValid(int row, int column) {
         return row >= 0 && row <= 7 && column >= 0 && column <= 7;
     }

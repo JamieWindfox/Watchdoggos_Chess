@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Pawn extends Piece {
 
-    public Pawn(int color) {
+    public Pawn(Color color) {
         super(color);
     }
 
@@ -13,16 +13,16 @@ public class Pawn extends Piece {
         // todo promotion
         validMoves = new HashSet<>();
         Field[][] fields = board.getFields();
-        int pieceColor = this.getColor();
-        boolean atStart = (pieceColor == WHITE && currentField.getRow() == 1)
-                || (pieceColor == BLACK && currentField.getRow() == 6);
+        Color pieceColor = this.getColor();
+        boolean atStart = (pieceColor == Color.WHITE && currentField.getRow() == 1)
+                || (pieceColor == Color.BLACK && currentField.getRow() == 6);
 
-        int moveCounter = pieceColor == WHITE ? 1 : -1;
-        if (pieceColor == WHITE ? currentField.getColumn() > 0 : currentField.getColumn() < 7) {
+        int moveCounter = pieceColor == Color.WHITE ? 1 : -1;
+        if (pieceColor == Color.WHITE ? currentField.getColumn() > 0 : currentField.getColumn() < 7) {
             Field takePieceLeft = fields[currentField.getRow() + moveCounter][currentField.getColumn() - moveCounter];
             validateAndAddMove(takePieceLeft, true);
         }
-        if (pieceColor == WHITE ? currentField.getColumn() < 7 : currentField.getColumn() > 0) {
+        if (pieceColor == Color.WHITE ? currentField.getColumn() < 7 : currentField.getColumn() > 0) {
             Field takePieceRight = fields[currentField.getRow() + moveCounter][currentField.getColumn() + moveCounter];
             validateAndAddMove(takePieceRight, true);
         }
@@ -31,14 +31,14 @@ public class Pawn extends Piece {
         validateAndAddMove(oneFieldForward, false);
 
         if (oneFieldForward.getPiece() == null && atStart) {
-            moveCounter = pieceColor == WHITE ? moveCounter + 1 : moveCounter - 1;
+            moveCounter = pieceColor == Color.WHITE ? moveCounter + 1 : moveCounter - 1;
             oneFieldForward = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
             validateAndAddMove(oneFieldForward, false);
         }
 
         // En passant rule
         List<String> pastMoves = board.getMoves();
-        if ((currentField.getRow() == 3 && pieceColor == BLACK || currentField.getRow() == 4 && pieceColor == WHITE)
+        if ((currentField.getRow() == 3 && pieceColor == Color.BLACK || currentField.getRow() == 4 && pieceColor == Color.WHITE)
                 && pastMoves.size() > 1) {
             String pastMove = pastMoves.get(pastMoves.size() - 1);
             Optional<Field> enemyPawnField = Arrays.stream(fields[currentField.getRow()])
