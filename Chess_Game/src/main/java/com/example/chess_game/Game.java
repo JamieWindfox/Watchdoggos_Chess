@@ -73,7 +73,7 @@ public class Game {
         // White's turn
         piece = this.board.getFields()[1][6].getPiece();
         validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
-        System.out.println("Valid pawn moves for white Turn 3: " + validMoves.size());
+        System.out.println("Valid pawn moves for white Turn 4: " + validMoves.size());
         board.update(moveToField(validMoves, "g4"), piece);
         board.printField();
 
@@ -106,9 +106,41 @@ public class Game {
         board.printField();
 
         // Black's turn
-        piece = this.board.getFields()[4][5].getPiece();
+        /*piece = this.board.getFields()[4][5].getPiece();
         validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
-        System.out.println("Valid king moves for black Turn 5: " + validMoves.size());
+        System.out.println("Valid king moves for black Turn 6: " + validMoves.size());
+
+        for (Field field : validMoves) {
+            System.out.println("Valid moves: " + field.getFieldName());
+        }*/
+
+        // Black's turn
+        piece = this.board.getFields()[7][3].getPiece();
+        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
+        System.out.println("Valid Queen moves for black Turn 6: " + validMoves.size());
+        board.update(moveToField(validMoves, "f6"), piece);
+        board.printField();
+
+        // White's turn
+        piece = this.board.getFields()[1][0].getPiece();
+        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
+        System.out.println("Valid Pawn moves for white Turn 7: " + validMoves.size());
+        board.update(moveToField(validMoves, "a4"), piece);
+        board.printField();
+
+        // Black's turn
+        piece = this.board.getFields()[7][5].getPiece();
+        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
+        System.out.println("Valid Bishop moves for black Turn 7: " + validMoves.size());
+        board.update(moveToField(validMoves, "a3"), piece);
+        board.printField();
+
+        // White's turn
+        piece = this.board.getFields()[0][0].getPiece();
+        validMoves = piece.getValidMoves(board.getFields(), board.getPieceLocation(piece), board.getMoves());
+        System.out.println("Valid Rook moves for white Turn 8: " + validMoves.size());
+        board.update(moveToField(validMoves, "a3"), piece);
+        board.printField();
 
         for (Field field : validMoves) {
             System.out.println("Valid moves: " + field.getFieldName());

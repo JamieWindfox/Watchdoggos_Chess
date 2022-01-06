@@ -39,17 +39,28 @@ public class Board {
 
     private void initPieces(int col, int color, Field fieldToPlace, Player player) {
         switch (col) {
+            case 0, 7 -> setPieceOnBoard(Rook.class, color, fieldToPlace, player);
+            case 1, 6 -> setPieceOnBoard(Knight.class, color, fieldToPlace, player);
+            case 2, 5 -> setPieceOnBoard(Bishop.class, color, fieldToPlace, player);
+            case 3 -> setPieceOnBoard(Queen.class, color, fieldToPlace, player);
             case 4 -> setPieceOnBoard(King.class, color, fieldToPlace, player);
         }
     }
 
-    private void setPieceOnBoard(Class<? extends Piece> piece, int color, Field fieldToPlace, Player player) {
+    private void setPieceOnBoard(Class<? extends Piece> pieceClass, int color, Field fieldToPlace, Player player) {
         Piece p = null;
-        if (piece == Pawn.class) {
+        if (pieceClass == Pawn.class) {
             p = new Pawn(color);
-        }
-        if (piece == King.class) {
+        } else if (pieceClass == King.class) {
             p = new King(color);
+        } else if (pieceClass == Queen.class) {
+            p = new Queen(color);
+        } else if (pieceClass == Rook.class) {
+            p = new Rook(color);
+        } else if (pieceClass == Knight.class) {
+            p = new Knight(color);
+        } else if (pieceClass == Bishop.class) {
+            p = new Bishop(color);
         }
 
         fieldToPlace.setPiece(p);
