@@ -167,15 +167,15 @@ public class Board {
                 if(fields[field1.getRow()][i].getPiece() != null) return true;
         } else if (colDiff == 0) { // Pieces are in the same column
             for (int i = Math.min(field1.getRow(), field2.getRow()) + 1; i < Math.max(field1.getRow(), field2.getRow()); i++)
-                if(fields[i][field1.getColumn()] != null) return true;
+                if (fields[i][field1.getColumn()].getPiece() != null) return true;
         } else if (rowDiff == colDiff) { // Pieces are diagonal to each other
             if (field1.getRow() < field2.getRow()) {
                 if (field1.getColumn() < field2.getColumn()) {
                     for(int i = 1; (i + field1.getColumn()) < field2.getColumn(); i++)
-                        if(fields[field1.getRow() + i][field1.getColumn() + i] != null) return true;
+                        if (fields[field1.getRow() + i][field1.getColumn() + i].getPiece() != null) return true;
                 } else {
                     for(int i = 1; (field1.getColumn() - i) > field2.getColumn(); i++)
-                        if(fields[field1.getRow() + i][field1.getColumn() - i] != null) return true;
+                        if (fields[field1.getRow() + i][field1.getColumn() - i].getPiece() != null) return true;
                 }
             } else return isPieceBetweenFields(fields, field2, field1);
         }
