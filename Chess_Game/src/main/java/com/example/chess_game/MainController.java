@@ -25,15 +25,6 @@ public class MainController extends Application implements Initializable {
     @FXML
     private ImageView imageview_board;
 
-    @FXML
-    private Button button_new_game;
-
-    @FXML
-    private Button button_resign;
-
-    @FXML
-    private Button button_previous_moves;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         game = new Game();
@@ -90,7 +81,7 @@ public class MainController extends Application implements Initializable {
 
         System.out.println("INFO: Player selection if they want to resign game: " + result.getText());
         // TODO do something with dialog output
-        ButtonBar.ButtonData.YES.equals(result.getButtonData());
+        // ButtonBar.ButtonData.YES.equals(result.getButtonData());
     }
 
     @FXML
