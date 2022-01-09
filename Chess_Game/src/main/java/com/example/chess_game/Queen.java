@@ -5,6 +5,8 @@ import java.util.Set;
 
 public class Queen extends Piece {
 
+    public final String ANNOTATION_LETTER = "Q";
+
     public Queen(Color paraColor) {
         super(paraColor);
     }
@@ -31,7 +33,7 @@ public class Queen extends Piece {
 
     @Override
     public String getMoveAnnotation(Field oldField, Field newField) {
-        return "Q" + newField.getFieldName();
+        return newField.getPiece() != null ? ANNOTATION_LETTER + "x" + newField.getFieldName() : ANNOTATION_LETTER + newField.getFieldName();
     }
 
     @Override

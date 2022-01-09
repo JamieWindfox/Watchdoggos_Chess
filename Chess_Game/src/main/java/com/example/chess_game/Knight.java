@@ -7,6 +7,8 @@ import java.util.Set;
 
 public class Knight extends Piece {
 
+    public final String ANNOTATION_LETTER = "N";
+
     public Knight(Color color) {
         super(color);
     }
@@ -37,8 +39,7 @@ public class Knight extends Piece {
 
     @Override
     public String getMoveAnnotation(Field oldField, Field newField) {
-        String newFieldName = newField.getFieldName();
-        return newField.getPiece() != null ? "Nx" + newFieldName : "N" + newFieldName;
+        return newField.getPiece() != null ? ANNOTATION_LETTER + "x" + newField.getFieldName() : ANNOTATION_LETTER + newField.getFieldName();
     }
 
     @Override

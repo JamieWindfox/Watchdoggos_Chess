@@ -5,6 +5,8 @@ import java.util.Set;
 
 public class Bishop extends Piece {
 
+    public final String ANNOTATION_LETTER = "B";
+
     public Bishop(Color paraColor) {
         super(paraColor);
     }
@@ -31,7 +33,7 @@ public class Bishop extends Piece {
 
     @Override
     public String getMoveAnnotation(Field oldField, Field newField) {
-        return "B" + newField.getFieldName();
+        return newField.getPiece() != null ? ANNOTATION_LETTER + "x" + newField.getFieldName() : ANNOTATION_LETTER + newField.getFieldName();
     }
 
     @Override

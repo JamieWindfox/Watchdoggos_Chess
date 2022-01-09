@@ -5,6 +5,8 @@ import java.util.Set;
 
 public class King extends Piece {
 
+    public final String ANNOTATION_LETTER = "K";
+
     public King(Color color) {
         super(color);
     }
@@ -35,8 +37,7 @@ public class King extends Piece {
         } else if (newField.getRow() - oldField.getRow() == -2) {
             return "O-O-O";
         }
-        String newFieldName = newField.getFieldName();
-        return newField.getPiece() != null ? "Kx" + newFieldName : "K" + newFieldName;
+        return newField.getPiece() != null ? ANNOTATION_LETTER + "x" + newField.getFieldName() : ANNOTATION_LETTER + newField.getFieldName();
     }
 
     @Override

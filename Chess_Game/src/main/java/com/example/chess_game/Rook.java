@@ -1,10 +1,11 @@
 package com.example.chess_game;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Rook extends Piece {
+
+    public final String ANNOTATION_LETTER = "R";
 
     public Rook(Color paraColor) {
         super(paraColor);
@@ -32,7 +33,7 @@ public class Rook extends Piece {
 
     @Override
     public String getMoveAnnotation(Field oldField, Field newField) {
-        return "R" + newField.getFieldName();
+        return newField.getPiece() != null ? ANNOTATION_LETTER + "x" + newField.getFieldName() : ANNOTATION_LETTER + newField.getFieldName();
     }
 
     @Override
