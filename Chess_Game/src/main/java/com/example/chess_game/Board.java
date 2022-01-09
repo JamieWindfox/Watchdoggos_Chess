@@ -129,6 +129,9 @@ public class Board {
         if (isEnemyKingInCheck(piece.getColor())) {
             checkAnnotation = "+";
         }
+        if (isCheckmate(piece.getColor())) {
+            checkAnnotation = "#";
+        }
         moves.add(moveAnnotation + checkAnnotation);
     }
 
@@ -256,5 +259,12 @@ public class Board {
                                             });
                                 }));
         return blockOrCaptureFields;
+    }
+
+    public boolean isCheckmate(Color color) {
+        Color enemyColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
+        return getPieces(enemyColor)
+                .stream()
+                .allMatch(piece -> piece.getLegalMoves(this, pieceLocation.get(piece)).isEmpty());
     }
 }
