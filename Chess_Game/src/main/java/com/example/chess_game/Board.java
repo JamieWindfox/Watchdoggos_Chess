@@ -192,7 +192,28 @@ public class Board {
     }
 
     public void removeMoveIfSelfCheck(Set<Field> availableMoves, Piece piece) {
-        // TODO
+        Color enemyColor = piece.getColor() == Color.WHITE ? Color.BLACK : Color.WHITE;
+        Field originalPieceField = pieceLocation.get(piece);
+        availableMoves.removeIf(field -> {
+            // Save field's current state
+            // Move piece to supposedly valid field
+            // Check if own King is in check
+            // Restore board state
+
+            Piece oldFieldsPiece = field.getPiece();
+            pieceLocation.remove(oldFieldsPiece);
+            pieceLocation.put(piece, field);
+            fields[field.getRow()][field.getColumn()].setPiece(piece);
+            fields[originalPieceField.getRow()][originalPieceField.getColumn()].setPiece(null);
+            boolean isSelfCheck = isEnemyKingInCheck(enemyColor);
+
+            if (oldFieldsPiece != null)
+                pieceLocation.put(oldFieldsPiece, field);
+            pieceLocation.put(piece, originalPieceField);
+            fields[field.getRow()][field.getColumn()].setPiece(oldFieldsPiece);
+            fields[originalPieceField.getRow()][originalPieceField.getColumn()].setPiece(piece);
+            return isSelfCheck;
+        });
     }
 
     public Set<Field> getDefensiveBlocksOrCaptures(Color color) {

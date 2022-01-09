@@ -77,7 +77,7 @@ public abstract class Piece {
                 );
             }
         }
-        // TODO remove moves if they lead to a self-check
+        board.removeMoveIfSelfCheck(validMoves, this);
         return validMoves;
     }
 
