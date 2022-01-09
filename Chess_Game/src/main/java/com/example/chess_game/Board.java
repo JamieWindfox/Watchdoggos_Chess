@@ -1,12 +1,7 @@
 package com.example.chess_game;
 
-import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,7 +30,7 @@ public class Board {
             for (int colAlphabet = 0; colAlphabet < 8; colAlphabet++) {
                 Field currentField
                         = new Field((char) (colAlphabet + ASCII_OFFSET) + Integer.toString(rowNum + 1), rowNum,
-                        colAlphabet, (int)(boardImage.getHeight()/8));
+                        colAlphabet, (int) (boardImage.getHeight() / 8));
 
                 this.fields[rowNum][colAlphabet] = currentField;
                 switch (rowNum) {
@@ -44,7 +39,7 @@ public class Board {
                     case 6 -> setPieceOnBoard(Pawn.class, Color.BLACK, currentField, black);
                     case 7 -> initPieces(colAlphabet, Color.BLACK, currentField, black);
                 }
-                playableBoard.add(currentField.getCell(), rowNum, colAlphabet, (int)boardImage.getHeight()/8, (int)boardImage.getWidth()/8);
+                playableBoard.add(currentField.getCell(), rowNum, colAlphabet, (int) boardImage.getHeight() / 8, (int) boardImage.getWidth() / 8);
             }
         }
     }
@@ -174,17 +169,17 @@ public class Board {
         int colDiff = Math.max(field1.getColumn(), field2.getColumn()) - Math.min(field1.getColumn(), field2.getColumn());
         if (rowDiff == 0) { // Pieces are in the same row
             for (int i = Math.min(field1.getColumn(), field2.getColumn()) + 1; i < Math.max(field1.getColumn(), field2.getColumn()); i++)
-                if(fields[field1.getRow()][i].getPiece() != null) return true;
+                if (fields[field1.getRow()][i].getPiece() != null) return true;
         } else if (colDiff == 0) { // Pieces are in the same column
             for (int i = Math.min(field1.getRow(), field2.getRow()) + 1; i < Math.max(field1.getRow(), field2.getRow()); i++)
                 if (fields[i][field1.getColumn()].getPiece() != null) return true;
         } else if (rowDiff == colDiff) { // Pieces are diagonal to each other
             if (field1.getRow() < field2.getRow()) {
                 if (field1.getColumn() < field2.getColumn()) {
-                    for(int i = 1; (i + field1.getColumn()) < field2.getColumn(); i++)
+                    for (int i = 1; (i + field1.getColumn()) < field2.getColumn(); i++)
                         if (fields[field1.getRow() + i][field1.getColumn() + i].getPiece() != null) return true;
                 } else {
-                    for(int i = 1; (field1.getColumn() - i) > field2.getColumn(); i++)
+                    for (int i = 1; (field1.getColumn() - i) > field2.getColumn(); i++)
                         if (fields[field1.getRow() + i][field1.getColumn() - i].getPiece() != null) return true;
                 }
             } else return isPieceBetweenFields(fields, field2, field1);
@@ -194,5 +189,51 @@ public class Board {
 
     public void setLastClickedField(int row, int column) {
         lastClickedField = fields[row][column];
+    }
+
+    public void removeMoveIfSelfCheck(Set<Field> availableMoves, Piece piece) {
+        // TODO
+    }
+
+    public Set<Field> getDefensiveBlocksOrCaptures(Color color) {
+        King king = getKing(color);
+        Color enemyColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
+        Set<Field> blockOrCaptureFields = new HashSet<>();
+
+        Set<Piece> attackingPieces = getPieces(enemyColor)
+                .stream()
+                .filter(piece -> !(piece instanceof King))
+                .filter(piece ->
+                        piece.getValidMoves(this, pieceLocation.get(piece))
+                                .stream()
+                                .anyMatch(validFields ->
+                                        validFields.getFieldName().equals(pieceLocation.get(king).getFieldName())))
+                .collect(Collectors.toSet());
+
+        if (attackingPieces.size() != 1) return blockOrCaptureFields;
+        Piece attackingPiece = attackingPieces.stream().findFirst().get();
+        Set<Field> fieldsToBlock = attackingPiece.getInBetweenFields(pieceLocation.get(attackingPiece), pieceLocation.get(king), fields);
+
+        getPieces(color)
+                .stream()
+                .filter(piece -> !(piece instanceof King))
+                .forEach(piece ->
+                        piece.getValidMoves(this, pieceLocation.get(piece))
+                                .forEach(validField -> {
+
+                                    // Attacking piece can be captured
+                                    if (validField.getFieldName().equals(pieceLocation.get(attackingPiece).getFieldName())) {
+                                        blockOrCaptureFields.add(validField);
+                                    }
+
+                                    // Attacking piece can be blocked
+                                    fieldsToBlock
+                                            .forEach(field -> {
+                                                if (field.getFieldName().equals(validField.getFieldName())) {
+                                                    blockOrCaptureFields.add(field);
+                                                }
+                                            });
+                                }));
+        return blockOrCaptureFields;
     }
 }

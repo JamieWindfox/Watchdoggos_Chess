@@ -20,20 +20,20 @@ public class Pawn extends Piece {
         int moveCounter = pieceColor == Color.WHITE ? 1 : -1;
         if (pieceColor == Color.WHITE ? currentField.getColumn() > 0 : currentField.getColumn() < 7) {
             Field takePieceLeft = fields[currentField.getRow() + moveCounter][currentField.getColumn() - moveCounter];
-            validateAndAddMove(takePieceLeft);
+            if (takePieceLeft.getPiece() != null) validateAndAddMove(takePieceLeft);
         }
         if (pieceColor == Color.WHITE ? currentField.getColumn() < 7 : currentField.getColumn() > 0) {
             Field takePieceRight = fields[currentField.getRow() + moveCounter][currentField.getColumn() + moveCounter];
-            validateAndAddMove(takePieceRight);
+            if (takePieceRight.getPiece() != null) validateAndAddMove(takePieceRight);
         }
 
         Field oneFieldForward = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
-        validateAndAddMove(oneFieldForward);
+        if (oneFieldForward.getPiece() == null) validateAndAddMove(oneFieldForward);
 
         if (oneFieldForward.getPiece() == null && atStart) {
             moveCounter = pieceColor == Color.WHITE ? moveCounter + 1 : moveCounter - 1;
             oneFieldForward = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
-            validateAndAddMove(oneFieldForward);
+            if (oneFieldForward.getPiece() == null) validateAndAddMove(oneFieldForward);
         }
 
         // En passant rule
@@ -63,6 +63,11 @@ public class Pawn extends Piece {
     public String getMoveAnnotation(Field oldField, Field newField) {
         return newField.getPiece() != null || (newField.getPiece() == null && oldField.getColumn() != newField.getColumn())
                 ? oldField.getFieldName().charAt(0) + "x" + newField.getFieldName() : newField.getFieldName();
+    }
+
+    @Override
+    public Set<Field> getInBetweenFields(Field startField, Field endField, Field[][] fields) {
+        return new HashSet<>();
     }
 }
 

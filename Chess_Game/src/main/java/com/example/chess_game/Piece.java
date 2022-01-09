@@ -59,9 +59,40 @@ public abstract class Piece {
         return this.getClass().getSimpleName();
     }
 
+    /**
+     * Gets the valid moves of a piece with the addition of checking the king's safety
+     *
+     * @param board        The playing board
+     * @param currentField The current field of the piece
+     * @return The set of fields the piece is allowed to move to - if the king is in check
+     */
+    public Set<Field> getLegalMoves(Board board, Field currentField) {
+        getValidMoves(board, currentField);
+        if (board.isEnemyKingInCheck(color == Color.WHITE ? Color.BLACK : Color.WHITE) && !(this instanceof King)) {
+            Set<Field> blockOrCaptureFields = board.getDefensiveBlocksOrCaptures(color);
+            if (!blockOrCaptureFields.isEmpty()) {
+                validMoves.removeIf(field ->
+                        blockOrCaptureFields.stream()
+                                .noneMatch(fieldToBlockOrCapture -> fieldToBlockOrCapture.getFieldName().equals(field.getFieldName()))
+                );
+            }
+        }
+        // TODO remove moves if they lead to a self-check
+        return validMoves;
+    }
+
+    /**
+     * Gets the valid moves of a piece without checking the king's safety
+     *
+     * @param board        The playing board
+     * @param currentField The current field of the piece
+     * @return The set of fields the piece is allowed to move to
+     */
     public abstract Set<Field> getValidMoves(Board board, Field currentField);
 
     public abstract String getMoveAnnotation(Field oldField, Field newField);
+
+    public abstract Set<Field> getInBetweenFields(Field startField, Field endField, Field[][] fields);
 
     public Image getImage() {
         return image;

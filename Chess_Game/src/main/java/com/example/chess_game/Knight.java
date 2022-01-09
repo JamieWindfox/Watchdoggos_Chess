@@ -40,4 +40,9 @@ public class Knight extends Piece {
         String newFieldName = newField.getFieldName();
         return newField.getPiece() != null ? "Nx" + newFieldName : "N" + newFieldName;
     }
+
+    @Override
+    public Set<Field> getInBetweenFields(Field startField, Field endField, Field[][] fields) {
+        return new HashSet<>();
+    }
 }

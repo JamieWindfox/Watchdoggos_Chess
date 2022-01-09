@@ -23,7 +23,6 @@ public class King extends Piece {
                     validateAndAddMove(field);
                 }
                 // todo Castling
-                // todo check on every piece if "valid moves" lead to self-check
             }
         }
         return validMoves;
@@ -40,6 +39,11 @@ public class King extends Piece {
         return newField.getPiece() != null ? "Kx" + newFieldName : "K" + newFieldName;
     }
 
+    @Override
+    public Set<Field> getInBetweenFields(Field startField, Field endField, Field[][] fields) {
+        return new HashSet<>();
+    }
+
     private boolean isEnemyPieceProtected(Board board, Field field) {
         Color enemyColor = field.getPiece().getColor();
         field.getPiece().setColor(this.getColor());
@@ -47,7 +51,7 @@ public class King extends Piece {
         for (Piece piece : board.getPieces(enemyColor)) {
             Field boardField = board.getPieceLocation(piece);
             if (piece instanceof King) {
-                isProtected = Math.abs(boardField.getRow() - field.getRow()) == 1 ||
+                isProtected = Math.abs(boardField.getRow() - field.getRow()) == 1 &&
                         Math.abs(boardField.getColumn() - field.getColumn()) == 1;
             } else {
                 isProtected = piece.getValidMoves(board, boardField)

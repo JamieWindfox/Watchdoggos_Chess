@@ -34,4 +34,19 @@ public class Rook extends Piece {
     public String getMoveAnnotation(Field oldField, Field newField) {
         return "R" + newField.getFieldName();
     }
+
+    @Override
+    public Set<Field> getInBetweenFields(Field startField, Field endField, Field[][] fields) {
+        Set<Field> betweenFields = new HashSet<>();
+        int rowDiff = Math.max(startField.getRow(), endField.getRow()) - Math.min(startField.getRow(), endField.getRow());
+        int colDiff = Math.max(startField.getColumn(), endField.getColumn()) - Math.min(startField.getColumn(), endField.getColumn());
+        if (rowDiff == 0) { // Pieces are in the same row
+            for (int i = Math.min(startField.getColumn(), endField.getColumn()) + 1; i < Math.max(startField.getColumn(), endField.getColumn()); i++)
+                betweenFields.add(fields[startField.getRow()][i]);
+        } else if (colDiff == 0) { // Pieces are in the same column
+            for (int i = Math.min(startField.getRow(), endField.getRow()) + 1; i < Math.max(startField.getRow(), endField.getRow()); i++)
+                betweenFields.add(fields[i][startField.getColumn()]);
+        }
+        return betweenFields;
+    }
 }
