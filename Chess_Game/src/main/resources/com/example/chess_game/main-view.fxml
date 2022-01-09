@@ -58,10 +58,10 @@
          </FlowPane>
       </bottom>
       <left>
-         <FlowPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="BOTTOM_RIGHT" />
+         <FlowPane fx:id="flowpanel_cemetary1" prefHeight="200.0" prefWidth="150.0" BorderPane.alignment="BOTTOM_RIGHT" />
       </left>
       <right>
-         <FlowPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="BOTTOM_LEFT" />
+         <FlowPane fx:id="flowpanel_cemetary2" prefHeight="200.0" prefWidth="150.0" BorderPane.alignment="BOTTOM_LEFT" />
       </right>
    </BorderPane>
 </AnchorPane>

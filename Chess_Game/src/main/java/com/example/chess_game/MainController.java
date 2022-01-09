@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
@@ -22,6 +23,8 @@ public class MainController extends Application implements Initializable {
 
     Game game;
 
+    @FXML private FlowPane flowpane_cemetary1;
+    @FXML private FlowPane flowpane_cemetary2;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

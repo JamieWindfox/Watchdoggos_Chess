@@ -1,6 +1,6 @@
 package com.example.chess_game;
 
-// Source 07.01.22, general idea: https://github.com/grzegorz103/chess-clock/blob/master/src/main/java/app/models/Timer.java
+// Source 07.01.22, inspired by: https://github.com/grzegorz103/chess-clock/blob/master/src/main/java/app/models/Timer.java
 
 import javafx.application.Platform;
 import javafx.scene.control.Label;
