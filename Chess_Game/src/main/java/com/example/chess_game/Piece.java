@@ -14,8 +14,13 @@ public abstract class Piece {
     {
         this.color = color;
         this.validMoves = new HashSet<>();
-        this.image = new Image("graphics/" + (color == Color.WHITE ? "white_" : "black_") + getClass().getSimpleName().toLowerCase() + ".png");
+        try {
+            this.image = new Image("graphics/" + (color == Color.WHITE ? "white_" : "black_") + getClass().getSimpleName().toLowerCase() + ".png");
+        } catch (Exception e) {
+
+        }
     }
+
 
     public Color getColor() {
         return color;
@@ -24,19 +29,6 @@ public abstract class Piece {
     public void setColor(Color color) {
         this.color = color;
     }
-    /*public Image getImage()
-    {
-        if ( this.color == WHITE )
-        {
-            //TODO: Image rausholen mit 'white_'
-        }
-        else
-        {
-            //TODO: Image rausholen mit 'black_'
-        }
-
-        return image;
-    }*/
 
     /**
      * A method to validate moves depending on whether they are moves with or without captures

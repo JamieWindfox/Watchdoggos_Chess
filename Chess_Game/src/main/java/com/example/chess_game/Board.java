@@ -1,6 +1,12 @@
 package com.example.chess_game;
 
+import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,21 +18,24 @@ public class Board {
     private final Map<Piece, Field> pieceLocation;
     private final List<String> moves;
     private final Image boardImage;
+    private final GridPane playableBoard;
+    private Field lastClickedField = null;
 
     public Board(Player white, Player black) {
+        this.boardImage = new Image("graphics/ChessBoard.png");
         this.fields = new Field[8][8];
         this.pieceLocation = new HashMap<>();
         this.moves = new ArrayList<>();
-        this.boardImage = new Image("graphics/ChessBoard.png");
+        this.playableBoard = new GridPane();
         initFields(white, black);
     }
 
     public void initFields(Player white, Player black) {
         for (int rowNum = 0; rowNum < 8; rowNum++) {
             for (int colAlphabet = 0; colAlphabet < 8; colAlphabet++) {
-
                 Field currentField
-                        = new Field((char) (colAlphabet + ASCII_OFFSET) + Integer.toString(rowNum + 1), rowNum, colAlphabet);
+                        = new Field((char) (colAlphabet + ASCII_OFFSET) + Integer.toString(rowNum + 1), rowNum,
+                        colAlphabet, (int)(boardImage.getHeight()/8));
 
                 this.fields[rowNum][colAlphabet] = currentField;
                 switch (rowNum) {
@@ -35,6 +44,7 @@ public class Board {
                     case 6 -> setPieceOnBoard(Pawn.class, Color.BLACK, currentField, black);
                     case 7 -> initPieces(colAlphabet, Color.BLACK, currentField, black);
                 }
+                playableBoard.add(currentField.getCell(), rowNum, colAlphabet, (int)boardImage.getHeight()/8, (int)boardImage.getWidth()/8);
             }
         }
     }
@@ -180,5 +190,9 @@ public class Board {
             } else return isPieceBetweenFields(fields, field2, field1);
         }
         return false;
+    }
+
+    public void setLastClickedField(int row, int column) {
+        lastClickedField = fields[row][column];
     }
 }

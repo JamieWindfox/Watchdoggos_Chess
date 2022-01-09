@@ -22,13 +22,10 @@ public class MainController extends Application implements Initializable {
 
     Game game;
 
-    @FXML
-    private ImageView imageview_board;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         game = new Game();
-        imageview_board.setImage(game.getBoardImage());
     }
 
     @Override
@@ -61,6 +58,7 @@ public class MainController extends Application implements Initializable {
         System.out.println("INFO: Player selection if they want to discard and resign game: " + result.getText());
         if(ButtonBar.ButtonData.YES.equals(result.getButtonData())) game = new Game();
     }
+
 
     @FXML
     public void btnResignClicked() {
