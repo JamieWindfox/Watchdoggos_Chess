@@ -21,4 +21,9 @@ public class Player {
     public void addPiece(Piece piece) {
         this.pieces.add(piece);
     }
+
+    public void promotePiece(Pawn pawn, Piece promotedPiece) {
+        this.pieces.remove(pawn);
+        this.pieces.add(promotedPiece);
+    }
 }

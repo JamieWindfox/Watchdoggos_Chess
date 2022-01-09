@@ -14,6 +14,8 @@ public class Board {
     private final List<String> moves;
     private final Image boardImage;
     private final GridPane playableBoard;
+    private final Player white;
+    private final Player black;
     private Field lastClickedField = null;
 
     public Board(Player white, Player black) {
@@ -22,10 +24,12 @@ public class Board {
         this.pieceLocation = new HashMap<>();
         this.moves = new ArrayList<>();
         this.playableBoard = new GridPane();
-        initFields(white, black);
+        this.white = white;
+        this.black = black;
+        initFields();
     }
 
-    public void initFields(Player white, Player black) {
+    public void initFields() {
         for (int rowNum = 0; rowNum < 8; rowNum++) {
             for (int colAlphabet = 0; colAlphabet < 8; colAlphabet++) {
                 Field currentField
@@ -111,17 +115,37 @@ public class Board {
         Field oldField = pieceLocation.remove(piece);
         pieceLocation.put(piece, newField);
 
-        // Check if move was an En Passant
-        if (piece instanceof Pawn && newField.getPiece() == null
-                && oldField.getColumn() != newField.getColumn()) {
-            Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == Color.BLACK ? 1 : -1)][newField.getColumn()];
-            if (capturedPawnField.getPiece() instanceof Pawn) {
-                pieceLocation.remove(capturedPawnField.getPiece());
-                fields[capturedPawnField.getRow()][capturedPawnField.getColumn()].setPiece(null);
+        String promotionAnnotation = "";
+        String moveAnnotation = piece.getMoveAnnotation(oldField, newField);
+
+        if (piece instanceof Pawn) {
+            // Check if move was an En Passant
+            if (newField.getPiece() == null && oldField.getColumn() != newField.getColumn()) {
+                Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == Color.BLACK ? 1 : -1)][newField.getColumn()];
+                if (capturedPawnField.getPiece() instanceof Pawn) {
+                    pieceLocation.remove(capturedPawnField.getPiece());
+                    fields[capturedPawnField.getRow()][capturedPawnField.getColumn()].setPiece(null);
+                }
+            }
+
+            // Check if move was Promotion
+            if (newField.getRow() == 0 || newField.getRow() == 7) {
+                // TODO Get selection of chosen Promotion
+                // Filler Queen promotion
+                Queen k = new Queen(piece.getColor());
+                if (piece.getColor() == Color.WHITE) {
+                    white.promotePiece((Pawn) piece, k);
+                } else {
+                    black.promotePiece((Pawn) piece, k);
+                }
+                pieceLocation.remove(piece);
+                pieceLocation.put(k, newField);
+
+                promotionAnnotation = "=" + k.ANNOTATION_LETTER;
+                piece = k;
             }
         }
 
-        String moveAnnotation = piece.getMoveAnnotation(oldField, newField);
         fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
         fields[newField.getRow()][newField.getColumn()].setPiece(piece);
 
@@ -132,7 +156,7 @@ public class Board {
         if (isCheckmate(piece.getColor())) {
             checkAnnotation = "#";
         }
-        moves.add(moveAnnotation + checkAnnotation);
+        moves.add(moveAnnotation + promotionAnnotation + checkAnnotation);
     }
 
     public Image getBoardImage() {

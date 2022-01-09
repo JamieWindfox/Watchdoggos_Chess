@@ -10,7 +10,6 @@ public class Pawn extends Piece {
 
     @Override
     public Set<Field> getValidMoves(Board board, Field currentField) {
-        // todo promotion
         validMoves = new HashSet<>();
         Field[][] fields = board.getFields();
         Color pieceColor = this.getColor();
