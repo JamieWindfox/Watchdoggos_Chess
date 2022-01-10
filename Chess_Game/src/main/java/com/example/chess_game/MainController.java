@@ -17,6 +17,7 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -138,23 +139,28 @@ public class MainController extends Application implements Initializable {
         Alert resignGameDialog = new Alert(Alert.AlertType.NONE);
         resignGameDialog.setTitle("Previous Moves");
 
-        List<String> moves = game.getMoves();
         TextFlow textFlow = new TextFlow();
         Text text;
-        for (int i = 0; i < moves.size(); i++) {
-            // Show Number of round (one round means turn for both)
-            if (i % 2 == 0) {
-                text = new Text(String.format("%d. ", i / 2 + 1));
-                text.setStyle("-fx-font-weight: bold");
-                textFlow.getChildren().add(text);
+        if (game != null) {
+            List<String> moves = game.getMoves();
+            for (int i = 0; i < moves.size(); i++) {
+                // Show Number of round (one round means turn for both)
+                if (i % 2 == 0) {
+                    text = new Text(String.format("%d. ", i / 2 + 1));
+                    text.setStyle("-fx-font-weight: bold");
+                    textFlow.getChildren().add(text);
+                }
+
+                // Show move
+                textFlow.getChildren().add(new Text(moves.get(i) + " "));
+
+                // Create Line Breaks
+                if (i > 0 && ((i + 1) % 10 == 0)) textFlow.getChildren().add(new Text(System.lineSeparator()));
             }
-
-            // Show move
-            textFlow.getChildren().add(new Text(moves.get(i) + " "));
-
-            // Create Line Breaks
-            if (i > 0 && ((i + 1) % 10 == 0)) textFlow.getChildren().add(new Text(System.lineSeparator()));
+        } else {
+            textFlow.getChildren().add(new Text("No previous moves available."));
         }
+
         resignGameDialog.getDialogPane().setContent(textFlow);
 
         // Set the buttons for the dialog
