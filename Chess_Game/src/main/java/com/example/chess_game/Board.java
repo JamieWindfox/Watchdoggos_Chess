@@ -118,6 +118,11 @@ public class Board {
         String promotionAnnotation = "";
         String moveAnnotation = piece.getMoveAnnotation(oldField, newField);
 
+        // Check if move was capture
+        if (newField.getPiece() != null) {
+            pieceLocation.remove(newField.getPiece());
+        }
+
         if (piece instanceof Pawn) {
             // Check if move was an En Passant
             if (newField.getPiece() == null && oldField.getColumn() != newField.getColumn()) {

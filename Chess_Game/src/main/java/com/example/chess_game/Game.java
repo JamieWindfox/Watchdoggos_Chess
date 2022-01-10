@@ -1,6 +1,5 @@
 package com.example.chess_game;
 
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 
 import java.util.List;
@@ -179,9 +178,57 @@ public class Game {
     }
 
 
-    public Image getBoardImage() { return board.getBoardImage(); }
+    public Image getBoardImage() {
+        return board.getBoardImage();
+    }
 
-    public static Board getBoard() { return board; }
+    public static Board getBoard() {
+        return board;
+    }
 
-    public List<String> getMoves() { return board.getMoves(); }
+    public List<String> getMoves() {
+        return board.getMoves();
+    }
+
+    public boolean isDraw(Player playerToMove) {
+        Set<Piece> playerToMovePieces = board.getPieces(playerToMove.getColor());
+        Set<Piece> enemyPieces = board.getPieces(playerToMove.getColor() == Color.WHITE ? Color.BLACK : Color.WHITE);
+
+        // Stalemate
+        boolean stalemate = playerToMovePieces.stream()
+                .noneMatch(piece -> piece.getLegalMoves(board, board.getPieceLocation(piece)).size() > 0);
+
+        // Insufficient material
+        boolean enemyInsufficientMaterial = enemyPieces.stream().filter(piece -> !(piece instanceof King))
+                .allMatch(piece -> piece instanceof Bishop || piece instanceof Knight);
+        boolean insufficient =
+                playerToMovePieces.stream()
+                        .filter(piece -> !(piece instanceof King))
+                        .allMatch(piece -> piece instanceof Bishop || piece instanceof Knight) && enemyInsufficientMaterial;
+
+
+        // Threefold repetition
+        // TODO
+
+        // Mutual agreement
+        // TODO
+
+        // 50-Move rule
+        List<String> moves = board.getMoves();
+        boolean fiftyMoveRule = false;
+        if (moves.size() > 50) {
+            fiftyMoveRule = moves.subList(moves.size() - 51, moves.size())
+                    .stream()
+                    .noneMatch(move -> move.length() == 2 || move.contains("x"));
+        }
+
+        // Timeout-Draw - Player to move ran out of time and enemy has insufficient materials
+        // TODO timer value
+        boolean timeoutDraw = false;
+        if (enemyInsufficientMaterial) {
+            timeoutDraw = true;
+        }
+
+        return stalemate || insufficient || fiftyMoveRule || timeoutDraw;
+    }
 }

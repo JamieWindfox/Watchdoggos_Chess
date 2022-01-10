@@ -26,4 +26,8 @@ public class Player {
         this.pieces.remove(pawn);
         this.pieces.add(promotedPiece);
     }
+
+    public Color getColor() {
+        return color;
+    }
 }
