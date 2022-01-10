@@ -8,11 +8,19 @@ import javafx.scene.control.Label;
 public class Timer implements Runnable {
 
     // Each Player stars with 15 minutes left
-    private int timeLeft = 15 * 60;
-    private Label timer;
+    private int timeLeft;
+    private final Label timer;
 
-    public Timer(Label timerLabel) {
+    public Timer(Label timerLabel, int totalMinutes) {
         timer = timerLabel;
+        timeLeft = totalMinutes * 60;
+        updateTimer();
+    }
+
+    private void updateTimer() {
+        int minutes = timeLeft / 60;
+        int seconds = timeLeft % 60;
+        timer.setText(String.format("Time left: %d:%02d", minutes, seconds));
     }
 
     @Override
@@ -22,11 +30,7 @@ public class Timer implements Runnable {
             synchronized (this) {
                 timeLeft --;
 
-                Platform.runLater(() -> {
-                    int minutes = timeLeft / 60;
-                    int seconds = timeLeft % 60;
-                    timer.setText("Time left: " + minutes + ":" + seconds);
-                });
+                Platform.runLater(this::updateTimer);
             }
             try {
                 // wait exactly one second

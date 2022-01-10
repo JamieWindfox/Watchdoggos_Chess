@@ -11,10 +11,11 @@ public class Player {
     private final Set<Piece> pieces;
     private final String name;
 
-    public Player(Color color, String name) {
+    public Player(Color color, String name, Timer timer) {
         this.pieces = new HashSet<>();
         this.color = color;
         this.name = name;
+        this.timer = timer;
         //this.timer = new Timer(timerLabel);
     }
 

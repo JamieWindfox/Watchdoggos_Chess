@@ -7,6 +7,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
@@ -42,6 +44,20 @@ public class MainController extends Application implements Initializable {
         label_player2.setText("");
         label_timer1.setText("");
         label_timer2.setText("");
+
+        // TODO Remove in production ;)
+        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_queen.png")));
+        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_pawn.png")));
+        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_pawn.png")));
+        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_bishop.png")));
+        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_rook.png")));
+
+        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_queen.png")));
+        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_pawn.png")));
+        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_pawn.png")));
+        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_bishop.png")));
+        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_rook.png")));
+
     }
 
     @Override
@@ -85,9 +101,13 @@ public class MainController extends Application implements Initializable {
         String playerBlack = showPlayerNameDialog(Color.BLACK.name());
         if(playerBlack == null || playerBlack.isBlank()) return;
 
-        game = new Game(playerWhite, playerBlack);
-        label_player1.setText(playerWhite.toString());
-        label_player2.setText(playerBlack.toString());
+        game = new Game(
+                // TODO Change to time from user input dialog
+                new Player(Color.WHITE, playerWhite, new Timer(label_timer1, 15)),
+                new Player(Color.BLACK, playerBlack, new Timer(label_timer2, 15))
+        );
+        label_player1.setText(playerWhite);
+        label_player2.setText(playerBlack);
     }
 
     public String showPlayerNameDialog(String playerColor) {
