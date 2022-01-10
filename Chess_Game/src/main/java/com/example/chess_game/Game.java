@@ -231,4 +231,11 @@ public class Game {
 
         return stalemate || insufficient || fiftyMoveRule || timeoutDraw;
     }
+
+    public Field getField(int row, int column) {
+        if(row < 0 || column < 0 || row > 7 || column > 7) {
+            throw new IllegalArgumentException("Illegal Coordinate was given to Game::getField(row, column)");
+        }
+        return board.getFields()[row][column];
+    }
 }
