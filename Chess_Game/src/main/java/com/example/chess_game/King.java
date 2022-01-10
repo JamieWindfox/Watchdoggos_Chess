@@ -2,6 +2,7 @@ package com.example.chess_game;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class King extends Piece {
 
@@ -27,14 +28,53 @@ public class King extends Piece {
                 // todo Castling
             }
         }
+        if (moveCounter == 0) {
+            Set<Piece> rooks = board.getPieces(getColor())
+                    .stream()
+                    .filter(piece -> piece instanceof Rook && piece.moveCounter == 0)
+                    .collect(Collectors.toSet());
+            if (!rooks.isEmpty()) {
+                Field kingsField = board.getPieceLocation(this);
+                for (Piece rook : rooks) {
+                    Field rooksField = board.getPieceLocation(rook);
+                    Set<Field> inBetweenFields = rook.getInBetweenFields(rooksField, kingsField, board.getFields());
+                    int inBetweenFieldsCount = inBetweenFields.size();
+                    boolean areFieldsBetweenEmpty = inBetweenFields.stream()
+                            .filter(inBetweenField -> inBetweenField.getPiece() == null)
+                            .count() == inBetweenFieldsCount;
+                    if (areFieldsBetweenEmpty && rooksField.getColumn() != kingsField.getColumn()) {
+                        board.removeMoveIfSelfCheck(inBetweenFields, this);
+                        if (rooksField.getColumn() > kingsField.getColumn()) {
+                            // Short castle
+                            if (inBetweenFields.size() == inBetweenFieldsCount) {
+                                Field shortCastleField = fields[kingsField.getRow()][kingsField.getColumn() + 2];
+                                validateAndAddMove(shortCastleField);
+                            }
+                        } else if (rooksField.getColumn() < kingsField.getColumn()) {
+                            // Long castle
+                            boolean checkAtFileB = inBetweenFields.stream()
+                                    .noneMatch(inbtwFields -> inbtwFields.getFieldName().contains("b"));
+                            if (inBetweenFields.size() == inBetweenFieldsCount ||
+                                    (inBetweenFields.size() < inBetweenFieldsCount && checkAtFileB)) {
+                                Field longCastleField = fields[kingsField.getRow()][kingsField.getColumn() - 2];
+                                validateAndAddMove(longCastleField);
+                            }
+                        }
+                    }
+
+
+                }
+
+            }
+        }
         return validMoves;
     }
 
     @Override
     public String getMoveAnnotation(Field oldField, Field newField) {
-        if (newField.getRow() - oldField.getRow() == 2) {
+        if (newField.getColumn() - oldField.getColumn() == 2) {
             return "O-O";
-        } else if (newField.getRow() - oldField.getRow() == -2) {
+        } else if (newField.getColumn() - oldField.getColumn() == -2) {
             return "O-O-O";
         }
         return newField.getPiece() != null ? ANNOTATION_LETTER + "x" + newField.getFieldName() : ANNOTATION_LETTER + newField.getFieldName();

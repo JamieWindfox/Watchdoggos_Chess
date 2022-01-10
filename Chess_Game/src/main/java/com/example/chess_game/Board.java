@@ -146,6 +146,29 @@ public class Board {
             }
         }
 
+        // Check if move was short or long castle
+        if (moveAnnotation.equals("O-O") || moveAnnotation.equals("O-O-O")) {
+            String rooksColumn;
+            int colDiff;
+            if (moveAnnotation.equals("O-O")) {
+                rooksColumn = "h";
+                colDiff = -1;
+            } else {
+                rooksColumn = "a";
+                colDiff = 1;
+            }
+
+            Piece rook = getPieces(piece.getColor())
+                    .stream()
+                    .filter(playerPiece -> playerPiece instanceof Rook && pieceLocation.get(playerPiece).getFieldName().contains(rooksColumn))
+                    .findFirst()
+                    .get();
+            Field rookCastleField = fields[newField.getRow()][newField.getColumn() + colDiff];
+            pieceLocation.get(rook).setPiece(null);
+            pieceLocation.put(rook, rookCastleField);
+            rookCastleField.setPiece(rook);
+        }
+
         fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
         fields[newField.getRow()][newField.getColumn()].setPiece(piece);
 
@@ -157,6 +180,7 @@ public class Board {
             checkAnnotation = "#";
         }
         moves.add(moveAnnotation + promotionAnnotation + checkAnnotation);
+        piece.increaseMoveCounter();
     }
 
     public Image getBoardImage() {

@@ -9,6 +9,7 @@ public abstract class Piece {
     private Color color;
     private Image image;
     public Set<Field> validMoves;
+    public int moveCounter = 0;
 
     public Piece(Color color) //TODO: Image hinzufügen
     {
@@ -96,5 +97,9 @@ public abstract class Piece {
 
     public Image getImage() {
         return image;
+    }
+
+    public void increaseMoveCounter() {
+        moveCounter++;
     }
 }
