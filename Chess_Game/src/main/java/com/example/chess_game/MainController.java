@@ -9,15 +9,23 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 public class MainController extends Application implements Initializable {
 
@@ -40,6 +48,20 @@ public class MainController extends Application implements Initializable {
         label_player2.setText("");
         label_timer1.setText("");
         label_timer2.setText("");
+
+        // TODO Remove in production ;)
+        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_queen.png")));
+        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_pawn.png")));
+        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_pawn.png")));
+        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_bishop.png")));
+        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_rook.png")));
+
+        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_queen.png")));
+        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_pawn.png")));
+        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_pawn.png")));
+        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_bishop.png")));
+        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_rook.png")));
+
 
         gridpane_board.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -141,9 +163,13 @@ public class MainController extends Application implements Initializable {
         String playerBlack = showPlayerNameDialog(Color.BLACK.name());
         if(playerBlack == null || playerBlack.isBlank()) return;
 
-        game = new Game(playerWhite, playerBlack);
-        label_player1.setText(playerWhite.toString());
-        label_player2.setText(playerBlack.toString());
+        game = new Game(
+                // TODO Change to time from user input dialog
+                new Player(Color.WHITE, playerWhite, new Timer(label_timer1, 15)),
+                new Player(Color.BLACK, playerBlack, new Timer(label_timer2, 15))
+        );
+        label_player1.setText(playerWhite);
+        label_player2.setText(playerBlack);
     }
 
     public String showPlayerNameDialog(String playerColor) {

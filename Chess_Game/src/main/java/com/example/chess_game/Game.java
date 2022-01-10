@@ -14,9 +14,9 @@ public class Game {
      */
     private static Board board;
 
-    public Game(String playerBlack, String playerWhite) {
-        this.black = new Player(Color.BLACK, playerBlack);
-        this.white = new Player(Color.WHITE, playerWhite);
+    public Game(Player playerBlack, Player playerWhite) {
+        this.black = playerBlack;
+        this.white = playerWhite;
         board = new Board(white, black);
         this.testGame();
     }
