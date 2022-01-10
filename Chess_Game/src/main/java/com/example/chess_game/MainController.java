@@ -10,18 +10,13 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Optional;
@@ -50,7 +45,7 @@ public class MainController extends Application implements Initializable {
         label_timer2.setText("");
 
         // TODO Remove in production ;)
-        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_queen.png")));
+        /*flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_queen.png")));
         flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_pawn.png")));
         flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_pawn.png")));
         flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_bishop.png")));
@@ -60,7 +55,7 @@ public class MainController extends Application implements Initializable {
         flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_pawn.png")));
         flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_pawn.png")));
         flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_bishop.png")));
-        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_rook.png")));
+        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_rook.png")));*/
 
 
         gridpane_board.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -122,6 +117,17 @@ public class MainController extends Application implements Initializable {
         }
     }
 
+    private void setStartFormation() {
+        for (int column = 0; column < 8; ++column) {
+            for (int row = 0; row < 8; ++row) {
+                Piece piece = game.getField(row, column).getPiece();
+                if(piece != null) {
+                    gridpane_board.add(new ImageView(piece.getImage()), row, column);
+                }
+            }
+        }
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainController.class.getResource("main-view.fxml"));
@@ -170,6 +176,8 @@ public class MainController extends Application implements Initializable {
         );
         label_player1.setText(playerWhite);
         label_player2.setText(playerBlack);
+
+        setStartFormation();
     }
 
     public String showPlayerNameDialog(String playerColor) {

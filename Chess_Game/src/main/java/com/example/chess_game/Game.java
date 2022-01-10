@@ -31,7 +31,7 @@ public class Game {
      * - Print the board
      */
     public void testGame() {
-        board.printField();
+        /*board.printField();
 
         // White's turn
         Piece piece = board.getFields()[1][3].getPiece();
@@ -160,7 +160,7 @@ public class Game {
             System.out.println(vm.getFieldName());
         }
 
-        System.out.println("Move history: " + board.getMoves());
+        System.out.println("Move history: " + board.getMoves());*/
     }
 
     /**
@@ -236,6 +236,10 @@ public class Game {
         if(row < 0 || column < 0 || row > 7 || column > 7) {
             throw new IllegalArgumentException("Illegal Coordinate was given to Game::getField(row, column)");
         }
-        return board.getFields()[row][column];
+        return board.getFields()[column][row];
+    }
+
+    public Field[][] getFields() {
+        return board.getFields();
     }
 }
