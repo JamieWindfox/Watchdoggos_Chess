@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -25,9 +24,10 @@ public class MainController extends Application implements Initializable {
     final int PLAYER_NAME_MAX_LENGTH = 20;
     final ImageView HIGHLIGHT_CLICKED = new ImageView("graphics/highlight.png");
     final Image HIGHLIGHT_VALID_MOVES_IMAGE = new Image("graphics/highlight.png");
-    List<ImageView> highlighted_valid_moves = new ArrayList<>();
+    final Map<Piece, ImageView> pieceImageViews = new HashMap<>();
+    Set<ImageView> highlightImageViews = new HashSet<>();
+    Set<String> highlightedFieldNames = new HashSet<>();
     Piece selected_piece = null;
-    ImageView clicked_piece_image = null;
 
     Game game;
 
@@ -71,35 +71,34 @@ public class MainController extends Application implements Initializable {
         gridpane_board.setOnMouseClicked(this::handle);
     }
 
-    private void movePiece(Field clickedField, ImageView clickedNode) {
+    private void movePiece(Field clickedField) {
+        if (clickedField.getPiece() != null) {
+            gridpane_board.getChildren().remove(pieceImageViews.get(clickedField.getPiece()));
+            pieceImageViews.remove(clickedField.getPiece());
+        }
         game.getBoard().update(clickedField, selected_piece);
         game.getBoard().printField();
-        ImageView newImage = new ImageView(clicked_piece_image.getImage());
-        gridpane_board.getChildren().remove(clicked_piece_image);
-        clickedNode.setImage(newImage.getImage());
+        gridpane_board.getChildren().remove(pieceImageViews.get(selected_piece));
+        ImageView newImgView = new ImageView(selected_piece.getImage());
+        gridpane_board.add(newImgView, clickedField.getColumn(), clickedField.getRow());
+        pieceImageViews.put(selected_piece, newImgView);
         selected_piece = null;
     }
 
     private void handle(MouseEvent mouseEvent) {
         if (game == null) return;
-
         Field clickedField = getFieldFromCoordinates(mouseEvent.getX(), mouseEvent.getY());
-        ImageView clickedNode = getImageFromCoordinates(clickedField.getRow(), clickedField.getColumn());
+        highlightClickedField(clickedField);
 
-        if (selected_piece != null && highlighted_valid_moves.contains(clickedNode)) {
-            movePiece(clickedField, clickedNode);
+        if (selected_piece != null && highlightedFieldNames.contains(clickedField.getFieldName())) {
+            movePiece(clickedField);
         } else {
-            highlightClickedField(clickedField);
-
             Piece piece = clickedField.getPiece();
             System.out.println("Piece on clicked field: " + piece);
+            selected_piece = piece;
             if (piece != null) {
-                clicked_piece_image = clickedNode;
-                selected_piece = piece;
-                Set<Field> validMoves = piece.getValidMoves(game.getBoard(), clickedField);
-                highlightValidMoves(validMoves);
-            } else {
-                selected_piece = null;
+                Set<Field> legalMoves = piece.getLegalMoves(game.getBoard(), clickedField);
+                highlightValidMoves(legalMoves);
             }
         }
     }
@@ -126,8 +125,8 @@ public class MainController extends Application implements Initializable {
      */
     private void highlightClickedField(Field field) {
         gridpane_board.getChildren().removeAll(HIGHLIGHT_CLICKED);
-        if (highlighted_valid_moves != null && !highlighted_valid_moves.isEmpty()) {
-            gridpane_board.getChildren().removeAll(highlighted_valid_moves);
+        if (highlightImageViews != null && !highlightImageViews.isEmpty()) {
+            gridpane_board.getChildren().removeAll(highlightImageViews);
         }
 
         for (int row = 0; row < 8; ++row) {
@@ -139,42 +138,30 @@ public class MainController extends Application implements Initializable {
         }
     }
 
-    /*
-        /**
-         * Gets the ImageView in gridpane_board by row and column index
-         * @param row
-         * @param column
-         * @return
-         */
-    private ImageView getImageFromCoordinates(int row, int column) {
-        for (Node node : gridpane_board.getChildren()) {
-            if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
-                if (node instanceof ImageView)
-                    return (ImageView) node;
-            }
-        }
-        return null;
-    }
-
     private void highlightValidMoves(Set<Field> validMoves) {
-        highlighted_valid_moves = new ArrayList<>();
+        highlightImageViews = new HashSet<>();
+        highlightedFieldNames = new HashSet<>();
         for (int row = 0; row < 8; ++row) {
             for (int column = 0; column < 8; ++column) {
-                if (validMoves.contains(game.getField(row, column))) {
+                Field field = game.getField(row, column);
+                if (validMoves.contains(field)) {
                     ImageView node = new ImageView(HIGHLIGHT_VALID_MOVES_IMAGE);
                     gridpane_board.add(node, row, column);
-                    highlighted_valid_moves.add(node);
+                    highlightedFieldNames.add(field.getFieldName());
+                    highlightImageViews.add(node);
                 }
             }
         }
     }
 
     private void setStartFormation() {
-        for (int column = 0; column < 8; ++column) {
-            for (int row = 0; row < 8; ++row) {
+        for (int row = 0; row < 8; ++row) {
+            for (int column = 0; column < 8; ++column) {
                 Piece piece = game.getField(row, column).getPiece();
                 if (piece != null) {
-                    gridpane_board.add(new ImageView(piece.getImage()), row, column);
+                    ImageView imageView = new ImageView(piece.getImage());
+                    pieceImageViews.put(piece, imageView);
+                    gridpane_board.add(imageView, row, column);
                 }
             }
         }
