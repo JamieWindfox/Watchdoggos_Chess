@@ -102,4 +102,9 @@ public abstract class Piece {
     public void increaseMoveCounter() {
         moveCounter++;
     }
+
+    @Override
+    public String toString() {
+        return getName() + " " + color.name().toLowerCase();
+    }
 }

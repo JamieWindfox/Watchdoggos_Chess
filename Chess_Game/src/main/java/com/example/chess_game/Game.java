@@ -242,4 +242,5 @@ public class Game {
     public Field[][] getFields() {
         return board.getFields();
     }
+
 }

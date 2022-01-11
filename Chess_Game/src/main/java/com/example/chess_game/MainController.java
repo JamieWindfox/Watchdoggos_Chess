@@ -1,15 +1,14 @@
 package com.example.chess_game;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.image.Image;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
@@ -17,14 +16,14 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Set;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MainController extends Application implements Initializable {
 
     final int PLAYER_NAME_MAX_LENGTH = 20;
+    final ImageView HIGHLIGHT_CLICKED = new ImageView( "graphics/highlight.png");
+    final Image HIGHLIGHT_VALID_MOVES_IMAGE = new Image( "graphics/highlight.png");
+    List<ImageView> highlighted_valid_moves = new ArrayList<>();
 
     Game game;
 
@@ -58,24 +57,20 @@ public class MainController extends Application implements Initializable {
         flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_rook.png")));*/
 
 
-        gridpane_board.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
+        gridpane_board.setOnMouseClicked(this::handle);
+    }
 
-                if(game == null) return;
-                Field clickedField = getFieldFromCoordinates(mouseEvent.getX(), mouseEvent.getY());
-                highlightField(clickedField);
+    private void handle(MouseEvent mouseEvent) {
+        if (game == null) return;
+        Field clickedField = getFieldFromCoordinates(mouseEvent.getX(), mouseEvent.getY());
+        highlightClickedField(clickedField);
 
-                ImageView highlight = new ImageView();
-
-                gridpane_board.add(highlight, ((int) (mouseEvent.getX()/37)), (int) (mouseEvent.getY()/37));
-                Piece piece = clickedField.getPiece();
-                if(piece != null) {
-                    Set<Field> validMoves = piece.validMoves;
-                    highlightValidMoves(validMoves);
-                }
-            }
-        });
+        Piece piece = clickedField.getPiece();
+        System.out.println("Piece on clicked field: " + piece);
+        if (piece != null) {
+            Set<Field> validMoves = piece.getValidMoves(game.getBoard(), clickedField);
+            highlightValidMoves(validMoves);
+        }
     }
 
     private Field getFieldFromCoordinates(double x, double y) {
@@ -95,23 +90,47 @@ public class MainController extends Application implements Initializable {
         return field;
     }
 
-    private void highlightField(Field field) {
+    /**
+     * Highlights the clicked field and removes the highlight from all other fields
+     */
+    private void highlightClickedField(Field field) {
+        gridpane_board.getChildren().removeAll(HIGHLIGHT_CLICKED);
+        if(highlighted_valid_moves != null && !highlighted_valid_moves.isEmpty()) {
+            gridpane_board.getChildren().removeAll(highlighted_valid_moves);
+        }
+
         for (int row = 0; row < 8; ++row) {
             for (int column = 0; column < 8; ++column) {
                 if (field.equals(game.getField(row, column))) {
-                    ImageView highlight = new ImageView( "graphics/highlight.png");
-                    gridpane_board.add(highlight, row, column);
-                    return;
+                    gridpane_board.add(HIGHLIGHT_CLICKED, row, column);
                 }
             }
         }
     }
+/*
+    /**
+     * Gets the Node in gridpane_board by row and column index
+     * @param row
+     * @param column
+     * @return
+     */
+    /*private Node getNodeFromCoordinates(int row, int column) {
+        for(Node node : gridpane_board.getChildren()) {
+            if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
+                return node;
+            }
+        }
+        return null;
+    }*/
 
     private void highlightValidMoves(Set<Field> validMoves) {
-        for (int row = 0; row < 7; ++row) {
-            for (int column = 0; column < 7; ++column) {
+        highlighted_valid_moves = new ArrayList<>();
+        for (int row = 0; row < 8; ++row) {
+            for (int column = 0; column < 8; ++column) {
                 if (validMoves.contains(game.getField(row, column))) {
-                    highlightField(game.getField(row, column));
+                    ImageView node = new ImageView(HIGHLIGHT_VALID_MOVES_IMAGE);
+                    gridpane_board.add(node, row, column);
+                    highlighted_valid_moves.add(node);
                 }
             }
         }
@@ -265,4 +284,5 @@ public class MainController extends Application implements Initializable {
     public static void main(String[] args) {
         launch();
     }
+
 }
