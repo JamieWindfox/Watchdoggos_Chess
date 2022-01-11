@@ -15,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -22,21 +23,28 @@ import java.util.*;
 public class MainController extends Application implements Initializable {
 
     final int PLAYER_NAME_MAX_LENGTH = 20;
-    final ImageView HIGHLIGHT_CLICKED = new ImageView( "graphics/highlight.png");
-    final Image HIGHLIGHT_VALID_MOVES_IMAGE = new Image( "graphics/highlight.png");
+    final ImageView HIGHLIGHT_CLICKED = new ImageView("graphics/highlight.png");
+    final Image HIGHLIGHT_VALID_MOVES_IMAGE = new Image("graphics/highlight.png");
     List<ImageView> highlighted_valid_moves = new ArrayList<>();
     Piece selected_piece = null;
     ImageView clicked_piece_image = null;
 
     Game game;
 
-    @FXML private GridPane gridpane_board;
-    @FXML private FlowPane flowpanel_cemetary1;
-    @FXML private FlowPane flowpanel_cemetary2;
-    @FXML private Label label_player1;
-    @FXML private Label label_player2;
-    @FXML private Label label_timer1;
-    @FXML private Label label_timer2;
+    @FXML
+    private GridPane gridpane_board;
+    @FXML
+    private FlowPane flowpanel_cemetary1;
+    @FXML
+    private FlowPane flowpanel_cemetary2;
+    @FXML
+    private Label label_player1;
+    @FXML
+    private Label label_player2;
+    @FXML
+    private Label label_timer1;
+    @FXML
+    private Label label_timer2;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -78,10 +86,9 @@ public class MainController extends Application implements Initializable {
         Field clickedField = getFieldFromCoordinates(mouseEvent.getX(), mouseEvent.getY());
         ImageView clickedNode = getImageFromCoordinates(clickedField.getRow(), clickedField.getColumn());
 
-        if(selected_piece != null && highlighted_valid_moves.contains(clickedNode)) {
-                movePiece(clickedField, clickedNode);
-        }
-        else {
+        if (selected_piece != null && highlighted_valid_moves.contains(clickedNode)) {
+            movePiece(clickedField, clickedNode);
+        } else {
             highlightClickedField(clickedField);
 
             Piece piece = clickedField.getPiece();
@@ -91,16 +98,15 @@ public class MainController extends Application implements Initializable {
                 selected_piece = piece;
                 Set<Field> validMoves = piece.getValidMoves(game.getBoard(), clickedField);
                 highlightValidMoves(validMoves);
-            }
-            else {
+            } else {
                 selected_piece = null;
             }
         }
     }
 
     private Field getFieldFromCoordinates(double x, double y) {
-        int row = (int)(x / 37.0);
-        int column = (int)(y / 37.0);
+        int row = (int) (x / 37.0);
+        int column = (int) (y / 37.0);
 
         return getField(row, column);
 
@@ -108,7 +114,7 @@ public class MainController extends Application implements Initializable {
 
     private Field getField(int row, int column) {
         Field field = null;
-        if(game != null) {
+        if (game != null) {
             field = game.getField(row, column);
             System.out.println("    Clicked on field: " + field.getFieldName());
         }
@@ -120,7 +126,7 @@ public class MainController extends Application implements Initializable {
      */
     private void highlightClickedField(Field field) {
         gridpane_board.getChildren().removeAll(HIGHLIGHT_CLICKED);
-        if(highlighted_valid_moves != null && !highlighted_valid_moves.isEmpty()) {
+        if (highlighted_valid_moves != null && !highlighted_valid_moves.isEmpty()) {
             gridpane_board.getChildren().removeAll(highlighted_valid_moves);
         }
 
@@ -132,17 +138,18 @@ public class MainController extends Application implements Initializable {
             }
         }
     }
-/*
-    /**
-     * Gets the ImageView in gridpane_board by row and column index
-     * @param row
-     * @param column
-     * @return
-     */
+
+    /*
+        /**
+         * Gets the ImageView in gridpane_board by row and column index
+         * @param row
+         * @param column
+         * @return
+         */
     private ImageView getImageFromCoordinates(int row, int column) {
-        for(Node node : gridpane_board.getChildren()) {
-            if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
-                if(node instanceof ImageView)
+        for (Node node : gridpane_board.getChildren()) {
+            if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
+                if (node instanceof ImageView)
                     return (ImageView) node;
             }
         }
@@ -166,7 +173,7 @@ public class MainController extends Application implements Initializable {
         for (int column = 0; column < 8; ++column) {
             for (int row = 0; row < 8; ++row) {
                 Piece piece = game.getField(row, column).getPiece();
-                if(piece != null) {
+                if (piece != null) {
                     gridpane_board.add(new ImageView(piece.getImage()), row, column);
                 }
             }
@@ -210,9 +217,9 @@ public class MainController extends Application implements Initializable {
 
         // Ask players for their names
         String playerWhite = showPlayerNameDialog(Color.WHITE.name());
-        if(playerWhite == null || playerWhite.isBlank()) return;
+        if (playerWhite == null || playerWhite.isBlank()) return;
         String playerBlack = showPlayerNameDialog(Color.BLACK.name());
-        if(playerBlack == null || playerBlack.isBlank()) return;
+        if (playerBlack == null || playerBlack.isBlank()) return;
 
         game = new Game(
                 // TODO Change to time from user input dialog
@@ -238,7 +245,8 @@ public class MainController extends Application implements Initializable {
 
         String playerName = tid.getEditor().getText();
         // Verify Input / Repeat Dialog if user is empty or too long
-        if (playerName.isBlank() || playerName.length() > PLAYER_NAME_MAX_LENGTH) return showPlayerNameDialog(playerColor);
+        if (playerName.isBlank() || playerName.length() > PLAYER_NAME_MAX_LENGTH)
+            return showPlayerNameDialog(playerColor);
 
         System.out.println(playerColor + "Player chose user name '" + playerName + "'");
         return playerName;
