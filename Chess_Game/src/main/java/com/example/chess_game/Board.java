@@ -102,9 +102,9 @@ public class Board {
         for (int rowNum = 0; rowNum < 8; rowNum++) {
             for (int colAlphabet = 0; colAlphabet < 8; colAlphabet++) {
                 Field currentField = this.fields[7 - rowNum][colAlphabet];
-                System.out.printf("[%s] ", currentField.getPiece() != null ?
+                /*System.out.printf("[%s] ", currentField.getPiece() != null ?
                         currentField.getPiece().getName() + "_" + currentField.getPiece().getColor()
-                        : currentField.getFieldName());
+                        : currentField.getFieldName());*/
             }
             System.out.println();
         }

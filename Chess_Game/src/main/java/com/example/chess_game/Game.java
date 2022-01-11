@@ -243,4 +243,8 @@ public class Game {
         return board.getFields();
     }
 
+    @Override
+    public String toString() {
+        return "Current Game";
+    }
 }

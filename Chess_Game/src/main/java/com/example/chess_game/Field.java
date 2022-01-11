@@ -52,4 +52,9 @@ public class Field {
     }
 
     public ImageView getCell() { return cell; }
+
+    @Override
+    public String toString() {
+        return "Field[" + fieldName + "]";
+    }
 }

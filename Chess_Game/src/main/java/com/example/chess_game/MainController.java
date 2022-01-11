@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -24,6 +25,8 @@ public class MainController extends Application implements Initializable {
     final ImageView HIGHLIGHT_CLICKED = new ImageView( "graphics/highlight.png");
     final Image HIGHLIGHT_VALID_MOVES_IMAGE = new Image( "graphics/highlight.png");
     List<ImageView> highlighted_valid_moves = new ArrayList<>();
+    Piece selected_piece = null;
+    ImageView clicked_piece_image = null;
 
     Game game;
 
@@ -60,16 +63,38 @@ public class MainController extends Application implements Initializable {
         gridpane_board.setOnMouseClicked(this::handle);
     }
 
+    private void movePiece(Field clickedField, ImageView clickedNode) {
+        game.getBoard().update(clickedField, selected_piece);
+        game.getBoard().printField();
+        ImageView newImage = new ImageView(clicked_piece_image.getImage());
+        gridpane_board.getChildren().remove(clicked_piece_image);
+        clickedNode.setImage(newImage.getImage());
+        selected_piece = null;
+    }
+
     private void handle(MouseEvent mouseEvent) {
         if (game == null) return;
-        Field clickedField = getFieldFromCoordinates(mouseEvent.getX(), mouseEvent.getY());
-        highlightClickedField(clickedField);
 
-        Piece piece = clickedField.getPiece();
-        System.out.println("Piece on clicked field: " + piece);
-        if (piece != null) {
-            Set<Field> validMoves = piece.getValidMoves(game.getBoard(), clickedField);
-            highlightValidMoves(validMoves);
+        Field clickedField = getFieldFromCoordinates(mouseEvent.getX(), mouseEvent.getY());
+        ImageView clickedNode = getImageFromCoordinates(clickedField.getRow(), clickedField.getColumn());
+
+        if(selected_piece != null && highlighted_valid_moves.contains(clickedNode)) {
+                movePiece(clickedField, clickedNode);
+        }
+        else {
+            highlightClickedField(clickedField);
+
+            Piece piece = clickedField.getPiece();
+            System.out.println("Piece on clicked field: " + piece);
+            if (piece != null) {
+                clicked_piece_image = clickedNode;
+                selected_piece = piece;
+                Set<Field> validMoves = piece.getValidMoves(game.getBoard(), clickedField);
+                highlightValidMoves(validMoves);
+            }
+            else {
+                selected_piece = null;
+            }
         }
     }
 
@@ -109,19 +134,20 @@ public class MainController extends Application implements Initializable {
     }
 /*
     /**
-     * Gets the Node in gridpane_board by row and column index
+     * Gets the ImageView in gridpane_board by row and column index
      * @param row
      * @param column
      * @return
      */
-    /*private Node getNodeFromCoordinates(int row, int column) {
+    private ImageView getImageFromCoordinates(int row, int column) {
         for(Node node : gridpane_board.getChildren()) {
             if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
-                return node;
+                if(node instanceof ImageView)
+                    return (ImageView) node;
             }
         }
         return null;
-    }*/
+    }
 
     private void highlightValidMoves(Set<Field> validMoves) {
         highlighted_valid_moves = new ArrayList<>();
