@@ -80,7 +80,7 @@ public class MainController extends Application implements Initializable {
         game.getBoard().printField();
         gridpane_board.getChildren().remove(pieceImageViews.get(selected_piece));
         ImageView newImgView = new ImageView(selected_piece.getImage());
-        gridpane_board.add(newImgView, clickedField.getColumn(), clickedField.getRow());
+        gridpane_board.add(newImgView, clickedField.getColumn(), 7 - clickedField.getRow());
         pieceImageViews.put(selected_piece, newImgView);
         selected_piece = null;
     }
@@ -114,7 +114,7 @@ public class MainController extends Application implements Initializable {
     private Field getField(int row, int column) {
         Field field = null;
         if (game != null) {
-            field = game.getField(row, column);
+            field = game.getField(row, 7 - column);
             System.out.println("    Clicked on field: " + field.getFieldName());
         }
         return field;
@@ -132,7 +132,7 @@ public class MainController extends Application implements Initializable {
         for (int row = 0; row < 8; ++row) {
             for (int column = 0; column < 8; ++column) {
                 if (field.equals(game.getField(row, column))) {
-                    gridpane_board.add(HIGHLIGHT_CLICKED, row, column);
+                    gridpane_board.add(HIGHLIGHT_CLICKED, row, 7 - column);
                 }
             }
         }
@@ -146,7 +146,7 @@ public class MainController extends Application implements Initializable {
                 Field field = game.getField(row, column);
                 if (validMoves.contains(field)) {
                     ImageView node = new ImageView(HIGHLIGHT_VALID_MOVES_IMAGE);
-                    gridpane_board.add(node, row, column);
+                    gridpane_board.add(node, row, 7 - column);
                     highlightedFieldNames.add(field.getFieldName());
                     highlightImageViews.add(node);
                 }
@@ -161,7 +161,7 @@ public class MainController extends Application implements Initializable {
                 if (piece != null) {
                     ImageView imageView = new ImageView(piece.getImage());
                     pieceImageViews.put(piece, imageView);
-                    gridpane_board.add(imageView, row, column);
+                    gridpane_board.add(imageView, row, 7 - column);
                 }
             }
         }
