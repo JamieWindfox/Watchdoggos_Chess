@@ -16,6 +16,7 @@ public class Board {
     private final GridPane playableBoard;
     private final Player white;
     private final Player black;
+    private final List<Position> boardPositions;
     private Field lastClickedField = null;
 
     public Board(Player white, Player black) {
@@ -26,6 +27,7 @@ public class Board {
         this.playableBoard = new GridPane();
         this.white = white;
         this.black = black;
+        this.boardPositions = new ArrayList<>();
         initFields();
     }
 
@@ -186,6 +188,7 @@ public class Board {
         }
         moves.add(moveAnnotation + promotionAnnotation + checkAnnotation);
         piece.increaseMoveCounter();
+        boardPositions.add(new Position(Map.copyOf(pieceLocation), piece.getColor() == Color.WHITE ? Color.BLACK : Color.WHITE));
     }
 
     public Image getBoardImage() {
@@ -319,5 +322,9 @@ public class Board {
         return getPieces(enemyColor)
                 .stream()
                 .allMatch(piece -> piece.getLegalMoves(this, pieceLocation.get(piece)).isEmpty());
+    }
+
+    public List<Position> getBoardPositions() {
+        return boardPositions;
     }
 }

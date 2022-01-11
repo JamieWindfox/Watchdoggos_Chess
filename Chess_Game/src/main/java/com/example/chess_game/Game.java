@@ -2,6 +2,7 @@ package com.example.chess_game;
 
 import javafx.scene.image.Image;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -208,7 +209,15 @@ public class Game {
 
 
         // Threefold repetition
-        // TODO
+        boolean repetition = false;
+        List<Position> positions = board.getBoardPositions();
+        for (Position p : positions) {
+            int positionCount = Collections.frequency(positions, p);
+            if (positionCount == 3) {
+                repetition = true;
+                break;
+            }
+        }
 
         // Mutual agreement
         // TODO
@@ -229,11 +238,11 @@ public class Game {
             timeoutDraw = true;
         }
 
-        return stalemate || insufficient || fiftyMoveRule || timeoutDraw;
+        return stalemate || insufficient || repetition || fiftyMoveRule || timeoutDraw;
     }
 
     public Field getField(int row, int column) {
-        if(row < 0 || column < 0 || row > 7 || column > 7) {
+        if (row < 0 || column < 0 || row > 7 || column > 7) {
             throw new IllegalArgumentException("Illegal Coordinate was given to Game::getField(row, column)");
         }
         return board.getFields()[column][row];
