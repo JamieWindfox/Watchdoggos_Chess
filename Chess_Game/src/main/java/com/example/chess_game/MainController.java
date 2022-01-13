@@ -22,8 +22,8 @@ import java.util.*;
 public class MainController extends Application implements Initializable {
 
     final int PLAYER_NAME_MAX_LENGTH = 20;
-    final ImageView HIGHLIGHT_CLICKED = new ImageView("graphics/highlight.png");
-    final Image HIGHLIGHT_VALID_MOVES_IMAGE = new Image("graphics/highlight.png");
+    final ImageView HIGHLIGHT_CLICKED = new ImageView("graphics/highlight_pink.png");
+    final Image HIGHLIGHT_VALID_MOVES_IMAGE = new Image("graphics/highlight_orange2px.png");
     final Map<Piece, ImageView> pieceImageViews = new HashMap<>();
     Set<ImageView> highlightImageViews = new HashSet<>();
     Set<String> highlightedFieldNames = new HashSet<>();
