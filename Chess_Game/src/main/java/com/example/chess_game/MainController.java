@@ -71,18 +71,24 @@ public class MainController extends Application implements Initializable {
         gridpane_board.setOnMouseClicked(this::handle);
     }
 
-    private void movePiece(Field clickedField) {
+    /**
+     * Moves the last selected piece to the given field and checks if the other king was set checkmate with that move
+     * @param clickedField the field where the selected piece is moved
+     * @return true if the other king is set checkmate, false otherwise
+     */
+    private boolean movePiece(Field clickedField) {
         if (clickedField.getPiece() != null) {
             gridpane_board.getChildren().remove(pieceImageViews.get(clickedField.getPiece()));
             pieceImageViews.remove(clickedField.getPiece());
         }
-        game.getBoard().update(clickedField, selected_piece);
-        game.getBoard().printField();
+        boolean checkmate = game.getBoard().update(clickedField, selected_piece);
+        //game.getBoard().printField(); -> for debugging
         gridpane_board.getChildren().remove(pieceImageViews.get(selected_piece));
         ImageView newImgView = new ImageView(selected_piece.getImage());
         gridpane_board.add(newImgView, clickedField.getColumn(), 7 - clickedField.getRow());
         pieceImageViews.put(selected_piece, newImgView);
         selected_piece = null;
+        return checkmate;
     }
 
     private void handle(MouseEvent mouseEvent) {

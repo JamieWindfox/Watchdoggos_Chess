@@ -31,6 +31,9 @@ public class Board {
         initFields();
     }
 
+    /**
+     * Initializes all cells/fields on the chess board and calls the methods to set the pieces in their start formation
+     */
     public void initFields() {
         for (int rowNum = 0; rowNum < 8; rowNum++) {
             for (int colAlphabet = 0; colAlphabet < 8; colAlphabet++) {
@@ -50,8 +53,15 @@ public class Board {
         }
     }
 
-    private void initPieces(int col, Color color, Field fieldToPlace, Player player) {
-        switch (col) {
+    /**
+     * Sets the pieces to their start field
+     * @param column The column for which the pieces should be set
+     * @param color The color of the team of which the piece is set
+     * @param fieldToPlace The field where the piece should be set
+     * @param player A reference to the player of the given color
+     */
+    private void initPieces(int column, Color color, Field fieldToPlace, Player player) {
+        switch (column) {
             case 0, 7 -> setPieceOnBoard(Rook.class, color, fieldToPlace, player);
             case 1, 6 -> setPieceOnBoard(Knight.class, color, fieldToPlace, player);
             case 2, 5 -> setPieceOnBoard(Bishop.class, color, fieldToPlace, player);
@@ -60,6 +70,13 @@ public class Board {
         }
     }
 
+    /**
+     * Method to set a single piece on a given field
+     * @param pieceClass The class of the piece that should be set to the given field
+     * @param color The color of the piece that should be set to the given field
+     * @param fieldToPlace The field where the given piece should be set
+     * @param player The player of the given color
+     */
     private void setPieceOnBoard(Class<? extends Piece> pieceClass, Color color, Field fieldToPlace, Player player) {
         Piece p = null;
         if (pieceClass == Pawn.class) {
@@ -81,14 +98,26 @@ public class Board {
         player.addPiece(p);
     }
 
+    /**
+     * Getter for fields
+     * @return all the fields on the board as a 2-dimensional array
+     */
     public Field[][] getFields() {
         return this.fields;
     }
 
-    public Field getPieceLocation(Piece p) {
-        return pieceLocation.get(p);
+    /**
+     * @param piece The piece for which the location should be returned
+     * @return The location on the field for the given piece
+     */
+    public Field getPieceLocation(Piece piece) {
+        return pieceLocation.get(piece);
     }
 
+    /**
+     * @param color The color of the pieces that should be returned
+     * @return All pieces of the given color that are still on the board
+     */
     public Set<Piece> getPieces(Color color) {
         return pieceLocation.keySet()
                 .stream()
@@ -96,24 +125,37 @@ public class Board {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Getter for moves
+     * @return a list of all previous moves as strings in chess notation
+     */
     public List<String> getMoves() {
         return this.moves;
     }
 
+    /**
+     * Prints the fields of the board in the console; kept for debugging reasons
+     */
     public void printField() {
         for (int rowNum = 0; rowNum < 8; rowNum++) {
             for (int colAlphabet = 0; colAlphabet < 8; colAlphabet++) {
                 Field currentField = this.fields[7 - rowNum][colAlphabet];
-                /*System.out.printf("[%s] ", currentField.getPiece() != null ?
+                System.out.printf("[%s] ", currentField.getPiece() != null ?
                         currentField.getPiece().getName() + "_" + currentField.getPiece().getColor()
-                        : currentField.getFieldName());*/
+                        : currentField.getFieldName());
             }
             System.out.println();
         }
         System.out.println();
     }
 
-    public void update(Field newField, Piece piece) {
+    /**
+     * Moves the given piece to the given field and updates the board accordingly
+     * @param newField The new location of the given piece
+     * @param piece The piece that is set to the given field
+     * @return true if the king of the other player was set checkmate, false otherwise
+     */
+    public boolean update(Field newField, Piece piece) {
         Field oldField = pieceLocation.remove(piece);
         pieceLocation.put(piece, newField);
 
@@ -183,18 +225,29 @@ public class Board {
         if (isEnemyKingInCheck(piece.getColor())) {
             checkAnnotation = "+";
         }
+        boolean checkmate = false;
         if (isCheckmate(piece.getColor())) {
             checkAnnotation = "#";
+            checkmate = true;
         }
         moves.add(moveAnnotation + promotionAnnotation + checkAnnotation);
         piece.increaseMoveCounter();
         boardPositions.add(new Position(Map.copyOf(pieceLocation), piece.getColor() == Color.WHITE ? Color.BLACK : Color.WHITE));
+        return checkmate;
     }
 
+    /**
+     * Getter for boardImage
+     * @return the Image that was set as the chess board
+     */
     public Image getBoardImage() {
         return boardImage;
     }
 
+    /**
+     * @param color The color which the returned king has
+     * @return the king of the given color
+     */
     public King getKing(Color color) {
         return (King) pieceLocation.keySet()
                 .stream()
@@ -203,6 +256,11 @@ public class Board {
                 .get();
     }
 
+    /**
+     * Checks if the other king is in check
+     * @param attackerColor The color of the attacker
+     * @return true if the other king is in check, false otherwise
+     */
     public boolean isEnemyKingInCheck(Color attackerColor) {
         Color enemyColor = attackerColor == Color.WHITE ? Color.BLACK : Color.WHITE;
         return getPieces(attackerColor)
@@ -246,9 +304,15 @@ public class Board {
         return false;
     }
 
+    /**
+     * Setter for lastClickedField
+     * @param row the row of the field that was clicked last
+     * @param column the column of the field that was clicked last
+     */
     public void setLastClickedField(int row, int column) {
         lastClickedField = fields[row][column];
     }
+
 
     public void removeMoveIfSelfCheck(Set<Field> availableMoves, Piece piece) {
         Color enemyColor = piece.getColor() == Color.WHITE ? Color.BLACK : Color.WHITE;
@@ -317,11 +381,19 @@ public class Board {
         return blockOrCaptureFields;
     }
 
+    /**
+     * Checks if the king of the given color is checkmate
+     * @param color The color of the king for which the check is made
+     * @return true if the king is checkmate, false otherwise
+     */
     public boolean isCheckmate(Color color) {
         Color enemyColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
-        return getPieces(enemyColor)
-                .stream()
+        boolean checkmate = getPieces(enemyColor).stream()
                 .allMatch(piece -> piece.getLegalMoves(this, pieceLocation.get(piece)).isEmpty());
+        if(checkmate) {
+            System.out.println("The " + color + " king is checkmate.");
+        }
+        return checkmate;
     }
 
     public List<Position> getBoardPositions() {
