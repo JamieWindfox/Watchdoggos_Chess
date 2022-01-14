@@ -74,9 +74,8 @@ public class MainController extends Application implements Initializable {
     /**
      * Moves the last selected piece to the given field and checks if the other king was set checkmate with that move
      * @param clickedField the field where the selected piece is moved
-     * @return true if the other king is set checkmate, false otherwise
      */
-    private boolean movePiece(Field clickedField) {
+    private void movePiece(Field clickedField) {
         if (clickedField.getPiece() != null) {
             gridpane_board.getChildren().remove(pieceImageViews.get(clickedField.getPiece()));
             pieceImageViews.remove(clickedField.getPiece());
@@ -87,8 +86,32 @@ public class MainController extends Application implements Initializable {
         ImageView newImgView = new ImageView(selected_piece.getImage());
         gridpane_board.add(newImgView, clickedField.getColumn(), 7 - clickedField.getRow());
         pieceImageViews.put(selected_piece, newImgView);
+
+        if(checkmate) {
+            openWinnerDialog(game.getPlayer(selected_piece.getColor()), "Other King is checkmate");
+        }
+
         selected_piece = null;
-        return checkmate;
+    }
+
+    /**
+     * Opens a dialog to tell the players who has won the game
+     */
+    //WIP
+    private void openWinnerDialog(Player winner, String causeOfWin) {
+        // Build dialog
+        Alert winnerDialog = new Alert(Alert.AlertType.NONE);
+        winnerDialog.setTitle("Congratulations!");
+        winnerDialog.setContentText(winner.getName() + " has won the Game.\nCause of win: " + causeOfWin);
+
+        winnerDialog.getButtonTypes().setAll(
+                new ButtonType("Ok", ButtonBar.ButtonData.YES)
+        );
+
+        // gets the clicked result; if the window is closed without a button being clicked it counts as "Ok"
+        ButtonType result = winnerDialog.showAndWait().orElse(ButtonType.YES);
+
+        createNewGame();
     }
 
     private void handle(MouseEvent mouseEvent) {
@@ -182,6 +205,24 @@ public class MainController extends Application implements Initializable {
         stage.show();
     }
 
+    // creates a new game
+    private void createNewGame() {
+        // Ask players for their names
+        String playerWhite = showPlayerNameDialog(Color.WHITE.name());
+        if (playerWhite == null || playerWhite.isBlank()) return;
+        String playerBlack = showPlayerNameDialog(Color.BLACK.name());
+        if (playerBlack == null || playerBlack.isBlank()) return;
+
+        game = new Game(
+                // TODO Change to time from user input dialog
+                new Player(Color.WHITE, playerWhite, new Timer(label_timer1, 15)),
+                new Player(Color.BLACK, playerBlack, new Timer(label_timer2, 15))
+        );
+        label_player1.setText(playerWhite);
+        label_player2.setText(playerBlack);
+
+        setStartFormation();
+    }
     @FXML
     public void btnNewGameClicked() {
         System.out.println("INFO: Player clicked on 'New Game'");
@@ -207,22 +248,7 @@ public class MainController extends Application implements Initializable {
         }
 
         System.out.println("INFO: Game is being initialized");
-
-        // Ask players for their names
-        String playerWhite = showPlayerNameDialog(Color.WHITE.name());
-        if (playerWhite == null || playerWhite.isBlank()) return;
-        String playerBlack = showPlayerNameDialog(Color.BLACK.name());
-        if (playerBlack == null || playerBlack.isBlank()) return;
-
-        game = new Game(
-                // TODO Change to time from user input dialog
-                new Player(Color.WHITE, playerWhite, new Timer(label_timer1, 15)),
-                new Player(Color.BLACK, playerBlack, new Timer(label_timer2, 15))
-        );
-        label_player1.setText(playerWhite);
-        label_player2.setText(playerBlack);
-
-        setStartFormation();
+        createNewGame();
     }
 
     public String showPlayerNameDialog(String playerColor) {

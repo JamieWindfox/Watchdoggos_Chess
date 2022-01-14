@@ -256,4 +256,16 @@ public class Game {
     public String toString() {
         return "Current Game";
     }
+
+    /**
+     * Getter for the player of the given color
+     * @param color The color of which the player should be returned
+     * @return The player of the given color
+     */
+    public Player getPlayer(Color color) {
+        if(color.equals(Color.WHITE)) {
+            return white;
+        }
+        return black;
+    }
 }
