@@ -92,6 +92,8 @@ public abstract class Piece {
 
     public abstract String getMoveAnnotation(Field oldField, Field newField);
 
+    public abstract String getAnnotationLetter();
+
     public abstract Set<Field> getInBetweenFields(Field startField, Field endField, Field[][] fields);
 
     public Image getImage() {

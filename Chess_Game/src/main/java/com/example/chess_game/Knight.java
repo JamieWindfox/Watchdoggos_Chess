@@ -43,6 +43,11 @@ public class Knight extends Piece {
     }
 
     @Override
+    public String getAnnotationLetter() {
+        return ANNOTATION_LETTER;
+    }
+
+    @Override
     public Set<Field> getInBetweenFields(Field startField, Field endField, Field[][] fields) {
         return new HashSet<>();
     }

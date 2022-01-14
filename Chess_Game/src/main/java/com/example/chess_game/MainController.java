@@ -34,20 +34,13 @@ public class MainController extends Application implements Initializable {
 
     Game game;
 
-    @FXML
-    private GridPane gridpane_board;
-    @FXML
-    private FlowPane flowpanel_cemetary_white;
-    @FXML
-    private FlowPane flowpanel_cemetary_black;
-    @FXML
-    private Label label_player1;
-    @FXML
-    private Label label_player2;
-    @FXML
-    private Label label_timer1;
-    @FXML
-    private Label label_timer2;
+    @FXML private GridPane gridpane_board;
+    @FXML private FlowPane flowpanel_cemetary_white;
+    @FXML private FlowPane flowpanel_cemetary_black;
+    @FXML private Label label_player1;
+    @FXML private Label label_player2;
+    @FXML private Label label_timer1;
+    @FXML private Label label_timer2;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -125,7 +118,7 @@ public class MainController extends Application implements Initializable {
             movePiece(clickedField);
         } else {
             Piece piece = clickedField.getPiece();
-            if (piece.getColor() != game.getCurrentPlayer().getColor()) return;
+            if (piece == null || piece.getColor() != game.getCurrentPlayer().getColor()) return;
             System.out.println("Piece on clicked field: " + piece);
             selected_piece = piece;
             Set<Field> legalMoves = piece.getLegalMoves(Game.getBoard(), clickedField);
@@ -347,14 +340,6 @@ public class MainController extends Application implements Initializable {
         );
 
         resignGameDialog.showAndWait();
-    }
-
-    public void showPromotionDialog() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("promotion-dialog.fxml"));
-        PromotionDialog dialog = new PromotionDialog();
-        loader.setController(dialog);
-        dialog.setPieceColor(Color.WHITE);
-        dialog.showDialog(loader.load());
     }
 
     public static void main(String[] args) {

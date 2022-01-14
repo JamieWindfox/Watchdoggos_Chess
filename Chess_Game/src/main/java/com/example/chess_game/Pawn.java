@@ -65,6 +65,11 @@ public class Pawn extends Piece {
     }
 
     @Override
+    public String getAnnotationLetter() {
+        return "";
+    }
+
+    @Override
     public Set<Field> getInBetweenFields(Field startField, Field endField, Field[][] fields) {
         return new HashSet<>();
     }

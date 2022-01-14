@@ -37,6 +37,11 @@ public class Queen extends Piece {
     }
 
     @Override
+    public String getAnnotationLetter() {
+        return ANNOTATION_LETTER;
+    }
+
+    @Override
     public Set<Field> getInBetweenFields(Field startField, Field endField, Field[][] fields) {
         Set<Field> betweenFields = new HashSet<>();
         int rowDiff = Math.max(startField.getRow(), endField.getRow()) - Math.min(startField.getRow(), endField.getRow());

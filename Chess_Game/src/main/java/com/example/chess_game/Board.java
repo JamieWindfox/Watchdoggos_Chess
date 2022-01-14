@@ -1,9 +1,13 @@
 package com.example.chess_game;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Board {
@@ -180,18 +184,17 @@ public class Board {
             // Check if move was Promotion
             if (newField.getRow() == 0 || newField.getRow() == 7) {
                 // TODO Get selection of chosen Promotion
-                // Filler Queen promotion
-                Queen k = new Queen(piece.getColor());
+                Piece promoPiece = showPromotionDialog(piece.getColor());
                 if (piece.getColor() == Color.WHITE) {
-                    white.promotePiece((Pawn) piece, k);
+                    white.promotePiece((Pawn) piece, promoPiece);
                 } else {
-                    black.promotePiece((Pawn) piece, k);
+                    black.promotePiece((Pawn) piece, promoPiece);
                 }
                 pieceLocation.remove(piece);
-                pieceLocation.put(k, newField);
+                pieceLocation.put(promoPiece, newField);
 
-                promotionAnnotation = "=" + k.ANNOTATION_LETTER;
-                piece = k;
+                promotionAnnotation = "=" + promoPiece.getAnnotationLetter();
+                piece = promoPiece;
             }
         }
 
@@ -398,5 +401,19 @@ public class Board {
 
     public List<Position> getBoardPositions() {
         return boardPositions;
+    }
+
+    public Piece showPromotionDialog(Color requestPieceColor) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("promotion-dialog.fxml"));
+            Parent root = loader.load();
+            PromotionDialog dialog = loader.getController();
+            dialog.setPieceColor(requestPieceColor);
+            dialog.showDialog(root);
+            return dialog.getPiece();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
