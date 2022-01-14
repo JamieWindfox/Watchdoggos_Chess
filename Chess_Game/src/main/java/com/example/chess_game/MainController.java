@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -27,6 +28,8 @@ public class MainController extends Application implements Initializable {
     final Map<Piece, ImageView> pieceImageViews = new HashMap<>();
     Set<ImageView> highlightImageViews = new HashSet<>();
     Set<String> highlightedFieldNames = new HashSet<>();
+    List<ImageView> cemetary_white = new ArrayList<>();
+    List<ImageView> cemetary_black = new ArrayList<>();
     Piece selected_piece = null;
 
     Game game;
@@ -34,9 +37,9 @@ public class MainController extends Application implements Initializable {
     @FXML
     private GridPane gridpane_board;
     @FXML
-    private FlowPane flowpanel_cemetary1;
+    private FlowPane flowpanel_cemetary_white;
     @FXML
-    private FlowPane flowpanel_cemetary2;
+    private FlowPane flowpanel_cemetary_black;
     @FXML
     private Label label_player1;
     @FXML
@@ -77,6 +80,15 @@ public class MainController extends Application implements Initializable {
      */
     private void movePiece(Field clickedField) {
         if (clickedField.getPiece() != null) {
+            ImageView capturedPieceImageView = new ImageView(clickedField.getPiece().getImage());
+            if(clickedField.getPiece().getColor() == Color.WHITE) {
+                cemetary_white.add(capturedPieceImageView);
+                flowpanel_cemetary_white.getChildren().add(capturedPieceImageView);
+            }
+            else { // black
+                cemetary_black.add(capturedPieceImageView);
+                flowpanel_cemetary_black.getChildren().add(capturedPieceImageView);
+            }
             gridpane_board.getChildren().remove(pieceImageViews.get(clickedField.getPiece()));
             pieceImageViews.remove(clickedField.getPiece());
         }
@@ -84,6 +96,8 @@ public class MainController extends Application implements Initializable {
         //game.getBoard().printField(); -> for debugging
         gridpane_board.getChildren().remove(pieceImageViews.get(selected_piece));
         ImageView newImgView = new ImageView(selected_piece.getImage());
+
+
         gridpane_board.add(newImgView, clickedField.getColumn(), 7 - clickedField.getRow());
         pieceImageViews.put(selected_piece, newImgView);
 
@@ -186,6 +200,10 @@ public class MainController extends Application implements Initializable {
     private void setStartFormation() {
         pieceImageViews.clear();
         gridpane_board.getChildren().clear();
+        cemetary_black.clear();
+        cemetary_white.clear();
+        flowpanel_cemetary_white.getChildren().clear();
+        flowpanel_cemetary_black.getChildren().clear();
         
         for (int row = 0; row < 8; ++row) {
             for (int column = 0; column < 8; ++column) {

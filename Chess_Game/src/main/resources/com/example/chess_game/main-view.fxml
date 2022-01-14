@@ -45,10 +45,10 @@
          </FlowPane>
       </bottom>
       <left>
-         <FlowPane fx:id="flowpanel_cemetary1" alignment="BOTTOM_RIGHT" columnHalignment="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="150.0" rowValignment="BOTTOM" BorderPane.alignment="BOTTOM_RIGHT" />
+         <FlowPane fx:id="flowpanel_cemetary_white" alignment="BOTTOM_RIGHT" columnHalignment="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="150.0" rowValignment="BOTTOM" BorderPane.alignment="BOTTOM_RIGHT" />
       </left>
       <right>
-         <FlowPane fx:id="flowpanel_cemetary2" alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="150.0" rowValignment="BOTTOM" BorderPane.alignment="BOTTOM_LEFT" />
+         <FlowPane fx:id="flowpanel_cemetary_black" alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="150.0" rowValignment="BOTTOM" BorderPane.alignment="BOTTOM_LEFT" />
       </right>
       <top>
          <VBox BorderPane.alignment="CENTER">
