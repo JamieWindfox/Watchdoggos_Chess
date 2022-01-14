@@ -310,8 +310,13 @@ public class MainController extends Application implements Initializable {
         ButtonType result = resignGameDialog.showAndWait().orElse(ButtonType.NO);
 
         System.out.println("INFO: Player selection if they want to resign game: " + result.getText());
-        // TODO do something with dialog output
-        // ButtonBar.ButtonData.YES.equals(result.getButtonData());
+
+
+        if(ButtonBar.ButtonData.YES.equals(result.getButtonData())) {
+            Player activePlayer = new Player(Color.BLACK, "Tom", new Timer(new Label(), 1)); // Player who clicked on resign in their turn
+            Player winner = (activePlayer.getColor() == Color.WHITE ? game.getPlayer(Color.BLACK) : game.getPlayer(Color.WHITE));
+            openWinnerDialog(winner, "Other player resigned.");
+        }
     }
 
     @FXML
