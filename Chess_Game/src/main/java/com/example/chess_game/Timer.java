@@ -9,18 +9,18 @@ public class Timer implements Runnable {
 
     // Each Player stars with 15 minutes left
     private int timeLeft;
-    private final Label timer;
+    private final Label timerLabel;
 
     public Timer(Label timerLabel, int totalMinutes) {
-        timer = timerLabel;
+        this.timerLabel = timerLabel;
         timeLeft = totalMinutes * 60;
-        updateTimer();
+        displayTimer();
     }
 
-    private void updateTimer() {
+    private void displayTimer() {
         int minutes = timeLeft / 60;
         int seconds = timeLeft % 60;
-        timer.setText(String.format("Time left: %d:%02d", minutes, seconds));
+        timerLabel.setText(String.format("Time left: %d:%02d", minutes, seconds));
     }
 
     @Override
@@ -29,8 +29,7 @@ public class Timer implements Runnable {
         while (running) {
             synchronized (this) {
                 timeLeft --;
-
-                Platform.runLater(this::updateTimer);
+                Platform.runLater(this::displayTimer);
             }
             try {
                 // wait exactly one second

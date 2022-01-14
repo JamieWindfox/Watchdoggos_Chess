@@ -9,15 +9,17 @@ import java.util.Set;
 public class Game {
     private final Player black;
     private final Player white;
+    private Player currentPlayer;
 
     /**
      * The one board instance that is currently running
      */
     private static Board board;
 
-    public Game(Player playerBlack, Player playerWhite) {
+    public Game(Player playerBlack, Player playerWhite, boolean playerWhiteBegins) {
         this.black = playerBlack;
         this.white = playerWhite;
+        currentPlayer = playerWhiteBegins ? this.white : this.black;
         board = new Board(white, black);
         this.testGame();
     }
@@ -178,9 +180,12 @@ public class Game {
                 .orElseThrow();
     }
 
+    public void toggleCurrentPlayer() {
+        currentPlayer = (currentPlayer == black) ? white : black;
+    }
 
-    public Image getBoardImage() {
-        return board.getBoardImage();
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
 
     public static Board getBoard() {

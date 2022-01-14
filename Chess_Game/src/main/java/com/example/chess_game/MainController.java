@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -31,6 +30,7 @@ public class MainController extends Application implements Initializable {
     List<ImageView> cemetary_white = new ArrayList<>();
     List<ImageView> cemetary_black = new ArrayList<>();
     Piece selected_piece = null;
+    boolean whitePlayerBegins = true;
 
     Game game;
 
@@ -57,20 +57,6 @@ public class MainController extends Application implements Initializable {
         label_timer1.setText("");
         label_timer2.setText("");
 
-        // TODO Remove in production ;)
-        /*flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_queen.png")));
-        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_pawn.png")));
-        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_pawn.png")));
-        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_bishop.png")));
-        flowpanel_cemetary1.getChildren().add(new ImageView(new Image("graphics/black_rook.png")));
-
-        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_queen.png")));
-        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_pawn.png")));
-        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_pawn.png")));
-        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_bishop.png")));
-        flowpanel_cemetary2.getChildren().add(new ImageView(new Image("graphics/white_rook.png")));*/
-
-
         gridpane_board.setOnMouseClicked(this::handle);
     }
 
@@ -92,7 +78,7 @@ public class MainController extends Application implements Initializable {
             gridpane_board.getChildren().remove(pieceImageViews.get(clickedField.getPiece()));
             pieceImageViews.remove(clickedField.getPiece());
         }
-        boolean checkmate = game.getBoard().update(clickedField, selected_piece);
+        boolean checkmate = Game.getBoard().update(clickedField, selected_piece);
         //game.getBoard().printField(); -> for debugging
         gridpane_board.getChildren().remove(pieceImageViews.get(selected_piece));
         ImageView newImgView = new ImageView(selected_piece.getImage());
@@ -106,10 +92,11 @@ public class MainController extends Application implements Initializable {
         }
 
         selected_piece = null;
+        game.toggleCurrentPlayer();
     }
 
     /**
-     * Opens a dialog to tell the players who has won the game
+     * Opens a dialog to tell the players who have won the game
      */
     //WIP
     private void openWinnerDialog(Player winner, String causeOfWin) {
@@ -130,6 +117,7 @@ public class MainController extends Application implements Initializable {
 
     private void handle(MouseEvent mouseEvent) {
         if (game == null) return;
+
         Field clickedField = getFieldFromCoordinates(mouseEvent.getX(), mouseEvent.getY());
         highlightClickedField(clickedField);
 
@@ -137,12 +125,11 @@ public class MainController extends Application implements Initializable {
             movePiece(clickedField);
         } else {
             Piece piece = clickedField.getPiece();
+            if (piece.getColor() != game.getCurrentPlayer().getColor()) return;
             System.out.println("Piece on clicked field: " + piece);
             selected_piece = piece;
-            if (piece != null) {
-                Set<Field> legalMoves = piece.getLegalMoves(game.getBoard(), clickedField);
-                highlightValidMoves(legalMoves);
-            }
+            Set<Field> legalMoves = piece.getLegalMoves(Game.getBoard(), clickedField);
+            highlightValidMoves(legalMoves);
         }
     }
 
@@ -164,7 +151,7 @@ public class MainController extends Application implements Initializable {
     }
 
     /**
-     * Highlights the clicked field and removes the highlight from all other fields
+     * Highlights the clicked field and removes the highlighting from the other fields
      */
     private void highlightClickedField(Field field) {
         gridpane_board.getChildren().removeAll(HIGHLIGHT_CLICKED);
@@ -219,8 +206,8 @@ public class MainController extends Application implements Initializable {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainController.class.getResource("main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 600, 420);
         stage.setTitle("Watchdoggos Chess!");
         stage.setScene(scene);
         stage.show();
@@ -236,14 +223,17 @@ public class MainController extends Application implements Initializable {
 
         game = new Game(
                 // TODO Change to time from user input dialog
+                new Player(Color.BLACK, playerBlack, new Timer(label_timer2, 15)),
                 new Player(Color.WHITE, playerWhite, new Timer(label_timer1, 15)),
-                new Player(Color.BLACK, playerBlack, new Timer(label_timer2, 15))
+                whitePlayerBegins
         );
+        whitePlayerBegins = !whitePlayerBegins;
         label_player1.setText(playerWhite);
         label_player2.setText(playerBlack);
 
         setStartFormation();
     }
+
     @FXML
     public void btnNewGameClicked() {
         System.out.println("INFO: Player clicked on 'New Game'");
@@ -356,8 +346,15 @@ public class MainController extends Application implements Initializable {
                 new ButtonType("Ok", ButtonBar.ButtonData.YES)
         );
 
-        // gets the clicked result; if the window is closed without a button being clicked it counts as "Ok"
-        ButtonType result = resignGameDialog.showAndWait().orElse(ButtonType.YES);
+        resignGameDialog.showAndWait();
+    }
+
+    public void showPromotionDialog() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("promotion-dialog.fxml"));
+        PromotionDialog dialog = new PromotionDialog();
+        loader.setController(dialog);
+        dialog.setPieceColor(Color.WHITE);
+        dialog.showDialog(loader.load());
     }
 
     public static void main(String[] args) {

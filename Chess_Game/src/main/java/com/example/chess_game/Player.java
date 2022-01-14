@@ -28,6 +28,10 @@ public class Player {
         this.pieces.add(promotedPiece);
     }
 
+    public Timer getTimer() {
+        return timer;
+    }
+
     public Color getColor() {
         return color;
     }
