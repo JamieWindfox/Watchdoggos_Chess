@@ -184,13 +184,16 @@ public class MainController extends Application implements Initializable {
     }
 
     private void setStartFormation() {
+        pieceImageViews.clear();
+        gridpane_board.getChildren().clear();
+        
         for (int row = 0; row < 8; ++row) {
             for (int column = 0; column < 8; ++column) {
                 Piece piece = game.getField(row, column).getPiece();
                 if (piece != null) {
-                    ImageView imageView = new ImageView(piece.getImage());
-                    pieceImageViews.put(piece, imageView);
-                    gridpane_board.add(imageView, row, 7 - column);
+                    ImageView pieceImage = new ImageView(piece.getImage());
+                    pieceImageViews.put(piece, pieceImage);
+                    gridpane_board.add(pieceImage, row, 7 - column);
                 }
             }
         }
