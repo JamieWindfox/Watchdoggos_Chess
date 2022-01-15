@@ -46,7 +46,8 @@ public class Pawn extends Piece {
                             && fieldColumns.getFieldName().length() == 2)
                     .findFirst();
 
-            if (enemyPawnField.isPresent() && (enemyPawnField.get().getColumn() > currentField.getColumn() || enemyPawnField.get().getColumn() < currentField.getColumn())) {
+            if (enemyPawnField.isPresent() && (enemyPawnField.get().getColumn() > currentField.getColumn() || enemyPawnField.get().getColumn() < currentField.getColumn())
+                    && Math.abs(enemyPawnField.get().getColumn() - currentField.getColumn()) == 1) {
                 Field enPassantField = fields[enemyPawnField.get().getRow() + moveCounter][enemyPawnField.get().getColumn()];
                 if (enPassantField.getPiece() == null) {
                     validMoves.add(enPassantField);
