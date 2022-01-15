@@ -227,8 +227,7 @@ public class MainController extends Application implements Initializable {
         game = new Game(
                 // TODO Change to time from user input dialog
                 new Player(Color.BLACK, playerBlack, new Timer(label_timer2, 15)),
-                new Player(Color.WHITE, playerWhite, new Timer(label_timer1, 15)),
-                whitePlayerBegins
+                new Player(Color.WHITE, playerWhite, new Timer(label_timer1, 15))
         );
         whitePlayerBegins = !whitePlayerBegins;
         label_player1.setText(playerWhite);

@@ -1,7 +1,5 @@
 package com.example.chess_game;
 
-import javafx.scene.image.Image;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -16,10 +14,10 @@ public class Game {
      */
     private static Board board;
 
-    public Game(Player playerBlack, Player playerWhite, boolean playerWhiteBegins) {
+    public Game(Player playerBlack, Player playerWhite) {
         this.black = playerBlack;
         this.white = playerWhite;
-        currentPlayer = playerWhiteBegins ? this.white : this.black;
+        currentPlayer = this.white;
         board = new Board(white, black);
         this.testGame();
     }
