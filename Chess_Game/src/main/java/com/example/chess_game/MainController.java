@@ -37,6 +37,7 @@ public class MainController extends Application implements Initializable {
     @FXML private GridPane gridpane_board;
     @FXML private FlowPane flowpanel_cemetary_white;
     @FXML private FlowPane flowpanel_cemetary_black;
+    @FXML private Button resign_btn;
     @FXML private Label label_player1;
     @FXML private Label label_player2;
     @FXML private Label label_timer1;
@@ -51,6 +52,7 @@ public class MainController extends Application implements Initializable {
         label_timer2.setText("");
 
         gridpane_board.setOnMouseClicked(this::handle);
+        resign_btn.setVisible(false);
     }
 
     /**
@@ -226,6 +228,7 @@ public class MainController extends Application implements Initializable {
         label_player2.setText(playerBlack);
 
         setStartFormation();
+        resign_btn.setVisible(true);
     }
 
     @FXML
