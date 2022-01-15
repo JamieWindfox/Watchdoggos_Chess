@@ -62,7 +62,7 @@ public class MainController extends Application implements Initializable {
     private void movePiece(Field clickedField) {
         if (clickedField.getPiece() != null) {
             ImageView capturedPieceImageView = new ImageView(clickedField.getPiece().getImage());
-            if (clickedField.getPiece().getColor() == Color.WHITE) {
+            if (clickedField.getPiece().getColor() == ChessColor.WHITE) {
                 cemetary_white.add(capturedPieceImageView);
                 flowpanel_cemetary_white.getChildren().add(capturedPieceImageView);
             } else { // black
@@ -233,18 +233,18 @@ public class MainController extends Application implements Initializable {
     // creates a new game
     private void createNewGame() {
         // Ask players for their names
-        String playerWhite = showPlayerNameDialog(Color.WHITE.name());
+        String playerWhite = showPlayerNameDialog(ChessColor.WHITE.name());
         if (playerWhite == null || playerWhite.isBlank()) return;
-        String playerBlack = showPlayerNameDialog(Color.BLACK.name());
+        String playerBlack = showPlayerNameDialog(ChessColor.BLACK.name());
         if (playerBlack == null || playerBlack.isBlank()) return;
 
         game = new Game(
                 // TODO Change to time from user input dialog
-                new Player(Color.BLACK, playerBlack, new ChessTimer(label_timer_black, 15)),
-                new Player(Color.WHITE, playerWhite, new ChessTimer(label_timer_white, 15)));
+                new Player(ChessColor.BLACK, playerBlack, new ChessTimer(label_timer_black, 15)),
+                new Player(ChessColor.WHITE, playerWhite, new ChessTimer(label_timer_white, 15)));
         label_player_white.setText(playerWhite);
         label_player_black.setText(playerBlack);
-        game.getPlayer(Color.WHITE).getTimer().start();
+        game.getPlayer(ChessColor.WHITE).getTimer().start();
 
         setStartFormation();
         resign_btn.setVisible(true);
@@ -319,8 +319,8 @@ public class MainController extends Application implements Initializable {
 
 
         if (ButtonBar.ButtonData.YES.equals(result.getButtonData())) {
-            Player activePlayer = new Player(Color.BLACK, "Tom", new ChessTimer(new Label(), 1)); // Player who clicked on resign in their turn
-            Player winner = (activePlayer.getColor() == Color.WHITE ? game.getPlayer(Color.BLACK) : game.getPlayer(Color.WHITE));
+            Player activePlayer = new Player(ChessColor.BLACK, "Tom", new ChessTimer(new Label(), 1)); // Player who clicked on resign in their turn
+            Player winner = (activePlayer.getColor() == ChessColor.WHITE ? game.getPlayer(ChessColor.BLACK) : game.getPlayer(ChessColor.WHITE));
             openWinnerDialog(winner, "Other player resigned.");
         }
     }

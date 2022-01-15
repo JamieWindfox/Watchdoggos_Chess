@@ -6,27 +6,27 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Piece {
-    private Color color;
+    private ChessColor color;
     private Image image;
     public Set<Field> validMoves;
     public int moveCounter = 0;
 
-    public Piece(Color color) //TODO: Image hinzufügen
+    public Piece(ChessColor color) //TODO: Image hinzufügen
     {
         this.color = color;
         this.validMoves = new HashSet<>();
         try {
-            this.image = new Image("graphics/" + (color == Color.WHITE ? "white_" : "black_") + getClass().getSimpleName().toLowerCase() + ".png");
+            this.image = new Image("graphics/" + (color == ChessColor.WHITE ? "white_" : "black_") + getClass().getSimpleName().toLowerCase() + ".png");
         } catch (Exception e) {
 
         }
     }
 
-    public Color getColor() {
+    public ChessColor getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(ChessColor color) {
         this.color = color;
     }
 
@@ -68,7 +68,7 @@ public abstract class Piece {
      */
     public Set<Field> getLegalMoves(Board board, Field currentField) {
         getValidMoves(board, currentField);
-        if (board.isEnemyKingInCheck(color == Color.WHITE ? Color.BLACK : Color.WHITE) && !(this instanceof King)) {
+        if (board.isEnemyKingInCheck(color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE) && !(this instanceof King)) {
             Set<Field> blockOrCaptureFields = board.getDefensiveBlocksOrCaptures(color);
             if (!blockOrCaptureFields.isEmpty()) {
                 validMoves.removeIf(field ->

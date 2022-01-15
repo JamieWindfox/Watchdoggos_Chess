@@ -2,9 +2,8 @@ package com.example.chess_game;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class ChessTimer {
@@ -35,10 +34,12 @@ public class ChessTimer {
     }
 
     public void start() {
+        timerLabel.setTextFill(Color.YELLOW);
         timeline.play();
     }
 
     public void stop() {
+        timerLabel.setTextFill(Color.WHITE);
         timeline.stop();
     }
 

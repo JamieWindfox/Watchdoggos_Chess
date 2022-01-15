@@ -46,10 +46,10 @@ public class Board {
 
                 this.fields[rowNum][colAlphabet] = currentField;
                 switch (rowNum) {
-                    case 0 -> initPieces(colAlphabet, Color.WHITE, currentField, white);
-                    case 1 -> setPieceOnBoard(Pawn.class, Color.WHITE, currentField, white);
-                    case 6 -> setPieceOnBoard(Pawn.class, Color.BLACK, currentField, black);
-                    case 7 -> initPieces(colAlphabet, Color.BLACK, currentField, black);
+                    case 0 -> initPieces(colAlphabet, ChessColor.WHITE, currentField, white);
+                    case 1 -> setPieceOnBoard(Pawn.class, ChessColor.WHITE, currentField, white);
+                    case 6 -> setPieceOnBoard(Pawn.class, ChessColor.BLACK, currentField, black);
+                    case 7 -> initPieces(colAlphabet, ChessColor.BLACK, currentField, black);
                 }
                 playableBoard.add(currentField.getCell(), rowNum, colAlphabet, (int) boardImage.getHeight() / 8, (int) boardImage.getWidth() / 8);
             }
@@ -64,7 +64,7 @@ public class Board {
      * @param fieldToPlace The field where the piece should be set
      * @param player       A reference to the player of the given color
      */
-    private void initPieces(int column, Color color, Field fieldToPlace, Player player) {
+    private void initPieces(int column, ChessColor color, Field fieldToPlace, Player player) {
         switch (column) {
             case 0, 7 -> setPieceOnBoard(Rook.class, color, fieldToPlace, player);
             case 1, 6 -> setPieceOnBoard(Knight.class, color, fieldToPlace, player);
@@ -82,7 +82,7 @@ public class Board {
      * @param fieldToPlace The field where the given piece should be set
      * @param player       The player of the given color
      */
-    private void setPieceOnBoard(Class<? extends Piece> pieceClass, Color color, Field fieldToPlace, Player player) {
+    private void setPieceOnBoard(Class<? extends Piece> pieceClass, ChessColor color, Field fieldToPlace, Player player) {
         Piece p = null;
         if (pieceClass == Pawn.class) {
             p = new Pawn(color);
@@ -124,7 +124,7 @@ public class Board {
      * @param color The color of the pieces that should be returned
      * @return All pieces of the given color that are still on the board
      */
-    public Set<Piece> getPieces(Color color) {
+    public Set<Piece> getPieces(ChessColor color) {
         return pieceLocation.keySet()
                 .stream()
                 .filter(piece -> piece.getColor() == color)
@@ -179,7 +179,7 @@ public class Board {
         if (piece instanceof Pawn) {
             // Check if move was an En Passant
             if (newField.getPiece() == null && oldField.getColumn() != newField.getColumn()) {
-                Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == Color.BLACK ? 1 : -1)][newField.getColumn()];
+                Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == ChessColor.BLACK ? 1 : -1)][newField.getColumn()];
                 if (capturedPawnField.getPiece() instanceof Pawn) {
                     Piece capturedPawn = capturedPawnField.getPiece();
                     pieceLocation.remove(capturedPawn);
@@ -192,7 +192,7 @@ public class Board {
             // Check if move was Promotion
             if (newField.getRow() == 0 || newField.getRow() == 7) {
                 Piece promoPiece = showPromotionDialog(piece.getColor());
-                if (piece.getColor() == Color.WHITE) {
+                if (piece.getColor() == ChessColor.WHITE) {
                     white.promotePiece((Pawn) piece, promoPiece);
                 } else {
                     black.promotePiece((Pawn) piece, promoPiece);
@@ -253,7 +253,7 @@ public class Board {
         }
         moves.add(moveAnnotation + promotionAnnotation + checkAnnotation);
         piece.increaseMoveCounter();
-        boardPositions.add(new Position(Map.copyOf(pieceLocation), piece.getColor() == Color.WHITE ? Color.BLACK : Color.WHITE));
+        boardPositions.add(new Position(Map.copyOf(pieceLocation), piece.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE));
         return checkmate;
     }
 
@@ -270,7 +270,7 @@ public class Board {
      * @param color The color which the returned king has
      * @return the king of the given color
      */
-    public King getKing(Color color) {
+    public King getKing(ChessColor color) {
         return (King) pieceLocation.keySet()
                 .stream()
                 .filter(piece -> piece instanceof King && piece.getColor() == color)
@@ -284,8 +284,8 @@ public class Board {
      * @param attackerColor The color of the attacker
      * @return true if the other king is in check, false otherwise
      */
-    public boolean isEnemyKingInCheck(Color attackerColor) {
-        Color enemyColor = attackerColor == Color.WHITE ? Color.BLACK : Color.WHITE;
+    public boolean isEnemyKingInCheck(ChessColor attackerColor) {
+        ChessColor enemyColor = attackerColor == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE;
         return getPieces(attackerColor)
                 .stream()
                 .filter(piece -> !(piece instanceof King))
@@ -339,7 +339,7 @@ public class Board {
 
 
     public void removeMoveIfSelfCheck(Set<Field> availableMoves, Piece piece) {
-        Color enemyColor = piece.getColor() == Color.WHITE ? Color.BLACK : Color.WHITE;
+        ChessColor enemyColor = piece.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE;
         Field originalPieceField = pieceLocation.get(piece);
         availableMoves.removeIf(field -> {
             // Save field's current state
@@ -363,9 +363,9 @@ public class Board {
         });
     }
 
-    public Set<Field> getDefensiveBlocksOrCaptures(Color color) {
+    public Set<Field> getDefensiveBlocksOrCaptures(ChessColor color) {
         King king = getKing(color);
-        Color enemyColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
+        ChessColor enemyColor = color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE;
         Set<Field> blockOrCaptureFields = new HashSet<>();
 
         Set<Piece> attackingPieces = getPieces(enemyColor)
@@ -411,8 +411,8 @@ public class Board {
      * @param color The color of the king for which the check is made
      * @return true if the king is checkmate, false otherwise
      */
-    public boolean isCheckmate(Color color) {
-        Color enemyColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
+    public boolean isCheckmate(ChessColor color) {
+        ChessColor enemyColor = color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE;
         boolean checkmate = getPieces(enemyColor).stream()
                 .allMatch(piece -> piece.getLegalMoves(this, pieceLocation.get(piece)).isEmpty());
         if (checkmate) {
@@ -425,7 +425,7 @@ public class Board {
         return boardPositions;
     }
 
-    public Piece showPromotionDialog(Color requestPieceColor) {
+    public Piece showPromotionDialog(ChessColor requestPieceColor) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("promotion-dialog.fxml"));
             Parent root = loader.load();

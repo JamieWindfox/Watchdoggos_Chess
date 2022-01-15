@@ -9,7 +9,7 @@ public class Knight extends Piece {
 
     public final String ANNOTATION_LETTER = "N";
 
-    public Knight(Color color) {
+    public Knight(ChessColor color) {
         super(color);
     }
 

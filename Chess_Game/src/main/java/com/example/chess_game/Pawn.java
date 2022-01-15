@@ -6,7 +6,7 @@ public class Pawn extends Piece {
 
     private boolean isPromoted = false;
 
-    public Pawn(Color color) {
+    public Pawn(ChessColor color) {
         super(color);
     }
 
@@ -14,16 +14,16 @@ public class Pawn extends Piece {
     public Set<Field> getValidMoves(Board board, Field currentField) {
         validMoves = new HashSet<>();
         Field[][] fields = board.getFields();
-        Color pieceColor = this.getColor();
-        boolean atStart = (pieceColor == Color.WHITE && currentField.getRow() == 1)
-                || (pieceColor == Color.BLACK && currentField.getRow() == 6);
+        ChessColor pieceColor = this.getColor();
+        boolean atStart = (pieceColor == ChessColor.WHITE && currentField.getRow() == 1)
+                || (pieceColor == ChessColor.BLACK && currentField.getRow() == 6);
 
-        int moveCounter = pieceColor == Color.WHITE ? 1 : -1;
-        if (pieceColor == Color.WHITE ? currentField.getColumn() > 0 : currentField.getColumn() < 7) {
+        int moveCounter = pieceColor == ChessColor.WHITE ? 1 : -1;
+        if (pieceColor == ChessColor.WHITE ? currentField.getColumn() > 0 : currentField.getColumn() < 7) {
             Field takePieceLeft = fields[currentField.getRow() + moveCounter][currentField.getColumn() - moveCounter];
             if (takePieceLeft.getPiece() != null) validateAndAddMove(takePieceLeft);
         }
-        if (pieceColor == Color.WHITE ? currentField.getColumn() < 7 : currentField.getColumn() > 0) {
+        if (pieceColor == ChessColor.WHITE ? currentField.getColumn() < 7 : currentField.getColumn() > 0) {
             Field takePieceRight = fields[currentField.getRow() + moveCounter][currentField.getColumn() + moveCounter];
             if (takePieceRight.getPiece() != null) validateAndAddMove(takePieceRight);
         }
@@ -32,14 +32,14 @@ public class Pawn extends Piece {
         if (oneFieldForward.getPiece() == null) validateAndAddMove(oneFieldForward);
 
         if (oneFieldForward.getPiece() == null && atStart) {
-            moveCounter = pieceColor == Color.WHITE ? moveCounter + 1 : moveCounter - 1;
+            moveCounter = pieceColor == ChessColor.WHITE ? moveCounter + 1 : moveCounter - 1;
             oneFieldForward = fields[currentField.getRow() + moveCounter][currentField.getColumn()];
             if (oneFieldForward.getPiece() == null) validateAndAddMove(oneFieldForward);
         }
 
         // En passant rule
         List<String> pastMoves = board.getMoves();
-        if ((currentField.getRow() == 3 && pieceColor == Color.BLACK || currentField.getRow() == 4 && pieceColor == Color.WHITE)
+        if ((currentField.getRow() == 3 && pieceColor == ChessColor.BLACK || currentField.getRow() == 4 && pieceColor == ChessColor.WHITE)
                 && pastMoves.size() > 1) {
             String pastMove = pastMoves.get(pastMoves.size() - 1);
             Optional<Field> enemyPawnField = Arrays.stream(fields[currentField.getRow()])

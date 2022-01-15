@@ -7,7 +7,7 @@ public class Queen extends Piece {
 
     public final String ANNOTATION_LETTER = "Q";
 
-    public Queen(Color paraColor) {
+    public Queen(ChessColor paraColor) {
         super(paraColor);
     }
 

@@ -4,12 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Player {
-    private final Color color;
+    private final ChessColor color;
     private ChessTimer timer;
     private final Set<Piece> pieces;
     private final String name;
 
-    public Player(Color color, String name, ChessTimer timer) {
+    public Player(ChessColor color, String name, ChessTimer timer) {
         this.pieces = new HashSet<>();
         this.color = color;
         this.name = name;
@@ -30,7 +30,7 @@ public class Player {
         return timer;
     }
 
-    public Color getColor() {
+    public ChessColor getColor() {
         return color;
     }
 

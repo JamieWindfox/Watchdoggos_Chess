@@ -8,7 +8,7 @@ public class King extends Piece {
 
     public final String ANNOTATION_LETTER = "K";
 
-    public King(Color color) {
+    public King(ChessColor color) {
         super(color);
     }
 
@@ -91,7 +91,7 @@ public class King extends Piece {
     }
 
     private boolean isEnemyPieceProtected(Board board, Field field) {
-        Color enemyColor = field.getPiece().getColor();
+        ChessColor enemyColor = field.getPiece().getColor();
         field.getPiece().setColor(this.getColor());
         boolean isProtected = false;
         for (Piece piece : board.getPieces(enemyColor)) {

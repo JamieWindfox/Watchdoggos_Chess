@@ -200,7 +200,7 @@ public class Game {
         toggleCurrentPlayer();
 
         Set<Piece> playerToMovePieces = board.getPieces(currentPlayer.getColor());
-        Set<Piece> enemyPieces = board.getPieces(currentPlayer.getColor() == Color.WHITE ? Color.BLACK : Color.WHITE);
+        Set<Piece> enemyPieces = board.getPieces(currentPlayer.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE);
 
         // Stalemate
         boolean stalemate = playerToMovePieces.stream()
@@ -270,8 +270,8 @@ public class Game {
      * @param color The color of which the player should be returned
      * @return The player of the given color
      */
-    public Player getPlayer(Color color) {
-        if(color.equals(Color.WHITE)) {
+    public Player getPlayer(ChessColor color) {
+        if(color.equals(ChessColor.WHITE)) {
             return white;
         }
         return black;

@@ -7,7 +7,7 @@ public class Rook extends Piece {
 
     public final String ANNOTATION_LETTER = "R";
 
-    public Rook(Color paraColor) {
+    public Rook(ChessColor paraColor) {
         super(paraColor);
     }
 

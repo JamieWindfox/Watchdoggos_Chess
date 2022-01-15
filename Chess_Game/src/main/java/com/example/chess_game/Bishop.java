@@ -7,7 +7,7 @@ public class Bishop extends Piece {
 
     public final String ANNOTATION_LETTER = "B";
 
-    public Bishop(Color paraColor) {
+    public Bishop(ChessColor paraColor) {
         super(paraColor);
     }
 
