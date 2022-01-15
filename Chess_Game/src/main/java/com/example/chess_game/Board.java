@@ -3,11 +3,10 @@ package com.example.chess_game;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Board {
@@ -59,10 +58,11 @@ public class Board {
 
     /**
      * Sets the pieces to their start field
-     * @param column The column for which the pieces should be set
-     * @param color The color of the team of which the piece is set
+     *
+     * @param column       The column for which the pieces should be set
+     * @param color        The color of the team of which the piece is set
      * @param fieldToPlace The field where the piece should be set
-     * @param player A reference to the player of the given color
+     * @param player       A reference to the player of the given color
      */
     private void initPieces(int column, Color color, Field fieldToPlace, Player player) {
         switch (column) {
@@ -76,10 +76,11 @@ public class Board {
 
     /**
      * Method to set a single piece on a given field
-     * @param pieceClass The class of the piece that should be set to the given field
-     * @param color The color of the piece that should be set to the given field
+     *
+     * @param pieceClass   The class of the piece that should be set to the given field
+     * @param color        The color of the piece that should be set to the given field
      * @param fieldToPlace The field where the given piece should be set
-     * @param player The player of the given color
+     * @param player       The player of the given color
      */
     private void setPieceOnBoard(Class<? extends Piece> pieceClass, Color color, Field fieldToPlace, Player player) {
         Piece p = null;
@@ -104,6 +105,7 @@ public class Board {
 
     /**
      * Getter for fields
+     *
      * @return all the fields on the board as a 2-dimensional array
      */
     public Field[][] getFields() {
@@ -131,6 +133,7 @@ public class Board {
 
     /**
      * Getter for moves
+     *
      * @return a list of all previous moves as strings in chess notation
      */
     public List<String> getMoves() {
@@ -155,11 +158,13 @@ public class Board {
 
     /**
      * Moves the given piece to the given field and updates the board accordingly
-     * @param newField The new location of the given piece
-     * @param piece The piece that is set to the given field
+     *
+     * @param newField       The new location of the given piece
+     * @param piece          The piece that is set to the given field
+     * @param gridpane_board
      * @return true if the king of the other player was set checkmate, false otherwise
      */
-    public boolean update(Field newField, Piece piece) {
+    public boolean update(Field newField, Piece piece, GridPane gridpane_board, Map<Piece, ImageView> pieceImageViews) {
         Field oldField = pieceLocation.remove(piece);
         pieceLocation.put(piece, newField);
 
@@ -176,8 +181,11 @@ public class Board {
             if (newField.getPiece() == null && oldField.getColumn() != newField.getColumn()) {
                 Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == Color.BLACK ? 1 : -1)][newField.getColumn()];
                 if (capturedPawnField.getPiece() instanceof Pawn) {
-                    pieceLocation.remove(capturedPawnField.getPiece());
+                    Piece capturedPawn = capturedPawnField.getPiece();
+                    pieceLocation.remove(capturedPawn);
                     fields[capturedPawnField.getRow()][capturedPawnField.getColumn()].setPiece(null);
+                    gridpane_board.getChildren().remove(pieceImageViews.get(capturedPawn));
+                    pieceImageViews.remove(capturedPawn);
                 }
             }
 
@@ -219,6 +227,9 @@ public class Board {
             pieceLocation.get(rook).setPiece(null);
             pieceLocation.put(rook, rookCastleField);
             rookCastleField.setPiece(rook);
+
+            gridpane_board.getChildren().remove(pieceImageViews.get(rook));
+            gridpane_board.add(pieceImageViews.get(rook), rookCastleField.getColumn(), 7 - rookCastleField.getRow());
         }
 
         fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
@@ -241,6 +252,7 @@ public class Board {
 
     /**
      * Getter for boardImage
+     *
      * @return the Image that was set as the chess board
      */
     public Image getBoardImage() {
@@ -261,6 +273,7 @@ public class Board {
 
     /**
      * Checks if the other king is in check
+     *
      * @param attackerColor The color of the attacker
      * @return true if the other king is in check, false otherwise
      */
@@ -309,7 +322,8 @@ public class Board {
 
     /**
      * Setter for lastClickedField
-     * @param row the row of the field that was clicked last
+     *
+     * @param row    the row of the field that was clicked last
      * @param column the column of the field that was clicked last
      */
     public void setLastClickedField(int row, int column) {
@@ -386,6 +400,7 @@ public class Board {
 
     /**
      * Checks if the king of the given color is checkmate
+     *
      * @param color The color of the king for which the check is made
      * @return true if the king is checkmate, false otherwise
      */
@@ -393,7 +408,7 @@ public class Board {
         Color enemyColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
         boolean checkmate = getPieces(enemyColor).stream()
                 .allMatch(piece -> piece.getLegalMoves(this, pieceLocation.get(piece)).isEmpty());
-        if(checkmate) {
+        if (checkmate) {
             System.out.println("The " + color + " king is checkmate.");
         }
         return checkmate;

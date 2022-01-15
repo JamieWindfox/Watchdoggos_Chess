@@ -34,13 +34,20 @@ public class MainController extends Application implements Initializable {
 
     Game game;
 
-    @FXML private GridPane gridpane_board;
-    @FXML private FlowPane flowpanel_cemetary_white;
-    @FXML private FlowPane flowpanel_cemetary_black;
-    @FXML private Label label_player1;
-    @FXML private Label label_player2;
-    @FXML private Label label_timer1;
-    @FXML private Label label_timer2;
+    @FXML
+    private GridPane gridpane_board;
+    @FXML
+    private FlowPane flowpanel_cemetary_white;
+    @FXML
+    private FlowPane flowpanel_cemetary_black;
+    @FXML
+    private Label label_player1;
+    @FXML
+    private Label label_player2;
+    @FXML
+    private Label label_timer1;
+    @FXML
+    private Label label_timer2;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -55,23 +62,23 @@ public class MainController extends Application implements Initializable {
 
     /**
      * Moves the last selected piece to the given field and checks if the other king was set checkmate with that move
+     *
      * @param clickedField the field where the selected piece is moved
      */
     private void movePiece(Field clickedField) {
         if (clickedField.getPiece() != null) {
             ImageView capturedPieceImageView = new ImageView(clickedField.getPiece().getImage());
-            if(clickedField.getPiece().getColor() == Color.WHITE) {
+            if (clickedField.getPiece().getColor() == Color.WHITE) {
                 cemetary_white.add(capturedPieceImageView);
                 flowpanel_cemetary_white.getChildren().add(capturedPieceImageView);
-            }
-            else { // black
+            } else { // black
                 cemetary_black.add(capturedPieceImageView);
                 flowpanel_cemetary_black.getChildren().add(capturedPieceImageView);
             }
             gridpane_board.getChildren().remove(pieceImageViews.get(clickedField.getPiece()));
             pieceImageViews.remove(clickedField.getPiece());
         }
-        boolean checkmate = Game.getBoard().update(clickedField, selected_piece);
+        boolean checkmate = Game.getBoard().update(clickedField, selected_piece, gridpane_board, pieceImageViews);
         //game.getBoard().printField(); -> for debugging
         gridpane_board.getChildren().remove(pieceImageViews.get(selected_piece));
         ImageView newImgView = new ImageView(selected_piece.getImage());
@@ -80,7 +87,7 @@ public class MainController extends Application implements Initializable {
         gridpane_board.add(newImgView, clickedField.getColumn(), 7 - clickedField.getRow());
         pieceImageViews.put(selected_piece, newImgView);
 
-        if(checkmate) {
+        if (checkmate) {
             openWinnerDialog(game.getPlayer(selected_piece.getColor()), "Other King is checkmate");
         }
 
@@ -184,7 +191,7 @@ public class MainController extends Application implements Initializable {
         cemetary_white.clear();
         flowpanel_cemetary_white.getChildren().clear();
         flowpanel_cemetary_black.getChildren().clear();
-        
+
         for (int row = 0; row < 8; ++row) {
             for (int column = 0; column < 8; ++column) {
                 Piece piece = game.getField(row, column).getPiece();
@@ -296,7 +303,7 @@ public class MainController extends Application implements Initializable {
         System.out.println("INFO: Player selection if they want to resign game: " + result.getText());
 
 
-        if(ButtonBar.ButtonData.YES.equals(result.getButtonData())) {
+        if (ButtonBar.ButtonData.YES.equals(result.getButtonData())) {
             Player activePlayer = new Player(Color.BLACK, "Tom", new Timer(new Label(), 1)); // Player who clicked on resign in their turn
             Player winner = (activePlayer.getColor() == Color.WHITE ? game.getPlayer(Color.BLACK) : game.getPlayer(Color.WHITE));
             openWinnerDialog(winner, "Other player resigned.");
