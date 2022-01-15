@@ -18,11 +18,11 @@ public class ChessTimer {
         this.totalSeconds = totalMinutes * 60;
         this.timeLeft = totalSeconds;
         timeline = new Timeline(new KeyFrame(Duration.seconds(1),
-                event -> cowntdown()));
+                event -> countdown()));
         timeline.setCycleCount(totalSeconds);
     }
 
-    private void cowntdown() {
+    private void countdown() {
         timeLeft--;
         displayTimer();
     }
@@ -43,9 +43,13 @@ public class ChessTimer {
         timeline.stop();
     }
 
+    public boolean hasRunOut() {
+        return timeLeft <= 0;
+    }
 
-
-
-
-
+    public void resetAndStop() {
+        stop();
+        timeLeft = totalSeconds;
+        displayTimer();
+    }
 }

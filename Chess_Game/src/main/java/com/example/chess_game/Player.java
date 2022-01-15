@@ -14,7 +14,6 @@ public class Player {
         this.color = color;
         this.name = name;
         this.timer = timer;
-        //this.timer = new Timer(timerLabel);
     }
 
     public void addPiece(Piece piece) {

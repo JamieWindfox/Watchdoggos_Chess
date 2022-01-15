@@ -25,6 +25,8 @@ public class MainController extends Application implements Initializable {
     final ImageView HIGHLIGHT_CLICKED = new ImageView("graphics/highlight_pink.png");
     final Image HIGHLIGHT_VALID_MOVES_IMAGE = new Image("graphics/highlight_orange2px.png");
     final Map<Piece, ImageView> pieceImageViews = new HashMap<>();
+    final int MINUTES_PER_PLAYER = 15;
+
     Set<ImageView> highlightImageViews = new HashSet<>();
     Set<String> highlightedFieldNames = new HashSet<>();
     List<ImageView> cemetary_white = new ArrayList<>();
@@ -148,6 +150,11 @@ public class MainController extends Application implements Initializable {
             Set<Field> legalMoves = piece.getLegalMoves(Game.getBoard(), clickedField);
             highlightValidMoves(legalMoves);
         }
+        if(game.getCurrentPlayer().getTimer().hasRunOut()) {
+            Player loser = game.getCurrentPlayer();
+            Player winner = (loser.getColor() == ChessColor.WHITE) ? game.getPlayer(ChessColor.BLACK) : game.getPlayer(ChessColor.WHITE);
+            openWinnerDialog(winner, "Time of other Player has run out.");
+        }
     }
 
     private Field getFieldFromCoordinates(double x, double y) {
@@ -238,10 +245,15 @@ public class MainController extends Application implements Initializable {
         String playerBlack = showPlayerNameDialog(ChessColor.BLACK.name());
         if (playerBlack == null || playerBlack.isBlank()) return;
 
+        if(game != null) {
+            game.getPlayer(ChessColor.WHITE).getTimer().resetAndStop();
+            game.getPlayer(ChessColor.BLACK).getTimer().resetAndStop();
+        }
+
         game = new Game(
                 // TODO Change to time from user input dialog
-                new Player(ChessColor.BLACK, playerBlack, new ChessTimer(label_timer_black, 15)),
-                new Player(ChessColor.WHITE, playerWhite, new ChessTimer(label_timer_white, 15)));
+                new Player(ChessColor.BLACK, playerBlack, new ChessTimer(label_timer_black, MINUTES_PER_PLAYER)),
+                new Player(ChessColor.WHITE, playerWhite, new ChessTimer(label_timer_white, MINUTES_PER_PLAYER)));
         label_player_white.setText(playerWhite);
         label_player_black.setText(playerBlack);
         game.getPlayer(ChessColor.WHITE).getTimer().start();
