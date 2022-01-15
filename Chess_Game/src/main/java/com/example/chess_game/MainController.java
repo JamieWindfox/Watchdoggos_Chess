@@ -80,12 +80,14 @@ public class MainController extends Application implements Initializable {
         }
         boolean checkmate = Game.getBoard().update(clickedField, selected_piece, gridpane_board, pieceImageViews);
         //game.getBoard().printField(); -> for debugging
-        gridpane_board.getChildren().remove(pieceImageViews.get(selected_piece));
-        ImageView newImgView = new ImageView(selected_piece.getImage());
 
-
-        gridpane_board.add(newImgView, clickedField.getColumn(), 7 - clickedField.getRow());
-        pieceImageViews.put(selected_piece, newImgView);
+        // Skip changing board if the move was a Promotion
+        if (!(selected_piece instanceof Pawn && ((Pawn) selected_piece).isPromoted())) {
+            gridpane_board.getChildren().remove(pieceImageViews.get(selected_piece));
+            ImageView newImgView = new ImageView(selected_piece.getImage());
+            gridpane_board.add(newImgView, clickedField.getColumn(), 7 - clickedField.getRow());
+            pieceImageViews.put(selected_piece, newImgView);
+        }
 
         if (checkmate) {
             openWinnerDialog(game.getPlayer(selected_piece.getColor()), "Other King is checkmate");

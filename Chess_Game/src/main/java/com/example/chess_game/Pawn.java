@@ -4,6 +4,8 @@ import java.util.*;
 
 public class Pawn extends Piece {
 
+    private boolean isPromoted = false;
+
     public Pawn(Color color) {
         super(color);
     }
@@ -74,6 +76,15 @@ public class Pawn extends Piece {
     public Set<Field> getInBetweenFields(Field startField, Field endField, Field[][] fields) {
         return new HashSet<>();
     }
+
+    public boolean isPromoted() {
+        return isPromoted;
+    }
+
+    public void setPromoted(boolean promoted) {
+        isPromoted = promoted;
+    }
+
 }
 
 

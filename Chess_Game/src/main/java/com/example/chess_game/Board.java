@@ -191,7 +191,6 @@ public class Board {
 
             // Check if move was Promotion
             if (newField.getRow() == 0 || newField.getRow() == 7) {
-                // TODO Get selection of chosen Promotion
                 Piece promoPiece = showPromotionDialog(piece.getColor());
                 if (piece.getColor() == Color.WHITE) {
                     white.promotePiece((Pawn) piece, promoPiece);
@@ -200,6 +199,14 @@ public class Board {
                 }
                 pieceLocation.remove(piece);
                 pieceLocation.put(promoPiece, newField);
+
+                ((Pawn) piece).setPromoted(true);
+                gridpane_board.getChildren().remove(pieceImageViews.get(piece));
+                pieceImageViews.remove(piece);
+                ImageView newImgView = new ImageView(promoPiece.getImage());
+
+                gridpane_board.add(newImgView, newField.getColumn(), 7 - newField.getRow());
+                pieceImageViews.put(promoPiece, newImgView);
 
                 promotionAnnotation = "=" + promoPiece.getAnnotationLetter();
                 piece = promoPiece;
