@@ -1,17 +1,15 @@
 package com.example.chess_game;
 
-import javafx.scene.control.Label;
-
 import java.util.HashSet;
 import java.util.Set;
 
 public class Player {
     private final Color color;
-    private Timer timer;
+    private ChessTimer timer;
     private final Set<Piece> pieces;
     private final String name;
 
-    public Player(Color color, String name, Timer timer) {
+    public Player(Color color, String name, ChessTimer timer) {
         this.pieces = new HashSet<>();
         this.color = color;
         this.name = name;
@@ -28,7 +26,7 @@ public class Player {
         this.pieces.add(promotedPiece);
     }
 
-    public Timer getTimer() {
+    public ChessTimer getTimer() {
         return timer;
     }
 

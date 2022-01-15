@@ -30,34 +30,25 @@ public class MainController extends Application implements Initializable {
     List<ImageView> cemetary_white = new ArrayList<>();
     List<ImageView> cemetary_black = new ArrayList<>();
     Piece selected_piece = null;
-    boolean whitePlayerBegins = true;
 
     Game game;
 
-    @FXML
-    private GridPane gridpane_board;
-    @FXML
-    private FlowPane flowpanel_cemetary_white;
-    @FXML
-    private FlowPane flowpanel_cemetary_black;
-    @FXML
-    private Button resign_btn;
-    @FXML
-    private Label label_player1;
-    @FXML
-    private Label label_player2;
-    @FXML
-    private Label label_timer1;
-    @FXML
-    private Label label_timer2;
+    @FXML private GridPane gridpane_board;
+    @FXML private FlowPane flowpanel_cemetary_white;
+    @FXML private FlowPane flowpanel_cemetary_black;
+    @FXML private Button resign_btn;
+    @FXML private Label label_player_white;
+    @FXML private Label label_player_black;
+    @FXML private Label label_timer_white;
+    @FXML private Label label_timer_black;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Clear label texts so the user is not distracted
-        label_player1.setText("");
-        label_player2.setText("");
-        label_timer1.setText("");
-        label_timer2.setText("");
+        label_player_white.setText("");
+        label_player_black.setText("");
+        label_timer_white.setText("");
+        label_timer_black.setText("");
 
         gridpane_board.setOnMouseClicked(this::handle);
         resign_btn.setVisible(false);
@@ -101,7 +92,7 @@ public class MainController extends Application implements Initializable {
     }
 
     /**
-     * Opens a dialog to tell the players who have won the game
+     * Opens a dialog to tell the players who has won the game
      */
     //WIP
     private void openWinnerDialog(Player winner, String causeOfWin) {
@@ -226,14 +217,13 @@ public class MainController extends Application implements Initializable {
         String playerBlack = showPlayerNameDialog(Color.BLACK.name());
         if (playerBlack == null || playerBlack.isBlank()) return;
 
-        whitePlayerBegins = true;
         game = new Game(
                 // TODO Change to time from user input dialog
-                new Player(Color.BLACK, playerBlack, new Timer(label_timer2, 15)),
-                new Player(Color.WHITE, playerWhite, new Timer(label_timer1, 15)));
-        whitePlayerBegins = !whitePlayerBegins;
-        label_player1.setText(playerWhite);
-        label_player2.setText(playerBlack);
+                new Player(Color.BLACK, playerBlack, new ChessTimer(label_timer_black, 15)),
+                new Player(Color.WHITE, playerWhite, new ChessTimer(label_timer_white, 15)));
+        label_player_white.setText(playerWhite);
+        label_player_black.setText(playerBlack);
+        game.getPlayer(Color.WHITE).getTimer().start();
 
         setStartFormation();
         resign_btn.setVisible(true);
@@ -308,7 +298,7 @@ public class MainController extends Application implements Initializable {
 
 
         if (ButtonBar.ButtonData.YES.equals(result.getButtonData())) {
-            Player activePlayer = new Player(Color.BLACK, "Tom", new Timer(new Label(), 1)); // Player who clicked on resign in their turn
+            Player activePlayer = new Player(Color.BLACK, "Tom", new ChessTimer(new Label(), 1)); // Player who clicked on resign in their turn
             Player winner = (activePlayer.getColor() == Color.WHITE ? game.getPlayer(Color.BLACK) : game.getPlayer(Color.WHITE));
             openWinnerDialog(winner, "Other player resigned.");
         }

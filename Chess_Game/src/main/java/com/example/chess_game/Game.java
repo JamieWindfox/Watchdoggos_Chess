@@ -179,7 +179,9 @@ public class Game {
     }
 
     public void toggleCurrentPlayer() {
+        currentPlayer.getTimer().stop();
         currentPlayer = (currentPlayer == black) ? white : black;
+        currentPlayer.getTimer().start();
     }
 
     public Player getCurrentPlayer() {

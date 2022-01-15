@@ -79,22 +79,22 @@
                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                  </rowConstraints>
                   <children>
-                     <Label fx:id="label_player1" alignment="CENTER" contentDisplay="CENTER" text="label_player1" textAlignment="CENTER" textFill="#e4e4e4">
+                     <Label fx:id="label_player_white" alignment="CENTER" contentDisplay="CENTER" text="label_player1" textAlignment="CENTER" textFill="#e4e4e4">
                         <font>
                            <Font name="System Bold" size="14.0" />
                         </font>
                      </Label>
-                     <Label fx:id="label_timer1" alignment="CENTER" contentDisplay="CENTER" text="label_timer1" textAlignment="CENTER" textFill="#e4e4e4" GridPane.columnIndex="1">
+                     <Label fx:id="label_timer_white" alignment="CENTER" contentDisplay="CENTER" text="label_timer1" textAlignment="CENTER" textFill="#e4e4e4" GridPane.columnIndex="1">
                         <font>
                            <Font name="System Bold" size="14.0" />
                         </font>
                      </Label>
-                     <Label fx:id="label_timer2" alignment="CENTER" contentDisplay="CENTER" text="label_timer2" textAlignment="CENTER" textFill="#e4e4e4" GridPane.columnIndex="2">
+                     <Label fx:id="label_timer_black" alignment="CENTER" contentDisplay="CENTER" text="label_timer2" textAlignment="CENTER" textFill="#e4e4e4" GridPane.columnIndex="2">
                         <font>
                            <Font name="System Bold" size="14.0" />
                         </font>
                      </Label>
-                     <Label fx:id="label_player2" alignment="CENTER" contentDisplay="CENTER" text="label_player2" textAlignment="CENTER" textFill="#e4e4e4" GridPane.columnIndex="3">
+                     <Label fx:id="label_player_black" alignment="CENTER" contentDisplay="CENTER" text="label_player2" textAlignment="CENTER" textFill="#e4e4e4" GridPane.columnIndex="3">
                         <font>
                            <Font name="System Bold" size="14.0" />
                         </font>
