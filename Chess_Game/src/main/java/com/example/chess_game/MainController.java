@@ -94,6 +94,8 @@ public class MainController extends Application implements Initializable {
 
         if (checkmate) {
             openWinnerDialog(game.getPlayer(selected_piece.getColor()), "Other King is checkmate");
+        } else if (game.isDraw()) {
+            openDrawDialog();
         }
 
         selected_piece = null;
@@ -116,6 +118,25 @@ public class MainController extends Application implements Initializable {
 
         // gets the clicked result; if the window is closed without a button being clicked it counts as "Ok"
         ButtonType result = winnerDialog.showAndWait().orElse(ButtonType.YES);
+
+        createNewGame();
+    }
+
+    /**
+     * Opens a dialog to tell the players that the game concluded to a draw
+     */
+    private void openDrawDialog() {
+        // Build dialog
+        Alert drawDialog = new Alert(Alert.AlertType.NONE);
+        drawDialog.setTitle("DRAW!");
+        drawDialog.setContentText("This game ends in a draw.");
+
+        drawDialog.getButtonTypes().setAll(
+                new ButtonType("Ok", ButtonBar.ButtonData.YES)
+        );
+
+        // gets the clicked result; if the window is closed without a button being clicked it counts as "Ok"
+        ButtonType result = drawDialog.showAndWait().orElse(ButtonType.YES);
 
         createNewGame();
     }
