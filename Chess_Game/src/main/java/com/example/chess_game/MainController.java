@@ -41,6 +41,8 @@ public class MainController extends Application implements Initializable {
     @FXML
     private FlowPane flowpanel_cemetary_black;
     @FXML
+    private Button resign_btn;
+    @FXML
     private Label label_player1;
     @FXML
     private Label label_player2;
@@ -58,6 +60,7 @@ public class MainController extends Application implements Initializable {
         label_timer2.setText("");
 
         gridpane_board.setOnMouseClicked(this::handle);
+        resign_btn.setVisible(false);
     }
 
     /**
@@ -227,13 +230,13 @@ public class MainController extends Application implements Initializable {
         game = new Game(
                 // TODO Change to time from user input dialog
                 new Player(Color.BLACK, playerBlack, new Timer(label_timer2, 15)),
-                new Player(Color.WHITE, playerWhite, new Timer(label_timer1, 15))
-        );
+                new Player(Color.WHITE, playerWhite, new Timer(label_timer1, 15)));
         whitePlayerBegins = !whitePlayerBegins;
         label_player1.setText(playerWhite);
         label_player2.setText(playerBlack);
 
         setStartFormation();
+        resign_btn.setVisible(true);
     }
 
     @FXML

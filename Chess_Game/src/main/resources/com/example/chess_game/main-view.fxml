@@ -62,7 +62,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </FlowPane.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onMouseClicked="#btnResignClicked" text="Resign">
+                  <Button fx:id="resign_btn" mnemonicParsing="false" onMouseClicked="#btnResignClicked" text="Resign">
                      <FlowPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </FlowPane.margin>
