@@ -214,6 +214,7 @@ public class MainController extends Application implements Initializable {
         String playerBlack = showPlayerNameDialog(Color.BLACK.name());
         if (playerBlack == null || playerBlack.isBlank()) return;
 
+        whitePlayerBegins = true;
         game = new Game(
                 // TODO Change to time from user input dialog
                 new Player(Color.BLACK, playerBlack, new Timer(label_timer2, 15)),
