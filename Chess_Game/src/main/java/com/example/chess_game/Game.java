@@ -196,9 +196,11 @@ public class Game {
         return board.getMoves();
     }
 
-    public boolean isDraw(Player playerToMove) {
-        Set<Piece> playerToMovePieces = board.getPieces(playerToMove.getColor());
-        Set<Piece> enemyPieces = board.getPieces(playerToMove.getColor() == Color.WHITE ? Color.BLACK : Color.WHITE);
+    public boolean isDraw() {
+        toggleCurrentPlayer();
+
+        Set<Piece> playerToMovePieces = board.getPieces(currentPlayer.getColor());
+        Set<Piece> enemyPieces = board.getPieces(currentPlayer.getColor() == Color.WHITE ? Color.BLACK : Color.WHITE);
 
         // Stalemate
         boolean stalemate = playerToMovePieces.stream()
@@ -243,6 +245,7 @@ public class Game {
             timeoutDraw = true;
         }
 
+        toggleCurrentPlayer();
         return stalemate || insufficient || repetition || fiftyMoveRule || timeoutDraw;
     }
 
