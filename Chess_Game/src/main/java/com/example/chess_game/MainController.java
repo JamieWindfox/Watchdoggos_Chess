@@ -22,11 +22,9 @@ import java.util.*;
 
 public class MainController extends Application implements Initializable {
 
-    final int PLAYER_NAME_MAX_LENGTH = 20;
     final ImageView HIGHLIGHT_CLICKED = new ImageView("graphics/highlight_pink.png");
     final Image HIGHLIGHT_VALID_MOVES_IMAGE = new Image("graphics/highlight_orange2px.png");
     final Map<Piece, ImageView> pieceImageViews = new HashMap<>();
-    final int MINUTES_PER_PLAYER = 15;
 
     Set<ImageView> highlightImageViews = new HashSet<>();
     Set<String> highlightedFieldNames = new HashSet<>();
@@ -97,7 +95,7 @@ public class MainController extends Application implements Initializable {
     }
 
     /**
-     * Opens a dialog to tell the players who has won the game
+     * Opens a dialog to tell the players who won the game
      */
     //WIP
     private void openWinnerDialog(Player winner, String causeOfWin) {
@@ -111,7 +109,7 @@ public class MainController extends Application implements Initializable {
         );
 
         // gets the clicked result; if the window is closed without a button being clicked it counts as "Ok"
-        ButtonType result = winnerDialog.showAndWait().orElse(ButtonType.YES);
+        winnerDialog.showAndWait();
 
         createNewGame();
     }
@@ -130,7 +128,7 @@ public class MainController extends Application implements Initializable {
         );
 
         // gets the clicked result; if the window is closed without a button being clicked it counts as "Ok"
-        ButtonType result = drawDialog.showAndWait().orElse(ButtonType.YES);
+        drawDialog.showAndWait();
 
         createNewGame();
     }
@@ -305,26 +303,6 @@ public class MainController extends Application implements Initializable {
 
         System.out.println("INFO: Game is being initialized");
         createNewGame();
-    }
-
-    public String showPlayerNameDialog(String playerColor) {
-        // Build dialog
-        TextInputDialog tid = new TextInputDialog(PLAYER_NAME_MAX_LENGTH + " characters maximum");
-        tid.getDialogPane().setGraphic(null);
-        tid.setHeaderText("Enter Name of " + playerColor + " Player:");
-        tid.setTitle("Enter Player Name");
-        Optional<String> dialogResult = tid.showAndWait(); // Holds until the user takes an action
-
-        // isEmpty is true, if the user clicked Cancel or Close
-        if (dialogResult.isEmpty()) return null;
-
-        String playerName = tid.getEditor().getText();
-        // Verify Input / Repeat Dialog if user is empty or too long
-        if (playerName.isBlank() || playerName.length() > PLAYER_NAME_MAX_LENGTH)
-            return showPlayerNameDialog(playerColor);
-
-        System.out.println(playerColor + "Player chose user name '" + playerName + "'");
-        return playerName;
     }
 
     @FXML
