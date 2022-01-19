@@ -14,7 +14,7 @@ public class Game {
      */
     private static Board board;
 
-    public Game(Player playerBlack, Player playerWhite) {
+    public Game(Player playerWhite, Player playerBlack) {
         this.black = playerBlack;
         this.white = playerWhite;
         currentPlayer = this.white;

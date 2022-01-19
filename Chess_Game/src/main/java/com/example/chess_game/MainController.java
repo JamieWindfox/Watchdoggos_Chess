@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -239,27 +240,43 @@ public class MainController extends Application implements Initializable {
 
     // creates a new game
     private void createNewGame() {
-        // Ask players for their names
-        String playerWhite = showPlayerNameDialog(ChessColor.WHITE.name());
-        if (playerWhite == null || playerWhite.isBlank()) return;
-        String playerBlack = showPlayerNameDialog(ChessColor.BLACK.name());
-        if (playerBlack == null || playerBlack.isBlank()) return;
+        try {
+            // Load Dialog for user input (player names and playing time)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("newgame-dialog.fxml"));
+            Parent root = loader.load();
+            NewgameDialog dialog = loader.getController();
+            dialog.showDialog(root); // Waits for the dialog to finish
 
-        if(game != null) {
-            game.getPlayer(ChessColor.WHITE).getTimer().resetAndStop();
-            game.getPlayer(ChessColor.BLACK).getTimer().resetAndStop();
+            if (!dialog.getDialogResult()) return; // User clicked Cancel
+
+            if(game != null) {
+                game.getPlayer(ChessColor.WHITE).getTimer().resetAndStop();
+                game.getPlayer(ChessColor.BLACK).getTimer().resetAndStop();
+            }
+
+            game = new Game(
+                new Player(ChessColor.WHITE,
+                    dialog.textfield_player_white.getText(),
+                    new ChessTimer(label_timer_white,
+                        Integer.parseInt(dialog.textfield_minutes_per_player.getText()))
+                ),
+                new Player(ChessColor.BLACK,
+                    dialog.textfield_player_black.getText(),
+                    new ChessTimer(label_timer_black,
+                        Integer.parseInt(dialog.textfield_minutes_per_player.getText()))
+                )
+            );
+
+            label_player_black.setText(dialog.textfield_player_black.getText());
+            label_player_white.setText(dialog.textfield_player_white.getText());
+
+            game.getPlayer(ChessColor.WHITE).getTimer().start();
+
+            setStartFormation();
+            resign_btn.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        game = new Game(
-                // TODO Change to time from user input dialog
-                new Player(ChessColor.BLACK, playerBlack, new ChessTimer(label_timer_black, MINUTES_PER_PLAYER)),
-                new Player(ChessColor.WHITE, playerWhite, new ChessTimer(label_timer_white, MINUTES_PER_PLAYER)));
-        label_player_white.setText(playerWhite);
-        label_player_black.setText(playerBlack);
-        game.getPlayer(ChessColor.WHITE).getTimer().start();
-
-        setStartFormation();
-        resign_btn.setVisible(true);
     }
 
     @FXML
