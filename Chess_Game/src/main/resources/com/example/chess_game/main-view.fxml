@@ -5,107 +5,230 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane style="-fx-background-image: url(&quot;graphics/Background_green.png&quot;);" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chess_game.MainController">
-   <BorderPane layoutX="133.0" layoutY="76.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <center>
-         <GridPane fx:id="gridpane_board" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="296.0" prefWidth="296.0" style="-fx-background-image: url(&quot;graphics/ChessBoard.png&quot;);" BorderPane.alignment="CENTER">
-          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          </columnConstraints>
-          <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          </rowConstraints>
-         </GridPane>
-
-      </center>
-      <bottom>
-         <FlowPane alignment="CENTER_RIGHT" minHeight="-Infinity" prefHeight="36.0" prefWidth="600.0" rowValignment="TOP" BorderPane.alignment="CENTER">
-            <Button mnemonicParsing="false" onMouseClicked="#btnPreviousMovesClicked" text="Previous Moves">
-               <FlowPane.margin>
-                  <Insets bottom="10.0" left="5.0" right="5.0" top="5.0" />
-               </FlowPane.margin>
-            </Button>
-            <BorderPane.margin>
-               <Insets />
-            </BorderPane.margin>
-         </FlowPane>
-      </bottom>
-      <left>
-         <FlowPane fx:id="flowpanel_cemetary_white" alignment="BOTTOM_RIGHT" columnHalignment="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="150.0" rowValignment="BOTTOM" BorderPane.alignment="BOTTOM_RIGHT" />
-      </left>
-      <right>
-         <FlowPane fx:id="flowpanel_cemetary_black" alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="150.0" rowValignment="BOTTOM" BorderPane.alignment="BOTTOM_LEFT" />
-      </right>
-      <top>
-         <VBox BorderPane.alignment="CENTER">
-            <children>
-               <FlowPane alignment="CENTER_LEFT" prefHeight="28.0" prefWidth="600.0" rowValignment="TOP">
-                  <opaqueInsets>
-                     <Insets />
-                  </opaqueInsets>
-                  <Button mnemonicParsing="false" onMouseClicked="#btnNewGameClicked" text="New Game">
-                     <FlowPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </FlowPane.margin>
-                  </Button>
-                  <Button fx:id="resign_btn" mnemonicParsing="false" onMouseClicked="#btnResignClicked" text="Resign">
-                     <FlowPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </FlowPane.margin>
-                  </Button>
-               </FlowPane>
-               <GridPane alignment="CENTER">
-                 <columnConstraints>
-                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                 </columnConstraints>
-                 <rowConstraints>
-                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                 </rowConstraints>
-                  <children>
-                     <Label fx:id="label_player_white" alignment="CENTER" contentDisplay="CENTER" text="label_player1" textAlignment="CENTER" textFill="#e4e4e4">
+<AnchorPane style="-fx-background-image: url('graphics/Background_green.png');" xmlns="http://javafx.com/javafx/16"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chess_game.MainController">
+    <BorderPane layoutX="133.0" layoutY="76.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <bottom>
+            <FlowPane alignment="CENTER_RIGHT" minHeight="-Infinity" prefHeight="36.0" prefWidth="600.0"
+                      rowValignment="TOP" BorderPane.alignment="CENTER">
+                <Button mnemonicParsing="false" onMouseClicked="#btnPreviousMovesClicked" text="Previous Moves">
+                    <FlowPane.margin>
+                        <Insets bottom="10.0" left="5.0" right="5.0" top="5.0"/>
+                    </FlowPane.margin>
+                </Button>
+                <BorderPane.margin>
+                    <Insets/>
+                </BorderPane.margin>
+            </FlowPane>
+        </bottom>
+        <left>
+            <FlowPane fx:id="flowpanel_cemetary_white" alignment="BOTTOM_RIGHT" columnHalignment="RIGHT"
+                      nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="150.0" rowValignment="BOTTOM"
+                      BorderPane.alignment="BOTTOM_RIGHT"/>
+        </left>
+        <right>
+            <FlowPane fx:id="flowpanel_cemetary_black" alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="150.0"
+                      rowValignment="BOTTOM" BorderPane.alignment="BOTTOM_LEFT"/>
+        </right>
+        <top>
+            <VBox BorderPane.alignment="CENTER">
+                <FlowPane alignment="CENTER_LEFT" prefHeight="28.0" prefWidth="600.0" rowValignment="TOP">
+                    <opaqueInsets>
+                        <Insets/>
+                    </opaqueInsets>
+                    <Button mnemonicParsing="false" onMouseClicked="#btnNewGameClicked" text="New Game">
+                        <FlowPane.margin>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                        </FlowPane.margin>
+                    </Button>
+                    <Button fx:id="resign_btn" mnemonicParsing="false" onMouseClicked="#btnResignClicked" text="Resign">
+                        <FlowPane.margin>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                        </FlowPane.margin>
+                    </Button>
+                </FlowPane>
+                <GridPane alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <VBox.margin>
+                        <Insets bottom="10.0"/>
+                    </VBox.margin>
+                    <Label fx:id="label_player_white" alignment="CENTER" contentDisplay="CENTER" text="label_player1"
+                           textAlignment="CENTER" textFill="#e4e4e4">
                         <font>
-                           <Font name="System Bold" size="14.0" />
+                            <Font name="System Bold" size="14.0"/>
                         </font>
-                     </Label>
-                     <Label fx:id="label_timer_white" alignment="CENTER" contentDisplay="CENTER" text="label_timer1" textAlignment="CENTER" textFill="#e4e4e4" GridPane.columnIndex="1">
+                    </Label>
+                    <Label fx:id="label_timer_white" alignment="CENTER" contentDisplay="CENTER" text="label_timer1"
+                           textAlignment="CENTER" textFill="#e4e4e4" GridPane.columnIndex="1">
                         <font>
-                           <Font name="System Bold" size="14.0" />
+                            <Font name="System Bold" size="14.0"/>
                         </font>
-                     </Label>
-                     <Label fx:id="label_timer_black" alignment="CENTER" contentDisplay="CENTER" text="label_timer2" textAlignment="CENTER" textFill="#e4e4e4" GridPane.columnIndex="2">
+                    </Label>
+                    <Label fx:id="label_timer_black" alignment="CENTER" contentDisplay="CENTER" text="label_timer2"
+                           textAlignment="CENTER" textFill="#e4e4e4" GridPane.columnIndex="2">
                         <font>
-                           <Font name="System Bold" size="14.0" />
+                            <Font name="System Bold" size="14.0"/>
                         </font>
-                     </Label>
-                     <Label fx:id="label_player_black" alignment="CENTER" contentDisplay="CENTER" text="label_player2" textAlignment="CENTER" textFill="#e4e4e4" GridPane.columnIndex="3">
+                    </Label>
+                    <Label fx:id="label_player_black" alignment="CENTER" contentDisplay="CENTER" text="label_player2"
+                           textAlignment="CENTER" textFill="#e4e4e4" GridPane.columnIndex="3">
                         <font>
-                           <Font name="System Bold" size="14.0" />
+                            <Font name="System Bold" size="14.0"/>
                         </font>
-                     </Label>
-                  </children>
-                  <VBox.margin>
-                     <Insets bottom="10.0" />
-                  </VBox.margin>
-               </GridPane>
-            </children>
-         </VBox>
-      </top>
-   </BorderPane>
+                    </Label>
+                </GridPane>
+            </VBox>
+        </top>
+        <center>
+            <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                        prefHeight="350.0" prefWidth="350.0" style="-fx-background-image: url('graphics/Border.png');"
+                        BorderPane.alignment="CENTER">
+                <center>
+                    <GridPane fx:id="gridpane_board" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
+                              minHeight="-Infinity" minWidth="-Infinity" prefHeight="296.0" prefWidth="296.0"
+                              style="-fx-background-image: url('graphics/ChessBoard.png');"
+                              BorderPane.alignment="BOTTOM_LEFT">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                        </rowConstraints>
+                        <rotationAxis>
+                            <Point3D/>
+                        </rotationAxis>
+                    </GridPane>
+                </center>
+                <bottom>
+                    <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                          prefHeight="27.0" prefWidth="296.0" BorderPane.alignment="BOTTOM_CENTER">
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="27.0" prefWidth="37.0" text="a" textFill="#ffffff66">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="27.0" prefWidth="37.0" text="b" textFill="#ffffff66">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="27.0" prefWidth="37.0" text="c" textFill="#ffffff66">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="27.0" prefWidth="37.0" text="d" textFill="#ffffff66">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="27.0" prefWidth="37.0" text="e" textFill="#ffffff66">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="27.0" prefWidth="37.0" text="f" textFill="#ffffff66">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="27.0" prefWidth="37.0" text="g" textFill="#ffffff66">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="27.0" prefWidth="37.0" text="h" textFill="#ffffff66">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                    </HBox>
+                </bottom>
+                <left>
+                    <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                          minWidth="-Infinity" prefHeight="296.0" prefWidth="27.0" BorderPane.alignment="BOTTOM_LEFT">
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="37.0" prefWidth="27.0" text="8" textFill="#00000099">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="37.0" prefWidth="27.0" text="7" textFill="#00000099">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="37.0" prefWidth="27.0" text="6" textFill="#00000099">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="37.0" prefWidth="27.0" text="5" textFill="#00000099">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="37.0" prefWidth="27.0" text="4" textFill="#00000099">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="37.0" prefWidth="27.0" text="3" textFill="#00000099">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="37.0" prefWidth="27.0" text="2" textFill="#00000099">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                               minWidth="-Infinity" prefHeight="37.0" prefWidth="27.0" text="1" textFill="#00000099">
+                            <font>
+                                <Font name="System Bold" size="12.0"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                </left>
+            </BorderPane>
+        </center>
+    </BorderPane>
 </AnchorPane>
