@@ -239,7 +239,6 @@ public class Game {
         }
 
         // Timeout-Draw - Player to move ran out of time and enemy has insufficient materials
-        // TODO timer value
         boolean timeoutDraw = false;
         if (enemyInsufficientMaterial) {
             timeoutDraw = true;

@@ -60,7 +60,6 @@ public class Pawn extends Piece {
         return validMoves;
     }
 
-    // Jamie, 05.01.22: Could be implemented in superclass
     @Override
     public String getMoveAnnotation(Field oldField, Field newField) {
         return newField.getPiece() != null || oldField.getColumn() != newField.getColumn()

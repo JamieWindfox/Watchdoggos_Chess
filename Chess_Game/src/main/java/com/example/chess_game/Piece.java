@@ -11,7 +11,7 @@ public abstract class Piece {
     public Set<Field> validMoves;
     public int moveCounter = 0;
 
-    public Piece(ChessColor color) //TODO: Image hinzufügen
+    public Piece(ChessColor color)
     {
         this.color = color;
         this.validMoves = new HashSet<>();

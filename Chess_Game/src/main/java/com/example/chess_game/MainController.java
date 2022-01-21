@@ -24,6 +24,7 @@ public class MainController extends Application implements Initializable {
 
     final ImageView HIGHLIGHT_CLICKED = new ImageView("graphics/highlight_pink.png");
     final Image HIGHLIGHT_VALID_MOVES_IMAGE = new Image("graphics/highlight_orange2px.png");
+    final Image HIGHLIGHT_KING_CHECK = new Image("graphics/highlight_red.png");
     final Map<Piece, ImageView> pieceImageViews = new HashMap<>();
 
     Set<ImageView> highlightImageViews = new HashSet<>();
@@ -44,8 +45,10 @@ public class MainController extends Application implements Initializable {
     @FXML private Label label_timer_black;
 
     @Override
+    /**
+     * Clear label texts so the user is not distracted and build board & buttons
+     */
     public void initialize(URL location, ResourceBundle resources) {
-        // Clear label texts so the user is not distracted
         label_player_white.setText("");
         label_player_black.setText("");
         label_timer_white.setText("");
@@ -73,8 +76,8 @@ public class MainController extends Application implements Initializable {
             gridpane_board.getChildren().remove(pieceImageViews.get(clickedField.getPiece()));
             pieceImageViews.remove(clickedField.getPiece());
         }
+
         boolean checkmate = Game.getBoard().update(clickedField, selected_piece, gridpane_board, pieceImageViews);
-        //game.getBoard().printField(); -> for debugging
 
         // Skip changing board if the move was a Promotion
         if (!(selected_piece instanceof Pawn && ((Pawn) selected_piece).isPromoted())) {
@@ -136,7 +139,7 @@ public class MainController extends Application implements Initializable {
     private void handle(MouseEvent mouseEvent) {
         if (game == null) return;
 
-        Field clickedField = getFieldFromCoordinates(mouseEvent.getX(), mouseEvent.getY());
+        Field clickedField = getField((int)mouseEvent.getX() / 37, (int)mouseEvent.getY() / 37);
         highlightClickedField(clickedField);
 
         if (selected_piece != null && highlightedFieldNames.contains(clickedField.getFieldName())) {
@@ -156,14 +159,11 @@ public class MainController extends Application implements Initializable {
         }
     }
 
-    private Field getFieldFromCoordinates(double x, double y) {
-        int row = (int) (x / 37.0);
-        int column = (int) (y / 37.0);
-
-        return getField(row, column);
-
-    }
-
+    /**
+     * @param row the row coordinate
+     * @param column the column coordinate
+     * @return the field in the given coordinates
+     */
     private Field getField(int row, int column) {
         Field field = null;
         if (game != null) {
@@ -236,10 +236,11 @@ public class MainController extends Application implements Initializable {
         stage.show();
     }
 
-    // creates a new game
+    /**
+     * Load Dialog for user input (player names and playing time) and creates game if "new game" was clicked in dialog
+     */
     private void createNewGame() {
         try {
-            // Load Dialog for user input (player names and playing time)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("newgame-dialog.fxml"));
             Parent root = loader.load();
             NewgameDialog dialog = loader.getController();
@@ -253,16 +254,16 @@ public class MainController extends Application implements Initializable {
             }
 
             game = new Game(
-                new Player(ChessColor.WHITE,
-                    dialog.textfield_player_white.getText(),
-                    new ChessTimer(label_timer_white,
-                        Integer.parseInt(dialog.textfield_minutes_per_player.getText()))
-                ),
-                new Player(ChessColor.BLACK,
-                    dialog.textfield_player_black.getText(),
-                    new ChessTimer(label_timer_black,
-                        Integer.parseInt(dialog.textfield_minutes_per_player.getText()))
-                )
+                    new Player(ChessColor.WHITE,
+                            dialog.textfield_player_white.getText(),
+                            new ChessTimer(label_timer_white,
+                                    Integer.parseInt(dialog.textfield_minutes_per_player.getText()))
+                    ),
+                    new Player(ChessColor.BLACK,
+                            dialog.textfield_player_black.getText(),
+                            new ChessTimer(label_timer_black,
+                                    Integer.parseInt(dialog.textfield_minutes_per_player.getText()))
+                    )
             );
 
             label_player_black.setText(dialog.textfield_player_black.getText());

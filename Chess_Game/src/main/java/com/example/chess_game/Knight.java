@@ -36,7 +36,6 @@ public class Knight extends Piece {
         return validMoves;
     }
 
-
     @Override
     public String getMoveAnnotation(Field oldField, Field newField) {
         return newField.getPiece() != null ? ANNOTATION_LETTER + "x" + newField.getFieldName() : ANNOTATION_LETTER + newField.getFieldName();

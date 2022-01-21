@@ -9,8 +9,6 @@ public class Field {
     private final int row;
     private final int column;
     private final ImageView cell;
-    // Todo
-    // UI-Coordinates
     private Piece piece;
 
     public Field(String fieldName, int row, int column, int size) {
@@ -22,6 +20,7 @@ public class Field {
         cell.setFitHeight(size);
         cell.setFitWidth(size);
         cell.setPickOnBounds(true);
+        /* @Migu Check if really not necessary
         cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -29,6 +28,7 @@ public class Field {
                 System.out.println("Field " + fieldName + " was clicked");
             }
         });
+        */
     }
 
     public String getFieldName() {

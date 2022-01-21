@@ -258,15 +258,6 @@ public class Board {
     }
 
     /**
-     * Getter for boardImage
-     *
-     * @return the Image that was set as the chess board
-     */
-    public Image getBoardImage() {
-        return boardImage;
-    }
-
-    /**
      * @param color The color which the returned king has
      * @return the king of the given color
      */
@@ -337,16 +328,19 @@ public class Board {
         lastClickedField = fields[row][column];
     }
 
+    /**
+     * Save field's current state
+     * Move piece to supposedly valid field
+     * Check if own King is in check
+     * Restore board state
+     * @param availableMoves
+     * @param piece
+     */
 
     public void removeMoveIfSelfCheck(Set<Field> availableMoves, Piece piece) {
         ChessColor enemyColor = piece.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE;
         Field originalPieceField = pieceLocation.get(piece);
         availableMoves.removeIf(field -> {
-            // Save field's current state
-            // Move piece to supposedly valid field
-            // Check if own King is in check
-            // Restore board state
-
             Piece oldFieldsPiece = field.getPiece();
             pieceLocation.remove(oldFieldsPiece);
             pieceLocation.put(piece, field);
