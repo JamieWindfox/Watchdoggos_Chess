@@ -18,7 +18,7 @@ public abstract class Piece {
         try {
             this.image = new Image("graphics/" + (color == ChessColor.WHITE ? "white_" : "black_") + getClass().getSimpleName().toLowerCase() + ".png");
         } catch (Exception e) {
-
+            System.err.println("An error occurred loading the image of " + this.getClass() + " " + color);
         }
     }
 

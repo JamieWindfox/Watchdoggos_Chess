@@ -96,10 +96,6 @@ public class Game {
         return board.getFields()[column][row];
     }
 
-    public Field[][] getFields() {
-        return board.getFields();
-    }
-
     @Override
     public String toString() {
         return "Current Game";

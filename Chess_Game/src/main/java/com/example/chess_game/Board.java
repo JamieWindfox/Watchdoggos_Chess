@@ -160,7 +160,7 @@ public class Board {
      *
      * @param newField       The new location of the given piece
      * @param piece          The piece that is set to the given field
-     * @param gridpane_board
+     * @param gridpane_board The GridPane representation of the chess board
      * @return true if the king of the other player was set checkmate, false otherwise
      */
     public boolean update(Field newField, Piece piece, GridPane gridpane_board, Map<Piece, ImageView> pieceImageViews) {
@@ -337,8 +337,8 @@ public class Board {
      * Check if own King is in check
      * Restore board state
      *
-     * @param availableMoves
-     * @param piece
+     * @param availableMoves A list of the available moves for the given piece
+     * @param piece the piece for which the check is made
      */
 
     public void removeMoveIfSelfCheck(Set<Field> availableMoves, Piece piece) {

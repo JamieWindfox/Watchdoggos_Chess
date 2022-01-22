@@ -9,8 +9,8 @@ import javafx.util.Duration;
 public class ChessTimer {
 
     private final Label timerLabel;
-    private Timeline timeline;
-    private int totalSeconds;
+    private final Timeline timeline;
+    private final int totalSeconds;
     private int timeLeft;
 
     public ChessTimer(Label timerLabel, int totalMinutes) {
