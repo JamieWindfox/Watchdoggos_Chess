@@ -20,7 +20,6 @@ public class Board {
     private final Player white;
     private final Player black;
     private final List<Position> boardPositions;
-    private Field lastClickedField = null;
 
     public Board(Player white, Player black) {
         this.boardImage = new Image("graphics/ChessBoard.png");
@@ -331,15 +330,6 @@ public class Board {
         return false;
     }
 
-    /**
-     * Setter for lastClickedField
-     *
-     * @param row    the row of the field that was clicked last
-     * @param column the column of the field that was clicked last
-     */
-    public void setLastClickedField(int row, int column) {
-        lastClickedField = fields[row][column];
-    }
 
     /**
      * Save field's current state
