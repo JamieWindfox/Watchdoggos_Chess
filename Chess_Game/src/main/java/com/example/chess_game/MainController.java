@@ -39,15 +39,22 @@ public class MainController extends Application implements Initializable {
     @FXML private FlowPane flowpanel_cemetary_white;
     @FXML private FlowPane flowpanel_cemetary_black;
     @FXML private Button resign_btn;
+    @FXML private Button prev_moves_btn;
     @FXML private Label label_player_white;
     @FXML private Label label_player_black;
     @FXML private Label label_timer_white;
     @FXML private Label label_timer_black;
 
-    @Override
     /**
      * Clear label texts so the user is not distracted and build board & buttons
+     *
+     * Method override from Initializable Interface - we do not use the params here, but they have to be here
+     * in order to fit the overridden method
+     *
+     * @param location relative path to root object
+     * @param resources resources used to localize root object
      */
+    @Override
     public void initialize(URL location, ResourceBundle resources) {
         label_player_white.setText("");
         label_player_black.setText("");
@@ -56,6 +63,7 @@ public class MainController extends Application implements Initializable {
 
         gridpane_board.setOnMouseClicked(this::handle);
         resign_btn.setVisible(false);
+        prev_moves_btn.setVisible(false);
     }
 
     /**
@@ -273,6 +281,7 @@ public class MainController extends Application implements Initializable {
 
             setStartFormation();
             resign_btn.setVisible(true);
+            prev_moves_btn.setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
