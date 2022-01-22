@@ -196,40 +196,32 @@ public class Game {
         return board.getMoves();
     }
 
-    public boolean isDraw() {
-        toggleCurrentPlayer();
-
-        Set<Piece> playerToMovePieces = board.getPieces(currentPlayer.getColor());
-        Set<Piece> enemyPieces = board.getPieces(currentPlayer.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE);
-
-        // Stalemate
-        boolean stalemate = playerToMovePieces.stream()
+    public boolean isStalemate(Set<Piece> playerToMovePieces) {
+        return playerToMovePieces.stream()
                 .noneMatch(piece -> piece.getLegalMoves(board, board.getPieceLocation(piece)).size() > 0);
+    }
 
-        // Insufficient material
-        boolean enemyInsufficientMaterial = enemyPieces.stream().filter(piece -> !(piece instanceof King))
-                .allMatch(piece -> piece instanceof Bishop || piece instanceof Knight);
-        boolean insufficient =
-                playerToMovePieces.stream()
-                        .filter(piece -> !(piece instanceof King))
-                        .allMatch(piece -> piece instanceof Bishop || piece instanceof Knight) && enemyInsufficientMaterial;
+    public boolean hasPlayerInsufficientMaterial(Set<Piece> playerToMovePieces, Set<Piece> enemyPieces) {
+        return playerToMovePieces.stream()
+                .filter(piece -> !(piece instanceof King))
+                .allMatch(piece -> piece instanceof Bishop || piece instanceof Knight) &&
+                enemyPieces.stream().filter(piece -> !(piece instanceof King))
+                        .allMatch(piece -> piece instanceof Bishop || piece instanceof Knight);
+    }
 
-
-        // Threefold repetition
+    public boolean isThreefoldRepetition() {
         boolean repetition = false;
         List<Position> positions = board.getBoardPositions();
         for (Position p : positions) {
-            int positionCount = Collections.frequency(positions, p);
-            if (positionCount == 3) {
+            if (Collections.frequency(positions, p) == 3) {
                 repetition = true;
                 break;
             }
         }
+        return repetition;
+    }
 
-        // Mutual agreement
-        // TODO
-
-        // 50-Move rule
+    public boolean isFiftyRuleEffective() {
         List<String> moves = board.getMoves();
         boolean fiftyMoveRule = false;
         if (moves.size() > 50) {
@@ -237,15 +229,21 @@ public class Game {
                     .stream()
                     .noneMatch(move -> move.length() == 2 || move.contains("x"));
         }
+        return fiftyMoveRule;
+    }
+
+    public boolean isDraw() {
+        toggleCurrentPlayer();
+        Set<Piece> playerToMovePieces = board.getPieces(currentPlayer.getColor());
+        Set<Piece> enemyPieces = board.getPieces(currentPlayer.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE);
+        toggleCurrentPlayer();
 
         // Timeout-Draw - Player to move ran out of time and enemy has insufficient materials
+        // TODO
         boolean timeoutDraw = false;
-        if (enemyInsufficientMaterial) {
-            timeoutDraw = true;
-        }
 
-        toggleCurrentPlayer();
-        return stalemate || insufficient || repetition || fiftyMoveRule || timeoutDraw;
+        return isStalemate(playerToMovePieces) || hasPlayerInsufficientMaterial(playerToMovePieces, enemyPieces) ||
+                isThreefoldRepetition() || isFiftyRuleEffective() || timeoutDraw;
     }
 
     public Field getField(int row, int column) {
@@ -266,11 +264,12 @@ public class Game {
 
     /**
      * Getter for the player of the given color
+     *
      * @param color The color of which the player should be returned
      * @return The player of the given color
      */
     public Player getPlayer(ChessColor color) {
-        if(color.equals(ChessColor.WHITE)) {
+        if (color.equals(ChessColor.WHITE)) {
             return white;
         }
         return black;
