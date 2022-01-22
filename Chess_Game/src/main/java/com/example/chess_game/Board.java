@@ -176,43 +176,73 @@ public class Board {
             pieceLocation.remove(newField.getPiece());
         }
 
-        if (piece instanceof Pawn) {
-            // Check if move was an En Passant
-            if (newField.getPiece() == null && oldField.getColumn() != newField.getColumn()) {
-                Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == ChessColor.BLACK ? 1 : -1)][newField.getColumn()];
-                if (capturedPawnField.getPiece() instanceof Pawn) {
-                    Piece capturedPawn = capturedPawnField.getPiece();
-                    pieceLocation.remove(capturedPawn);
-                    fields[capturedPawnField.getRow()][capturedPawnField.getColumn()].setPiece(null);
-                    gridpane_board.getChildren().remove(pieceImageViews.get(capturedPawn));
-                    pieceImageViews.remove(capturedPawn);
-                }
-            }
+        ifMoveIsEnPassantUpdate(piece, oldField, newField, gridpane_board, pieceImageViews);
+        ifMoveIsCastlingUpdate(moveAnnotation, piece, newField, gridpane_board, pieceImageViews);
 
-            // Check if move was Promotion
-            if (newField.getRow() == 0 || newField.getRow() == 7) {
-                Piece promoPiece = showPromotionDialog(piece.getColor());
-                if (piece.getColor() == ChessColor.WHITE) {
-                    white.promotePiece((Pawn) piece, promoPiece);
-                } else {
-                    black.promotePiece((Pawn) piece, promoPiece);
-                }
-                pieceLocation.remove(piece);
-                pieceLocation.put(promoPiece, newField);
-
-                ((Pawn) piece).setPromoted(true);
-                gridpane_board.getChildren().remove(pieceImageViews.get(piece));
-                pieceImageViews.remove(piece);
-                ImageView newImgView = new ImageView(promoPiece.getImage());
-
-                gridpane_board.add(newImgView, newField.getColumn(), 7 - newField.getRow());
-                pieceImageViews.put(promoPiece, newImgView);
-
-                promotionAnnotation = "=" + promoPiece.getAnnotationLetter();
-                piece = promoPiece;
-            }
+        Piece promoPiece = ifMoveIsPromotionUpdate(piece, newField, gridpane_board, pieceImageViews);
+        if (promoPiece != null) {
+            promotionAnnotation = "=" + promoPiece.getAnnotationLetter();
+            piece = promoPiece;
         }
 
+        fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
+        fields[newField.getRow()][newField.getColumn()].setPiece(piece);
+
+        String checkAnnotation = "";
+        if (isEnemyKingInCheck(piece.getColor())) {
+            checkAnnotation = "+";
+        }
+        boolean checkmate = isCheckmate(piece.getColor());
+        if (checkmate) {
+            checkAnnotation = "#";
+        }
+        moves.add(moveAnnotation + promotionAnnotation + checkAnnotation);
+        piece.increaseMoveCounter();
+        boardPositions.add(new Position(Map.copyOf(pieceLocation), piece.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE));
+        return checkmate;
+    }
+
+    private Piece ifMoveIsPromotionUpdate(Piece piece, Field newField, GridPane gridpane_board,
+                                          Map<Piece, ImageView> pieceImageViews) {
+        if ((newField.getRow() == 0 || newField.getRow() == 7) && piece instanceof Pawn) {
+            Piece promoPiece = showPromotionDialog(piece.getColor());
+            if (piece.getColor() == ChessColor.WHITE) {
+                white.promotePiece((Pawn) piece, promoPiece);
+            } else {
+                black.promotePiece((Pawn) piece, promoPiece);
+            }
+            pieceLocation.remove(piece);
+            pieceLocation.put(promoPiece, newField);
+
+            ((Pawn) piece).setPromoted(true);
+            gridpane_board.getChildren().remove(pieceImageViews.get(piece));
+            pieceImageViews.remove(piece);
+            ImageView newImgView = new ImageView(promoPiece.getImage());
+
+            gridpane_board.add(newImgView, newField.getColumn(), 7 - newField.getRow());
+            pieceImageViews.put(promoPiece, newImgView);
+
+            return promoPiece;
+        }
+        return null;
+    }
+
+    private void ifMoveIsEnPassantUpdate(Piece piece, Field oldField, Field newField,
+                                         GridPane gridpane_board, Map<Piece, ImageView> pieceImageViews) {
+        if (newField.getPiece() == null && oldField.getColumn() != newField.getColumn() && piece instanceof Pawn) {
+            Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == ChessColor.BLACK ? 1 : -1)][newField.getColumn()];
+            if (capturedPawnField.getPiece() instanceof Pawn) {
+                Piece capturedPawn = capturedPawnField.getPiece();
+                pieceLocation.remove(capturedPawn);
+                fields[capturedPawnField.getRow()][capturedPawnField.getColumn()].setPiece(null);
+                gridpane_board.getChildren().remove(pieceImageViews.get(capturedPawn));
+                pieceImageViews.remove(capturedPawn);
+            }
+        }
+    }
+
+    private void ifMoveIsCastlingUpdate(String moveAnnotation, Piece piece, Field newField,
+                                        GridPane gridpane_board, Map<Piece, ImageView> pieceImageViews) {
         // Check if move was short or long castle
         if (moveAnnotation.equals("O-O") || moveAnnotation.equals("O-O-O")) {
             String rooksColumn;
@@ -238,22 +268,6 @@ public class Board {
             gridpane_board.getChildren().remove(pieceImageViews.get(rook));
             gridpane_board.add(pieceImageViews.get(rook), rookCastleField.getColumn(), 7 - rookCastleField.getRow());
         }
-
-        fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
-        fields[newField.getRow()][newField.getColumn()].setPiece(piece);
-
-        String checkAnnotation = "";
-        if (isEnemyKingInCheck(piece.getColor())) {
-            checkAnnotation = "+";
-        }
-        boolean checkmate = isCheckmate(piece.getColor());
-        if (checkmate) {
-            checkAnnotation = "#";
-        }
-        moves.add(moveAnnotation + promotionAnnotation + checkAnnotation);
-        piece.increaseMoveCounter();
-        boardPositions.add(new Position(Map.copyOf(pieceLocation), piece.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE));
-        return checkmate;
     }
 
     /**
@@ -332,6 +346,7 @@ public class Board {
      * Move piece to supposedly valid field
      * Check if own King is in check
      * Restore board state
+     *
      * @param availableMoves
      * @param piece
      */
