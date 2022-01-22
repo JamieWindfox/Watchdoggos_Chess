@@ -5,29 +5,29 @@ import java.util.List;
 import java.util.Set;
 
 public class Game {
-    private final Player black;
-    private final Player white;
-    private Player currentPlayer;
+    private static Player black;
+    private static Player white;
+    private static Player currentPlayer;
 
     /**
      * The one board instance that is currently running
      */
     private static Board board;
 
-    public Game(Player playerWhite, Player playerBlack) {
-        this.black = playerBlack;
-        this.white = playerWhite;
-        currentPlayer = this.white;
+    public static void initGame(Player playerWhite, Player playerBlack) {
+        black = playerBlack;
+        white = playerWhite;
+        currentPlayer = white;
         board = new Board(white, black);
     }
 
-    public void toggleCurrentPlayer() {
+    public static void toggleCurrentPlayer() {
         currentPlayer.getTimer().stop();
         currentPlayer = (currentPlayer == black) ? white : black;
         currentPlayer.getTimer().start();
     }
 
-    public Player getCurrentPlayer() {
+    public static Player getCurrentPlayer() {
         return currentPlayer;
     }
 
@@ -35,16 +35,16 @@ public class Game {
         return board;
     }
 
-    public List<String> getMoves() {
+    public static List<String> getMoves() {
         return board.getMoves();
     }
 
-    public boolean isStalemate(Set<Piece> playerToMovePieces) {
+    public static boolean isStalemate(Set<Piece> playerToMovePieces) {
         return playerToMovePieces.stream()
                 .noneMatch(piece -> piece.getLegalMoves(board, board.getPieceLocation(piece)).size() > 0);
     }
 
-    public boolean hasPlayerInsufficientMaterial(Set<Piece> playerToMovePieces, Set<Piece> enemyPieces) {
+    public static boolean hasPlayerInsufficientMaterial(Set<Piece> playerToMovePieces, Set<Piece> enemyPieces) {
         return playerToMovePieces.stream()
                 .filter(piece -> !(piece instanceof King))
                 .allMatch(piece -> piece instanceof Bishop || piece instanceof Knight) &&
@@ -52,7 +52,7 @@ public class Game {
                         .allMatch(piece -> piece instanceof Bishop || piece instanceof Knight);
     }
 
-    public boolean isThreefoldRepetition() {
+    public static boolean isThreefoldRepetition() {
         boolean repetition = false;
         List<Position> positions = board.getBoardPositions();
         for (Position p : positions) {
@@ -64,7 +64,7 @@ public class Game {
         return repetition;
     }
 
-    public boolean isFiftyRuleEffective() {
+    public static boolean isFiftyRuleEffective() {
         List<String> moves = board.getMoves();
         boolean fiftyMoveRule = false;
         if (moves.size() > 50) {
@@ -75,7 +75,7 @@ public class Game {
         return fiftyMoveRule;
     }
 
-    public boolean isDraw() {
+    public static boolean isDraw() {
         toggleCurrentPlayer();
         Set<Piece> playerToMovePieces = board.getPieces(currentPlayer.getColor());
         Set<Piece> enemyPieces = board.getPieces(currentPlayer.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE);
@@ -89,16 +89,11 @@ public class Game {
                 isThreefoldRepetition() || isFiftyRuleEffective() || timeoutDraw;
     }
 
-    public Field getField(int row, int column) {
+    public static Field getField(int row, int column) {
         if (row < 0 || column < 0 || row > 7 || column > 7) {
             throw new IllegalArgumentException("Illegal Coordinate was given to Game::getField(row, column)");
         }
         return board.getFields()[column][row];
-    }
-
-    @Override
-    public String toString() {
-        return "Current Game";
     }
 
     /**
@@ -107,7 +102,7 @@ public class Game {
      * @param color The color of which the player should be returned
      * @return The player of the given color
      */
-    public Player getPlayer(ChessColor color) {
+    public static Player getPlayer(ChessColor color) {
         if (color.equals(ChessColor.WHITE)) {
             return white;
         }
