@@ -246,10 +246,9 @@ public class Board {
         if (isEnemyKingInCheck(piece.getColor())) {
             checkAnnotation = "+";
         }
-        boolean checkmate = false;
-        if (isCheckmate(piece.getColor())) {
+        boolean checkmate = isCheckmate(piece.getColor());
+        if (checkmate) {
             checkAnnotation = "#";
-            checkmate = true;
         }
         moves.add(moveAnnotation + promotionAnnotation + checkAnnotation);
         piece.increaseMoveCounter();

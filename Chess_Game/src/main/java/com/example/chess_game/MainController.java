@@ -34,6 +34,7 @@ public class MainController extends Application implements Initializable {
     Piece selected_piece = null;
 
     Game game;
+    boolean gameRunning = false;
 
     @FXML private GridPane gridpane_board;
     @FXML private FlowPane flowpanel_cemetary_white;
@@ -51,7 +52,7 @@ public class MainController extends Application implements Initializable {
      * Method override from Initializable Interface - we do not use the params here, but they have to be here
      * in order to fit the overridden method
      *
-     * @param location relative path to root object
+     * @param location  relative path to root object
      * @param resources resources used to localize root object
      */
     @Override
@@ -97,8 +98,10 @@ public class MainController extends Application implements Initializable {
 
         if (checkmate) {
             openWinnerDialog(game.getPlayer(selected_piece.getColor()), "Other King is checkmate");
+            return;
         } else if (game.isDraw()) {
             openDrawDialog();
+            return;
         }
 
         selected_piece = null;
@@ -110,6 +113,7 @@ public class MainController extends Application implements Initializable {
      */
     //WIP
     private void openWinnerDialog(Player winner, String causeOfWin) {
+        stopGame();
         // Build dialog
         Alert winnerDialog = new Alert(Alert.AlertType.NONE);
         winnerDialog.setTitle("Congratulations!");
@@ -129,6 +133,7 @@ public class MainController extends Application implements Initializable {
      * Opens a dialog to tell the players that the game concluded to a draw
      */
     private void openDrawDialog() {
+        stopGame();
         // Build dialog
         Alert drawDialog = new Alert(Alert.AlertType.NONE);
         drawDialog.setTitle("DRAW!");
@@ -145,9 +150,9 @@ public class MainController extends Application implements Initializable {
     }
 
     private void handle(MouseEvent mouseEvent) {
-        if (game == null) return;
+        if (!gameRunning) return;
 
-        Field clickedField = getField((int)mouseEvent.getX() / 37, (int)mouseEvent.getY() / 37);
+        Field clickedField = getField((int) mouseEvent.getX() / 37, (int) mouseEvent.getY() / 37);
         highlightClickedField(clickedField);
 
         if (selected_piece != null && highlightedFieldNames.contains(clickedField.getFieldName())) {
@@ -160,7 +165,9 @@ public class MainController extends Application implements Initializable {
             Set<Field> legalMoves = piece.getLegalMoves(Game.getBoard(), clickedField);
             highlightValidMoves(legalMoves);
         }
-        if(game.getCurrentPlayer().getTimer().hasRunOut()) {
+        if (!gameRunning) return;
+
+        if (game.getCurrentPlayer().getTimer().hasRunOut()) {
             Player loser = game.getCurrentPlayer();
             Player winner = (loser.getColor() == ChessColor.WHITE) ? game.getPlayer(ChessColor.BLACK) : game.getPlayer(ChessColor.WHITE);
             openWinnerDialog(winner, "Time of other Player has run out.");
@@ -168,13 +175,13 @@ public class MainController extends Application implements Initializable {
     }
 
     /**
-     * @param row the row coordinate
+     * @param row    the row coordinate
      * @param column the column coordinate
      * @return the field in the given coordinates
      */
     private Field getField(int row, int column) {
         Field field = null;
-        if (game != null) {
+        if (gameRunning) {
             field = game.getField(row, 7 - column);
             System.out.println("    Clicked on field: " + field.getFieldName());
         }
@@ -256,7 +263,7 @@ public class MainController extends Application implements Initializable {
 
             if (!dialog.getDialogResult()) return; // User clicked Cancel
 
-            if(game != null) {
+            if (gameRunning) {
                 game.getPlayer(ChessColor.WHITE).getTimer().resetAndStop();
                 game.getPlayer(ChessColor.BLACK).getTimer().resetAndStop();
             }
@@ -282,6 +289,7 @@ public class MainController extends Application implements Initializable {
             setStartFormation();
             resign_btn.setVisible(true);
             prev_moves_btn.setVisible(true);
+            gameRunning = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -292,7 +300,7 @@ public class MainController extends Application implements Initializable {
         System.out.println("INFO: Player clicked on 'New Game'");
 
         // Check if game is running
-        if (game != null) {
+        if (gameRunning) {
             // ask if the player really wants to start a new game
             Alert saveGameDialog = new Alert(Alert.AlertType.NONE);
             saveGameDialog.setTitle("Discard current game");
@@ -352,7 +360,7 @@ public class MainController extends Application implements Initializable {
 
         TextFlow textFlow = new TextFlow();
         Text text;
-        if (game != null) {
+        if (gameRunning) {
             List<String> moves = game.getMoves();
             for (int i = 0; i < moves.size(); i++) {
                 // Show Number of round (one round means turn for both)
@@ -380,6 +388,14 @@ public class MainController extends Application implements Initializable {
         );
 
         resignGameDialog.showAndWait();
+    }
+
+    private void stopGame() {
+        selected_piece = null;
+        game.getPlayer(ChessColor.WHITE).getTimer().resetAndStop();
+        game.getPlayer(ChessColor.BLACK).getTimer().resetAndStop();
+        gameRunning = false;
+        resign_btn.setVisible(false);
     }
 
     public static void main(String[] args) {
