@@ -432,4 +432,20 @@ public class Board {
             return null;
         }
     }
+    /**
+     * Gets a set of all kings that are in check at the moment
+     * @return a set of the kings in check
+     */
+    public Set<King> getKingsInCheck() {
+        Set<King> kingsInCheck = new HashSet<>();
+
+        if(isEnemyKingInCheck(ChessColor.WHITE)) {
+            kingsInCheck.add(getKing(ChessColor.BLACK));
+        }
+        if(isEnemyKingInCheck(ChessColor.BLACK)) {
+            kingsInCheck.add(getKing(ChessColor.WHITE));
+        }
+
+        return kingsInCheck;
+    }
 }

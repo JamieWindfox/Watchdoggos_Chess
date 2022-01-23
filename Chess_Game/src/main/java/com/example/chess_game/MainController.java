@@ -165,6 +165,7 @@ public class MainController extends Application implements Initializable {
             Player winner = (loser.getColor() == ChessColor.WHITE) ? game.getPlayer(ChessColor.BLACK) : game.getPlayer(ChessColor.WHITE);
             openWinnerDialog(winner, "Time of other Player has run out.");
         }
+        highlightKingsInCheck();
     }
 
     /**
@@ -380,6 +381,27 @@ public class MainController extends Application implements Initializable {
         );
 
         resignGameDialog.showAndWait();
+    }
+
+    /**
+     * Checks if there are any kings in check and, if yes, hightlight them
+     */
+    private void highlightKingsInCheck() {
+        Set<King> kingsInCheck = Game.getBoard().getKingsInCheck();
+        if(kingsInCheck == null || kingsInCheck.isEmpty()) {
+            return;
+        }
+        for (int row = 0; row < 8; ++row) {
+            for (int column = 0; column < 8; ++column) {
+                Field field = game.getField(row, column);
+                if (kingsInCheck.contains(field.getPiece())) {
+                    ImageView node = new ImageView(HIGHLIGHT_KING_CHECK);
+                    gridpane_board.add(node, row, 7 - column);
+                    highlightedFieldNames.add(field.getFieldName());
+                    highlightImageViews.add(node);
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
