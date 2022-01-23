@@ -22,9 +22,9 @@ public class Game {
     }
 
     public static void toggleCurrentPlayer() {
-        currentPlayer.getTimer().stop();
+        currentPlayer.timer().stop();
         currentPlayer = (currentPlayer == black) ? white : black;
-        currentPlayer.getTimer().start();
+        currentPlayer.timer().start();
     }
 
     public static Player getCurrentPlayer() {
@@ -77,8 +77,8 @@ public class Game {
 
     public static boolean isDraw() {
         toggleCurrentPlayer();
-        Set<Piece> playerToMovePieces = board.getPieces(currentPlayer.getColor());
-        Set<Piece> enemyPieces = board.getPieces(currentPlayer.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE);
+        Set<Piece> playerToMovePieces = board.getPieces(currentPlayer.color());
+        Set<Piece> enemyPieces = board.getPieces(currentPlayer.color() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE);
         toggleCurrentPlayer();
 
         // Timeout-Draw - Player to move ran out of time and enemy has insufficient materials

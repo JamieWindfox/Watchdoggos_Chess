@@ -99,7 +99,6 @@ public class Board {
 
         fieldToPlace.setPiece(p);
         pieceLocation.put(p, fieldToPlace);
-        player.addPiece(p);
     }
 
     /**
@@ -205,11 +204,6 @@ public class Board {
                                           Map<Piece, ImageView> pieceImageViews) {
         if ((newField.getRow() == 0 || newField.getRow() == 7) && piece instanceof Pawn) {
             Piece promoPiece = showPromotionDialog(piece.getColor());
-            if (piece.getColor() == ChessColor.WHITE) {
-                white.promotePiece((Pawn) piece, promoPiece);
-            } else {
-                black.promotePiece((Pawn) piece, promoPiece);
-            }
             pieceLocation.remove(piece);
             pieceLocation.put(promoPiece, newField);
 

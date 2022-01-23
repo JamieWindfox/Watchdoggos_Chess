@@ -116,7 +116,7 @@ public class MainController extends Application implements Initializable {
         // Build dialog
         Alert winnerDialog = new Alert(Alert.AlertType.NONE);
         winnerDialog.setTitle("Congratulations!");
-        winnerDialog.setContentText(winner.getName() + " has won the Game.\nCause of win: " + causeOfWin);
+        winnerDialog.setContentText(winner.name() + " has won the Game.\nCause of win: " + causeOfWin);
 
         winnerDialog.getButtonTypes().setAll(
                 new ButtonType("Ok", ButtonBar.ButtonData.YES)
@@ -158,7 +158,7 @@ public class MainController extends Application implements Initializable {
             movePiece(clickedField);
         } else {
             Piece piece = clickedField.getPiece();
-            if (piece == null || piece.getColor() != Game.getCurrentPlayer().getColor()) return;
+            if (piece == null || piece.getColor() != Game.getCurrentPlayer().color()) return;
             System.out.println("Piece on clicked field: " + piece);
             selected_piece = piece;
             Set<Field> legalMoves = piece.getLegalMoves(Game.getBoard(), clickedField);
@@ -166,9 +166,9 @@ public class MainController extends Application implements Initializable {
         }
         if (!gameRunning) return;
 
-        if (Game.getCurrentPlayer().getTimer().hasRunOut()) {
+        if (Game.getCurrentPlayer().timer().hasRunOut()) {
             Player loser = Game.getCurrentPlayer();
-            Player winner = (loser.getColor() == ChessColor.WHITE) ? Game.getPlayer(ChessColor.BLACK) : Game.getPlayer(ChessColor.WHITE);
+            Player winner = (loser.color() == ChessColor.WHITE) ? Game.getPlayer(ChessColor.BLACK) : Game.getPlayer(ChessColor.WHITE);
             openWinnerDialog(winner, "Time of other Player has run out.");
         }
     }
@@ -263,8 +263,8 @@ public class MainController extends Application implements Initializable {
             if (!dialog.getDialogResult()) return; // User clicked Cancel
 
             if (gameRunning) {
-                Game.getPlayer(ChessColor.WHITE).getTimer().resetAndStop();
-                Game.getPlayer(ChessColor.BLACK).getTimer().resetAndStop();
+                Game.getPlayer(ChessColor.WHITE).timer().resetAndStop();
+                Game.getPlayer(ChessColor.BLACK).timer().resetAndStop();
             }
 
             Game.initGame(
@@ -283,7 +283,7 @@ public class MainController extends Application implements Initializable {
             label_player_black.setText(dialog.textfield_player_black.getText());
             label_player_white.setText(dialog.textfield_player_white.getText());
 
-            Game.getPlayer(ChessColor.WHITE).getTimer().start();
+            Game.getPlayer(ChessColor.WHITE).timer().start();
 
             setStartFormation();
             resign_btn.setVisible(true);
@@ -344,7 +344,7 @@ public class MainController extends Application implements Initializable {
 
         if (ButtonBar.ButtonData.YES.equals(result.getButtonData())) {
             Player activePlayer = new Player(ChessColor.BLACK, "Tom", new ChessTimer(new Label(), 1)); // Player who clicked on resign in their turn
-            Player winner = (activePlayer.getColor() == ChessColor.WHITE ? Game.getPlayer(ChessColor.BLACK) : Game.getPlayer(ChessColor.WHITE));
+            Player winner = (activePlayer.color() == ChessColor.WHITE ? Game.getPlayer(ChessColor.BLACK) : Game.getPlayer(ChessColor.WHITE));
             openWinnerDialog(winner, "Other player resigned.");
         }
     }
@@ -391,8 +391,8 @@ public class MainController extends Application implements Initializable {
 
     private void stopGame() {
         selected_piece = null;
-        Game.getPlayer(ChessColor.WHITE).getTimer().resetAndStop();
-        Game.getPlayer(ChessColor.BLACK).getTimer().resetAndStop();
+        Game.getPlayer(ChessColor.WHITE).timer().resetAndStop();
+        Game.getPlayer(ChessColor.BLACK).timer().resetAndStop();
         gameRunning = false;
         resign_btn.setVisible(false);
     }
