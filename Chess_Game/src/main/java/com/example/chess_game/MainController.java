@@ -257,7 +257,7 @@ public class MainController extends Application implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("newgame-dialog.fxml"));
             Parent root = loader.load();
-            NewgameDialog dialog = loader.getController();
+            NewGameDialog dialog = loader.getController();
             dialog.showDialog(root); // Waits for the dialog to finish
 
             if (!dialog.getDialogResult()) return; // User clicked Cancel
@@ -358,9 +358,9 @@ public class MainController extends Application implements Initializable {
         resignGameDialog.setTitle("Previous Moves");
 
         TextFlow textFlow = new TextFlow();
-        Text text;
-        if (gameRunning) {
+        if (!Game.getMoves().isEmpty()) {
             List<String> moves = Game.getMoves();
+            Text text;
             for (int i = 0; i < moves.size(); i++) {
                 // Show Number of round (one round means turn for both)
                 if (i % 2 == 0) {

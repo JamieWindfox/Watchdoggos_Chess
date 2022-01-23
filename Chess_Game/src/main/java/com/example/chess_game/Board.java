@@ -175,7 +175,7 @@ public class Board {
         }
 
         ifMoveIsEnPassantUpdate(piece, oldField, newField, gridpane_board, pieceImageViews);
-        ifMoveIsCastlingUpdate(moveAnnotation, piece, newField, gridpane_board, pieceImageViews);
+        ifMoveIsCastlingUpdate(moveAnnotation, piece.getColor(), newField, gridpane_board, pieceImageViews);
 
         Piece promoPiece = ifMoveIsPromotionUpdate(piece, newField, gridpane_board, pieceImageViews);
         if (promoPiece != null) {
@@ -200,6 +200,15 @@ public class Board {
         return checkmate;
     }
 
+    /**
+     * Checks if the move was a promotion - a special rule for the pawn
+     *
+     * @param piece           The piece that moved
+     * @param newField        The piece's newField
+     * @param gridpane_board  The GUI board
+     * @param pieceImageViews The map for ImageViews of the pieces
+     * @return If there was a promotion, it will return the promoted Piece otherwise null
+     */
     private Piece ifMoveIsPromotionUpdate(Piece piece, Field newField, GridPane gridpane_board,
                                           Map<Piece, ImageView> pieceImageViews) {
         if ((newField.getRow() == 0 || newField.getRow() == 7) && piece instanceof Pawn) {
@@ -220,6 +229,15 @@ public class Board {
         return null;
     }
 
+    /**
+     * Checks if the move was an En Passant - a special rule for the pawn
+     *
+     * @param piece           The piece that moved
+     * @param oldField        The piece's old field
+     * @param newField        The piece's new field
+     * @param gridpane_board  The GUI board
+     * @param pieceImageViews The map for ImageViews of the pieces
+     */
     private void ifMoveIsEnPassantUpdate(Piece piece, Field oldField, Field newField,
                                          GridPane gridpane_board, Map<Piece, ImageView> pieceImageViews) {
         if (newField.getPiece() == null && oldField.getColumn() != newField.getColumn() && piece instanceof Pawn) {
@@ -234,9 +252,17 @@ public class Board {
         }
     }
 
-    private void ifMoveIsCastlingUpdate(String moveAnnotation, Piece piece, Field newField,
+    /**
+     * Checks through the given moveAnnotation if the move was to castle the King
+     *
+     * @param moveAnnotation  The official annotation of the move
+     * @param color           The color of the player who made the move
+     * @param kingsNewField   The field the King will be set to
+     * @param gridpane_board  The GUI board
+     * @param pieceImageViews The map for ImageViews of the pieces
+     */
+    private void ifMoveIsCastlingUpdate(String moveAnnotation, ChessColor color, Field kingsNewField,
                                         GridPane gridpane_board, Map<Piece, ImageView> pieceImageViews) {
-        // Check if move was short or long castle
         if (moveAnnotation.equals("O-O") || moveAnnotation.equals("O-O-O")) {
             String rooksColumn;
             int colDiff;
@@ -248,12 +274,12 @@ public class Board {
                 colDiff = 1;
             }
 
-            Piece rook = getPieces(piece.getColor())
+            Piece rook = getPieces(color)
                     .stream()
                     .filter(playerPiece -> playerPiece instanceof Rook && pieceLocation.get(playerPiece).getFieldName().contains(rooksColumn))
                     .findFirst()
                     .get();
-            Field rookCastleField = fields[newField.getRow()][newField.getColumn() + colDiff];
+            Field rookCastleField = fields[kingsNewField.getRow()][kingsNewField.getColumn() + colDiff];
             pieceLocation.get(rook).setPiece(null);
             pieceLocation.put(rook, rookCastleField);
             rookCastleField.setPiece(rook);
@@ -332,9 +358,8 @@ public class Board {
      * Restore board state
      *
      * @param availableMoves A list of the available moves for the given piece
-     * @param piece the piece for which the check is made
+     * @param piece          the piece for which the check is made
      */
-
     public void removeMoveIfSelfCheck(Set<Field> availableMoves, Piece piece) {
         ChessColor enemyColor = piece.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE;
         Field originalPieceField = pieceLocation.get(piece);
@@ -355,6 +380,14 @@ public class Board {
         });
     }
 
+    /**
+     * When the King is in check, this method will return possible fields for pieces other than the king to block the attack
+     * or capture the attacking piece. If two or more pieces are setting the King in check simultaneously,
+     * then there are no legal moves for other Pieces - The King must move
+     *
+     * @param color The color of the King who is in check
+     * @return Set of possible fields to block or capture
+     */
     public Set<Field> getDefensiveBlocksOrCaptures(ChessColor color) {
         King king = getKing(color);
         ChessColor enemyColor = color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE;
