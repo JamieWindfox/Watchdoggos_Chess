@@ -278,7 +278,7 @@ public class Board {
                     .stream()
                     .filter(playerPiece -> playerPiece instanceof Rook && pieceLocation.get(playerPiece).getFieldName().contains(rooksColumn))
                     .findFirst()
-                    .get();
+                    .orElseThrow();
             Field rookCastleField = fields[kingsNewField.getRow()][kingsNewField.getColumn() + colDiff];
             pieceLocation.get(rook).setPiece(null);
             pieceLocation.put(rook, rookCastleField);
@@ -298,7 +298,7 @@ public class Board {
                 .stream()
                 .filter(piece -> piece instanceof King && piece.getColor() == color)
                 .findFirst()
-                .get();
+                .orElseThrow();
     }
 
     /**
@@ -463,17 +463,19 @@ public class Board {
             return null;
         }
     }
+
     /**
      * Gets a set of all kings that are in check at the moment
+     *
      * @return a set of the kings in check
      */
-    public Set<King> getKingsInCheck() {
-        Set<King> kingsInCheck = new HashSet<>();
+    public Set<Piece> getKingsInCheck() {
+        Set<Piece> kingsInCheck = new HashSet<>();
 
-        if(isEnemyKingInCheck(ChessColor.WHITE)) {
+        if (isEnemyKingInCheck(ChessColor.WHITE)) {
             kingsInCheck.add(getKing(ChessColor.BLACK));
         }
-        if(isEnemyKingInCheck(ChessColor.BLACK)) {
+        if (isEnemyKingInCheck(ChessColor.BLACK)) {
             kingsInCheck.add(getKing(ChessColor.WHITE));
         }
 

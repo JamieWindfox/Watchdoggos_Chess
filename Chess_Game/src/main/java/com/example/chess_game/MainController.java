@@ -394,7 +394,7 @@ public class MainController extends Application implements Initializable {
      * Checks if there are any kings in check and, if yes, hightlight them
      */
     private void highlightKingsInCheck() {
-        Set<King> kingsInCheck = Game.getBoard().getKingsInCheck();
+        Set<Piece> kingsInCheck = Game.getBoard().getKingsInCheck();
         if(kingsInCheck == null || kingsInCheck.isEmpty()) {
             return;
         }

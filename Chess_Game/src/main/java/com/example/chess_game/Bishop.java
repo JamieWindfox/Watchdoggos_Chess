@@ -16,10 +16,8 @@ public class Bishop extends Piece {
         validMoves = new HashSet<>();
         for (int rowDiff = -(currentField.getRow()); rowDiff <= (7 - currentField.getRow()); rowDiff++) {
             for (int colDiff = -(currentField.getColumn()); colDiff <= (7 - currentField.getColumn()); colDiff++) {
-                if (rowDiff == 0 && colDiff == 0) continue; // Field is piece itself
-
                 // Moves on diagonally
-                if (Math.abs(colDiff) == Math.abs(rowDiff)) {
+                if (Math.abs(colDiff) == Math.abs(rowDiff) && rowDiff != 0) {
                     Field field = board.getFields()[currentField.getRow() + rowDiff][currentField.getColumn() + colDiff];
                     if (field.getPiece() != null && field.getPiece().getColor() == this.getColor()) continue;
                     if (board.isPieceBetweenFields(board.getFields(), currentField, field)) continue;
