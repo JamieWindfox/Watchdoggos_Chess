@@ -3,8 +3,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<AnchorPane style="-fx-border-color: #000000; -fx-border-width: 3px;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chess_game.NewgameDialog">
+<AnchorPane style="-fx-border-color: #000000; -fx-border-width: 3px;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chess_game.NewGameDialog">
    <children>
       <VBox>
          <children>

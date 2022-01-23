@@ -25,7 +25,6 @@ public class King extends Piece {
                 if (field.getPiece() == null || !isEnemyPieceProtected(board, field)) {
                     validateAndAddMove(field);
                 }
-                // todo Castling
             }
         }
         if (moveCounter == 0) {

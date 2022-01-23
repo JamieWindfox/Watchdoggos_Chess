@@ -29,15 +29,15 @@ public class MainController extends Application implements Initializable {
 
     Set<ImageView> highlightImageViews = new HashSet<>();
     Set<String> highlightedFieldNames = new HashSet<>();
-    List<ImageView> cemetary_white = new ArrayList<>();
-    List<ImageView> cemetary_black = new ArrayList<>();
+    List<ImageView> graveyard_white = new ArrayList<>();
+    List<ImageView> graveyard_black = new ArrayList<>();
     Piece selected_piece = null;
 
-    Game game;
+    boolean gameRunning = false;
 
-    @FXML private GridPane gridpane_board;
-    @FXML private FlowPane flowpanel_cemetary_white;
-    @FXML private FlowPane flowpanel_cemetary_black;
+    @FXML private GridPane gridPane_board;
+    @FXML private FlowPane flowPanel_graveyard_white;
+    @FXML private FlowPane flowPanel_graveyard_black;
     @FXML private Button resign_btn;
     @FXML private Button prev_moves_btn;
     @FXML private Label label_player_white;
@@ -51,7 +51,7 @@ public class MainController extends Application implements Initializable {
      * Method override from Initializable Interface - we do not use the params here, but they have to be here
      * in order to fit the overridden method
      *
-     * @param location relative path to root object
+     * @param location  relative path to root object
      * @param resources resources used to localize root object
      */
     @Override
@@ -61,7 +61,7 @@ public class MainController extends Application implements Initializable {
         label_timer_white.setText("");
         label_timer_black.setText("");
 
-        gridpane_board.setOnMouseClicked(this::handle);
+        gridPane_board.setOnMouseClicked(this::handle);
         resign_btn.setVisible(false);
         prev_moves_btn.setVisible(false);
     }
@@ -75,34 +75,36 @@ public class MainController extends Application implements Initializable {
         if (clickedField.getPiece() != null) {
             ImageView capturedPieceImageView = new ImageView(clickedField.getPiece().getImage());
             if (clickedField.getPiece().getColor() == ChessColor.WHITE) {
-                cemetary_white.add(capturedPieceImageView);
-                flowpanel_cemetary_white.getChildren().add(capturedPieceImageView);
+                graveyard_white.add(capturedPieceImageView);
+                flowPanel_graveyard_white.getChildren().add(capturedPieceImageView);
             } else { // black
-                cemetary_black.add(capturedPieceImageView);
-                flowpanel_cemetary_black.getChildren().add(capturedPieceImageView);
+                graveyard_black.add(capturedPieceImageView);
+                flowPanel_graveyard_black.getChildren().add(capturedPieceImageView);
             }
-            gridpane_board.getChildren().remove(pieceImageViews.get(clickedField.getPiece()));
+            gridPane_board.getChildren().remove(pieceImageViews.get(clickedField.getPiece()));
             pieceImageViews.remove(clickedField.getPiece());
         }
 
-        boolean checkmate = Game.getBoard().update(clickedField, selected_piece, gridpane_board, pieceImageViews);
+        boolean checkmate = Game.getBoard().update(clickedField, selected_piece, gridPane_board, pieceImageViews);
 
         // Skip changing board if the move was a Promotion
         if (!(selected_piece instanceof Pawn && ((Pawn) selected_piece).isPromoted())) {
-            gridpane_board.getChildren().remove(pieceImageViews.get(selected_piece));
+            gridPane_board.getChildren().remove(pieceImageViews.get(selected_piece));
             ImageView newImgView = new ImageView(selected_piece.getImage());
-            gridpane_board.add(newImgView, clickedField.getColumn(), 7 - clickedField.getRow());
+            gridPane_board.add(newImgView, clickedField.getColumn(), 7 - clickedField.getRow());
             pieceImageViews.put(selected_piece, newImgView);
         }
 
         if (checkmate) {
-            openWinnerDialog(game.getPlayer(selected_piece.getColor()), "Other King is checkmate");
-        } else if (game.isDraw()) {
+            openWinnerDialog(Game.getPlayer(selected_piece.getColor()), "Other King is checkmate");
+            return;
+        } else if (Game.isDraw()) {
             openDrawDialog();
+            return;
         }
 
         selected_piece = null;
-        game.toggleCurrentPlayer();
+        Game.toggleCurrentPlayer();
     }
 
     /**
@@ -110,10 +112,11 @@ public class MainController extends Application implements Initializable {
      */
     //WIP
     private void openWinnerDialog(Player winner, String causeOfWin) {
+        stopGame();
         // Build dialog
         Alert winnerDialog = new Alert(Alert.AlertType.NONE);
         winnerDialog.setTitle("Congratulations!");
-        winnerDialog.setContentText(winner.getName() + " has won the Game.\nCause of win: " + causeOfWin);
+        winnerDialog.setContentText(winner.name() + " has won the Game.\nCause of win: " + causeOfWin);
 
         winnerDialog.getButtonTypes().setAll(
                 new ButtonType("Ok", ButtonBar.ButtonData.YES)
@@ -129,6 +132,7 @@ public class MainController extends Application implements Initializable {
      * Opens a dialog to tell the players that the game concluded to a draw
      */
     private void openDrawDialog() {
+        stopGame();
         // Build dialog
         Alert drawDialog = new Alert(Alert.AlertType.NONE);
         drawDialog.setTitle("DRAW!");
@@ -145,38 +149,40 @@ public class MainController extends Application implements Initializable {
     }
 
     private void handle(MouseEvent mouseEvent) {
-        if (game == null) return;
+        if (!gameRunning) return;
 
-        Field clickedField = getField((int)mouseEvent.getX() / 37, (int)mouseEvent.getY() / 37);
+        Field clickedField = getField((int) mouseEvent.getX() / 37, (int) mouseEvent.getY() / 37);
         highlightClickedField(clickedField);
 
         if (selected_piece != null && highlightedFieldNames.contains(clickedField.getFieldName())) {
             movePiece(clickedField);
         } else {
             Piece piece = clickedField.getPiece();
-            if (piece == null || piece.getColor() != game.getCurrentPlayer().getColor()) return;
+            if (piece == null || piece.getColor() != Game.getCurrentPlayer().color()) return;
             System.out.println("Piece on clicked field: " + piece);
             selected_piece = piece;
             Set<Field> legalMoves = piece.getLegalMoves(Game.getBoard(), clickedField);
             highlightValidMoves(legalMoves);
         }
-        if(game.getCurrentPlayer().getTimer().hasRunOut()) {
-            Player loser = game.getCurrentPlayer();
-            Player winner = (loser.getColor() == ChessColor.WHITE) ? game.getPlayer(ChessColor.BLACK) : game.getPlayer(ChessColor.WHITE);
+        if (!gameRunning) return;
+
+        if (Game.getCurrentPlayer().timer().hasRunOut()) {
+            Player loser = Game.getCurrentPlayer();
+            Player winner = (loser.color() == ChessColor.WHITE) ? Game.getPlayer(ChessColor.BLACK) : Game.getPlayer(ChessColor.WHITE);
             openWinnerDialog(winner, "Time of other Player has run out.");
         }
         highlightKingsInCheck();
     }
 
     /**
-     * @param row the row coordinate
+     * @param row    the row coordinate
      * @param column the column coordinate
      * @return the field in the given coordinates
      */
     private Field getField(int row, int column) {
         Field field = null;
-        if (game != null) {
-            field = game.getField(row, 7 - column);
+        if (gameRunning) {
+            field = Game.getField(row, 7 - column);
             System.out.println("    Clicked on field: " + field.getFieldName());
         }
         return field;
@@ -186,15 +192,15 @@ public class MainController extends Application implements Initializable {
      * Highlights the clicked field and removes the highlighting from the other fields
      */
     private void highlightClickedField(Field field) {
-        gridpane_board.getChildren().removeAll(HIGHLIGHT_CLICKED);
+        gridPane_board.getChildren().removeAll(HIGHLIGHT_CLICKED);
         if (highlightImageViews != null && !highlightImageViews.isEmpty()) {
-            gridpane_board.getChildren().removeAll(highlightImageViews);
+            gridPane_board.getChildren().removeAll(highlightImageViews);
         }
 
         for (int row = 0; row < 8; ++row) {
             for (int column = 0; column < 8; ++column) {
-                if (field.equals(game.getField(row, column))) {
-                    gridpane_board.add(HIGHLIGHT_CLICKED, row, 7 - column);
+                if (field.equals(Game.getField(row, column))) {
+                    gridPane_board.add(HIGHLIGHT_CLICKED, row, 7 - column);
                 }
             }
         }
@@ -205,10 +211,10 @@ public class MainController extends Application implements Initializable {
         highlightedFieldNames = new HashSet<>();
         for (int row = 0; row < 8; ++row) {
             for (int column = 0; column < 8; ++column) {
-                Field field = game.getField(row, column);
+                Field field = Game.getField(row, column);
                 if (validMoves.contains(field)) {
                     ImageView node = new ImageView(HIGHLIGHT_VALID_MOVES_IMAGE);
-                    gridpane_board.add(node, row, 7 - column);
+                    gridPane_board.add(node, row, 7 - column);
                     highlightedFieldNames.add(field.getFieldName());
                     highlightImageViews.add(node);
                 }
@@ -218,19 +224,19 @@ public class MainController extends Application implements Initializable {
 
     private void setStartFormation() {
         pieceImageViews.clear();
-        gridpane_board.getChildren().clear();
-        cemetary_black.clear();
-        cemetary_white.clear();
-        flowpanel_cemetary_white.getChildren().clear();
-        flowpanel_cemetary_black.getChildren().clear();
+        gridPane_board.getChildren().clear();
+        graveyard_black.clear();
+        graveyard_white.clear();
+        flowPanel_graveyard_white.getChildren().clear();
+        flowPanel_graveyard_black.getChildren().clear();
 
         for (int row = 0; row < 8; ++row) {
             for (int column = 0; column < 8; ++column) {
-                Piece piece = game.getField(row, column).getPiece();
+                Piece piece = Game.getField(row, column).getPiece();
                 if (piece != null) {
                     ImageView pieceImage = new ImageView(piece.getImage());
                     pieceImageViews.put(piece, pieceImage);
-                    gridpane_board.add(pieceImage, row, 7 - column);
+                    gridPane_board.add(pieceImage, row, 7 - column);
                 }
             }
         }
@@ -252,17 +258,17 @@ public class MainController extends Application implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("newgame-dialog.fxml"));
             Parent root = loader.load();
-            NewgameDialog dialog = loader.getController();
+            NewGameDialog dialog = loader.getController();
             dialog.showDialog(root); // Waits for the dialog to finish
 
             if (!dialog.getDialogResult()) return; // User clicked Cancel
 
-            if(game != null) {
-                game.getPlayer(ChessColor.WHITE).getTimer().resetAndStop();
-                game.getPlayer(ChessColor.BLACK).getTimer().resetAndStop();
+            if (gameRunning) {
+                Game.getPlayer(ChessColor.WHITE).timer().resetAndStop();
+                Game.getPlayer(ChessColor.BLACK).timer().resetAndStop();
             }
 
-            game = new Game(
+            Game.initGame(
                     new Player(ChessColor.WHITE,
                             dialog.textfield_player_white.getText(),
                             new ChessTimer(label_timer_white,
@@ -278,11 +284,12 @@ public class MainController extends Application implements Initializable {
             label_player_black.setText(dialog.textfield_player_black.getText());
             label_player_white.setText(dialog.textfield_player_white.getText());
 
-            game.getPlayer(ChessColor.WHITE).getTimer().start();
+            Game.getPlayer(ChessColor.WHITE).timer().start();
 
             setStartFormation();
             resign_btn.setVisible(true);
             prev_moves_btn.setVisible(true);
+            gameRunning = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -293,7 +300,7 @@ public class MainController extends Application implements Initializable {
         System.out.println("INFO: Player clicked on 'New Game'");
 
         // Check if game is running
-        if (game != null) {
+        if (gameRunning) {
             // ask if the player really wants to start a new game
             Alert saveGameDialog = new Alert(Alert.AlertType.NONE);
             saveGameDialog.setTitle("Discard current game");
@@ -338,7 +345,7 @@ public class MainController extends Application implements Initializable {
 
         if (ButtonBar.ButtonData.YES.equals(result.getButtonData())) {
             Player activePlayer = new Player(ChessColor.BLACK, "Tom", new ChessTimer(new Label(), 1)); // Player who clicked on resign in their turn
-            Player winner = (activePlayer.getColor() == ChessColor.WHITE ? game.getPlayer(ChessColor.BLACK) : game.getPlayer(ChessColor.WHITE));
+            Player winner = (activePlayer.color() == ChessColor.WHITE ? Game.getPlayer(ChessColor.BLACK) : Game.getPlayer(ChessColor.WHITE));
             openWinnerDialog(winner, "Other player resigned.");
         }
     }
@@ -352,9 +359,9 @@ public class MainController extends Application implements Initializable {
         resignGameDialog.setTitle("Previous Moves");
 
         TextFlow textFlow = new TextFlow();
-        Text text;
-        if (game != null) {
-            List<String> moves = game.getMoves();
+        if (!Game.getMoves().isEmpty()) {
+            List<String> moves = Game.getMoves();
+            Text text;
             for (int i = 0; i < moves.size(); i++) {
                 // Show Number of round (one round means turn for both)
                 if (i % 2 == 0) {
@@ -393,15 +400,23 @@ public class MainController extends Application implements Initializable {
         }
         for (int row = 0; row < 8; ++row) {
             for (int column = 0; column < 8; ++column) {
-                Field field = game.getField(row, column);
+                Field field = Game.getField(row, column);
                 if (kingsInCheck.contains(field.getPiece())) {
                     ImageView node = new ImageView(HIGHLIGHT_KING_CHECK);
-                    gridpane_board.add(node, row, 7 - column);
+                    gridPane_board.add(node, row, 7 - column);
                     highlightedFieldNames.add(field.getFieldName());
                     highlightImageViews.add(node);
                 }
             }
         }
+    }
+
+    private void stopGame() {
+        selected_piece = null;
+        Game.getPlayer(ChessColor.WHITE).timer().resetAndStop();
+        Game.getPlayer(ChessColor.BLACK).timer().resetAndStop();
+        gameRunning = false;
+        resign_btn.setVisible(false);
     }
 
     public static void main(String[] args) {

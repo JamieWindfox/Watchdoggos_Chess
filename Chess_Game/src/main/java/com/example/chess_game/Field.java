@@ -1,8 +1,6 @@
 package com.example.chess_game;
 
-import javafx.event.EventHandler;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 
 public class Field {
     private final String fieldName;
@@ -20,15 +18,6 @@ public class Field {
         cell.setFitHeight(size);
         cell.setFitWidth(size);
         cell.setPickOnBounds(true);
-        /* @Migu Check if really not necessary
-        cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                Game.getBoard().setLastClickedField(row, column);
-                System.out.println("Field " + fieldName + " was clicked");
-            }
-        });
-        */
     }
 
     public String getFieldName() {
@@ -51,7 +40,9 @@ public class Field {
         this.piece = piece;
     }
 
-    public ImageView getCell() { return cell; }
+    public ImageView getCell() {
+        return cell;
+    }
 
     @Override
     public String toString() {

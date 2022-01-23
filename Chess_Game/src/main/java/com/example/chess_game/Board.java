@@ -20,7 +20,6 @@ public class Board {
     private final Player white;
     private final Player black;
     private final List<Position> boardPositions;
-    private Field lastClickedField = null;
 
     public Board(Player white, Player black) {
         this.boardImage = new Image("graphics/ChessBoard.png");
@@ -100,7 +99,6 @@ public class Board {
 
         fieldToPlace.setPiece(p);
         pieceLocation.put(p, fieldToPlace);
-        player.addPiece(p);
     }
 
     /**
@@ -161,7 +159,7 @@ public class Board {
      *
      * @param newField       The new location of the given piece
      * @param piece          The piece that is set to the given field
-     * @param gridpane_board
+     * @param gridpane_board The GridPane representation of the chess board
      * @return true if the king of the other player was set checkmate, false otherwise
      */
     public boolean update(Field newField, Piece piece, GridPane gridpane_board, Map<Piece, ImageView> pieceImageViews) {
@@ -176,44 +174,95 @@ public class Board {
             pieceLocation.remove(newField.getPiece());
         }
 
-        if (piece instanceof Pawn) {
-            // Check if move was an En Passant
-            if (newField.getPiece() == null && oldField.getColumn() != newField.getColumn()) {
-                Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == ChessColor.BLACK ? 1 : -1)][newField.getColumn()];
-                if (capturedPawnField.getPiece() instanceof Pawn) {
-                    Piece capturedPawn = capturedPawnField.getPiece();
-                    pieceLocation.remove(capturedPawn);
-                    fields[capturedPawnField.getRow()][capturedPawnField.getColumn()].setPiece(null);
-                    gridpane_board.getChildren().remove(pieceImageViews.get(capturedPawn));
-                    pieceImageViews.remove(capturedPawn);
-                }
-            }
+        ifMoveIsEnPassantUpdate(piece, oldField, newField, gridpane_board, pieceImageViews);
+        ifMoveIsCastlingUpdate(moveAnnotation, piece.getColor(), newField, gridpane_board, pieceImageViews);
 
-            // Check if move was Promotion
-            if (newField.getRow() == 0 || newField.getRow() == 7) {
-                Piece promoPiece = showPromotionDialog(piece.getColor());
-                if (piece.getColor() == ChessColor.WHITE) {
-                    white.promotePiece((Pawn) piece, promoPiece);
-                } else {
-                    black.promotePiece((Pawn) piece, promoPiece);
-                }
-                pieceLocation.remove(piece);
-                pieceLocation.put(promoPiece, newField);
-
-                ((Pawn) piece).setPromoted(true);
-                gridpane_board.getChildren().remove(pieceImageViews.get(piece));
-                pieceImageViews.remove(piece);
-                ImageView newImgView = new ImageView(promoPiece.getImage());
-
-                gridpane_board.add(newImgView, newField.getColumn(), 7 - newField.getRow());
-                pieceImageViews.put(promoPiece, newImgView);
-
-                promotionAnnotation = "=" + promoPiece.getAnnotationLetter();
-                piece = promoPiece;
-            }
+        Piece promoPiece = ifMoveIsPromotionUpdate(piece, newField, gridpane_board, pieceImageViews);
+        if (promoPiece != null) {
+            promotionAnnotation = "=" + promoPiece.getAnnotationLetter();
+            piece = promoPiece;
         }
 
-        // Check if move was short or long castle
+        fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
+        fields[newField.getRow()][newField.getColumn()].setPiece(piece);
+
+        String checkAnnotation = "";
+        if (isEnemyKingInCheck(piece.getColor())) {
+            checkAnnotation = "+";
+        }
+        boolean checkmate = isCheckmate(piece.getColor());
+        if (checkmate) {
+            checkAnnotation = "#";
+        }
+        moves.add(moveAnnotation + promotionAnnotation + checkAnnotation);
+        piece.increaseMoveCounter();
+        boardPositions.add(new Position(Map.copyOf(pieceLocation), piece.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE));
+        return checkmate;
+    }
+
+    /**
+     * Checks if the move was a promotion - a special rule for the pawn
+     *
+     * @param piece           The piece that moved
+     * @param newField        The piece's newField
+     * @param gridpane_board  The GUI board
+     * @param pieceImageViews The map for ImageViews of the pieces
+     * @return If there was a promotion, it will return the promoted Piece otherwise null
+     */
+    private Piece ifMoveIsPromotionUpdate(Piece piece, Field newField, GridPane gridpane_board,
+                                          Map<Piece, ImageView> pieceImageViews) {
+        if ((newField.getRow() == 0 || newField.getRow() == 7) && piece instanceof Pawn) {
+            Piece promoPiece = showPromotionDialog(piece.getColor());
+            pieceLocation.remove(piece);
+            pieceLocation.put(promoPiece, newField);
+
+            ((Pawn) piece).setPromoted(true);
+            gridpane_board.getChildren().remove(pieceImageViews.get(piece));
+            pieceImageViews.remove(piece);
+            ImageView newImgView = new ImageView(promoPiece.getImage());
+
+            gridpane_board.add(newImgView, newField.getColumn(), 7 - newField.getRow());
+            pieceImageViews.put(promoPiece, newImgView);
+
+            return promoPiece;
+        }
+        return null;
+    }
+
+    /**
+     * Checks if the move was an En Passant - a special rule for the pawn
+     *
+     * @param piece           The piece that moved
+     * @param oldField        The piece's old field
+     * @param newField        The piece's new field
+     * @param gridpane_board  The GUI board
+     * @param pieceImageViews The map for ImageViews of the pieces
+     */
+    private void ifMoveIsEnPassantUpdate(Piece piece, Field oldField, Field newField,
+                                         GridPane gridpane_board, Map<Piece, ImageView> pieceImageViews) {
+        if (newField.getPiece() == null && oldField.getColumn() != newField.getColumn() && piece instanceof Pawn) {
+            Field capturedPawnField = fields[newField.getRow() + (piece.getColor() == ChessColor.BLACK ? 1 : -1)][newField.getColumn()];
+            if (capturedPawnField.getPiece() instanceof Pawn) {
+                Piece capturedPawn = capturedPawnField.getPiece();
+                pieceLocation.remove(capturedPawn);
+                fields[capturedPawnField.getRow()][capturedPawnField.getColumn()].setPiece(null);
+                gridpane_board.getChildren().remove(pieceImageViews.get(capturedPawn));
+                pieceImageViews.remove(capturedPawn);
+            }
+        }
+    }
+
+    /**
+     * Checks through the given moveAnnotation if the move was to castle the King
+     *
+     * @param moveAnnotation  The official annotation of the move
+     * @param color           The color of the player who made the move
+     * @param kingsNewField   The field the King will be set to
+     * @param gridpane_board  The GUI board
+     * @param pieceImageViews The map for ImageViews of the pieces
+     */
+    private void ifMoveIsCastlingUpdate(String moveAnnotation, ChessColor color, Field kingsNewField,
+                                        GridPane gridpane_board, Map<Piece, ImageView> pieceImageViews) {
         if (moveAnnotation.equals("O-O") || moveAnnotation.equals("O-O-O")) {
             String rooksColumn;
             int colDiff;
@@ -225,12 +274,12 @@ public class Board {
                 colDiff = 1;
             }
 
-            Piece rook = getPieces(piece.getColor())
+            Piece rook = getPieces(color)
                     .stream()
                     .filter(playerPiece -> playerPiece instanceof Rook && pieceLocation.get(playerPiece).getFieldName().contains(rooksColumn))
                     .findFirst()
                     .get();
-            Field rookCastleField = fields[newField.getRow()][newField.getColumn() + colDiff];
+            Field rookCastleField = fields[kingsNewField.getRow()][kingsNewField.getColumn() + colDiff];
             pieceLocation.get(rook).setPiece(null);
             pieceLocation.put(rook, rookCastleField);
             rookCastleField.setPiece(rook);
@@ -238,23 +287,6 @@ public class Board {
             gridpane_board.getChildren().remove(pieceImageViews.get(rook));
             gridpane_board.add(pieceImageViews.get(rook), rookCastleField.getColumn(), 7 - rookCastleField.getRow());
         }
-
-        fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
-        fields[newField.getRow()][newField.getColumn()].setPiece(piece);
-
-        String checkAnnotation = "";
-        if (isEnemyKingInCheck(piece.getColor())) {
-            checkAnnotation = "+";
-        }
-        boolean checkmate = false;
-        if (isCheckmate(piece.getColor())) {
-            checkAnnotation = "#";
-            checkmate = true;
-        }
-        moves.add(moveAnnotation + promotionAnnotation + checkAnnotation);
-        piece.increaseMoveCounter();
-        boardPositions.add(new Position(Map.copyOf(pieceLocation), piece.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE));
-        return checkmate;
     }
 
     /**
@@ -318,25 +350,16 @@ public class Board {
         return false;
     }
 
-    /**
-     * Setter for lastClickedField
-     *
-     * @param row    the row of the field that was clicked last
-     * @param column the column of the field that was clicked last
-     */
-    public void setLastClickedField(int row, int column) {
-        lastClickedField = fields[row][column];
-    }
 
     /**
      * Save field's current state
      * Move piece to supposedly valid field
      * Check if own King is in check
      * Restore board state
-     * @param availableMoves
-     * @param piece
+     *
+     * @param availableMoves A list of the available moves for the given piece
+     * @param piece          the piece for which the check is made
      */
-
     public void removeMoveIfSelfCheck(Set<Field> availableMoves, Piece piece) {
         ChessColor enemyColor = piece.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE;
         Field originalPieceField = pieceLocation.get(piece);
@@ -357,6 +380,14 @@ public class Board {
         });
     }
 
+    /**
+     * When the King is in check, this method will return possible fields for pieces other than the king to block the attack
+     * or capture the attacking piece. If two or more pieces are setting the King in check simultaneously,
+     * then there are no legal moves for other Pieces - The King must move
+     *
+     * @param color The color of the King who is in check
+     * @return Set of possible fields to block or capture
+     */
     public Set<Field> getDefensiveBlocksOrCaptures(ChessColor color) {
         King king = getKing(color);
         ChessColor enemyColor = color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE;

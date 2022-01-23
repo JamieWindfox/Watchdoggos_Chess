@@ -23,12 +23,12 @@
             </FlowPane>
         </bottom>
         <left>
-            <FlowPane fx:id="flowpanel_cemetary_white" alignment="BOTTOM_RIGHT" columnHalignment="RIGHT"
+            <FlowPane fx:id="flowPanel_graveyard_white" alignment="BOTTOM_RIGHT" columnHalignment="RIGHT"
                       nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="150.0" rowValignment="BOTTOM"
                       BorderPane.alignment="BOTTOM_RIGHT"/>
         </left>
         <right>
-            <FlowPane fx:id="flowpanel_cemetary_black" alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="150.0"
+            <FlowPane fx:id="flowPanel_graveyard_black" alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="150.0"
                       rowValignment="BOTTOM" BorderPane.alignment="BOTTOM_LEFT"/>
         </right>
         <top>
@@ -93,7 +93,7 @@
                         prefHeight="350.0" prefWidth="350.0" style="-fx-background-image: url('graphics/Border.png');"
                         BorderPane.alignment="CENTER">
                 <center>
-                    <GridPane fx:id="gridpane_board" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
+                    <GridPane fx:id="gridPane_board" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
                               minHeight="-Infinity" minWidth="-Infinity" prefHeight="296.0" prefWidth="296.0"
                               style="-fx-background-image: url('graphics/ChessBoard.png');"
                               BorderPane.alignment="BOTTOM_LEFT">
