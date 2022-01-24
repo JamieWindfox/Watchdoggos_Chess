@@ -109,8 +109,10 @@ public class MainController extends Application implements Initializable {
 
     /**
      * Opens a dialog to tell the players who won the game
+     *
+     * @param winner The player who won the game
+     * @param causeOfWin The cause of the win (e.g. Other King is checkmate, other player has resigned, etc.)
      */
-    //WIP
     private void openWinnerDialog(Player winner, String causeOfWin) {
         stopGame();
         // Build dialog

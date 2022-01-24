@@ -139,22 +139,6 @@ public class Board {
     }
 
     /**
-     * Prints the fields of the board in the console; kept for debugging reasons
-     */
-    public void printField() {
-        for (int rowNum = 0; rowNum < 8; rowNum++) {
-            for (int colAlphabet = 0; colAlphabet < 8; colAlphabet++) {
-                Field currentField = this.fields[7 - rowNum][colAlphabet];
-                System.out.printf("[%s] ", currentField.getPiece() != null ?
-                        currentField.getPiece().getName() + "_" + currentField.getPiece().getColor()
-                        : currentField.getFieldName());
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
-    /**
      * Moves the given piece to the given field and updates the board accordingly
      *
      * @param newField       The new location of the given piece
