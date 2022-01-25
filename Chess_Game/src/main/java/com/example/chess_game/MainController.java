@@ -1,5 +1,7 @@
 package com.example.chess_game;
 
+import com.example.chess_game.pieces.Pawn;
+import com.example.chess_game.pieces.Piece;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

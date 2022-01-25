@@ -1,5 +1,6 @@
 package com.example.chess_game;
 
+import com.example.chess_game.pieces.Piece;
 import javafx.scene.image.ImageView;
 
 public class Field {

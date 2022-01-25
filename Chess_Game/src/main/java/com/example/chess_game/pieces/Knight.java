@@ -1,5 +1,8 @@
-package com.example.chess_game;
+package com.example.chess_game.pieces;
 
+import com.example.chess_game.Board;
+import com.example.chess_game.ChessColor;
+import com.example.chess_game.Field;
 import javafx.util.Pair;
 
 import java.util.HashSet;

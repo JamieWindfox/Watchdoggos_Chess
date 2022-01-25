@@ -1,5 +1,10 @@
 package com.example.chess_game;
 
+import com.example.chess_game.pieces.Bishop;
+import com.example.chess_game.pieces.King;
+import com.example.chess_game.pieces.Knight;
+import com.example.chess_game.pieces.Piece;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;

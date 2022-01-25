@@ -1,5 +1,6 @@
 package com.example.chess_game;
 
+import com.example.chess_game.pieces.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
