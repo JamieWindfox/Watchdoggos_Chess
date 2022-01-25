@@ -11,15 +11,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Board {
+    // Needed to determine the alphabet of the column
+    private static final int ASCII_OFFSET = 97;
 
     private final Field[][] fields;
-    private static final int ASCII_OFFSET = 97;
     private final Map<Piece, Field> pieceLocation;
     private final List<String> moves;
     private final Image boardImage;
     private final GridPane playableBoard;
-    private final Player white;
-    private final Player black;
     private final List<Position> boardPositions;
 
     public Board(Player white, Player black) {
@@ -28,16 +27,14 @@ public class Board {
         this.pieceLocation = new HashMap<>();
         this.moves = new ArrayList<>();
         this.playableBoard = new GridPane();
-        this.white = white;
-        this.black = black;
         this.boardPositions = new ArrayList<>();
-        initFields();
+        initFields(white, black);
     }
 
     /**
      * Initializes all cells/fields on the chess board and calls the methods to set the pieces in their start formation
      */
-    public void initFields() {
+    public void initFields(Player white, Player black) {
         for (int rowNum = 0; rowNum < 8; rowNum++) {
             for (int colAlphabet = 0; colAlphabet < 8; colAlphabet++) {
                 Field currentField
@@ -159,15 +156,16 @@ public class Board {
             pieceLocation.remove(newField.getPiece());
         }
 
+        // Check if the selected move was any special move
         ifMoveIsEnPassantUpdate(piece, oldField, newField, gridpane_board, pieceImageViews);
         ifMoveIsCastlingUpdate(moveAnnotation, piece.getColor(), newField, gridpane_board, pieceImageViews);
-
         Piece promoPiece = ifMoveIsPromotionUpdate(piece, newField, gridpane_board, pieceImageViews);
         if (promoPiece != null) {
             promotionAnnotation = "=" + promoPiece.getAnnotationLetter();
             piece = promoPiece;
         }
 
+        // Move the piece to the new field
         fields[oldField.getRow()][oldField.getColumn()].setPiece(null);
         fields[newField.getRow()][newField.getColumn()].setPiece(piece);
 
@@ -180,7 +178,11 @@ public class Board {
             checkAnnotation = "#";
         }
         moves.add(moveAnnotation + promotionAnnotation + checkAnnotation);
+
+        // Needed for Rook and King to check if Castling is legal
         piece.increaseMoveCounter();
+
+        // Save occurrence of current position - Needed for a specific rule that makes the game a draw
         boardPositions.add(new Position(Map.copyOf(pieceLocation), piece.getColor() == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE));
         return checkmate;
     }

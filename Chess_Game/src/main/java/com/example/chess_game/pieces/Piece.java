@@ -70,16 +70,22 @@ public abstract class Piece {
      * @return The set of fields the piece is allowed to move to - if the king is in check
      */
     public Set<Field> getLegalMoves(Board board, Field currentField) {
+        // Get all possible moves without checking your own King's safety
         getValidMoves(board, currentField);
+
+        // Check if your King is in check
         if (board.isEnemyKingInCheck(color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE) && !(this instanceof King)) {
+            // Gather all fields that can be blocked and potentially the field of an attacking enemy piece
             Set<Field> blockOrCaptureFields = board.getDefensiveBlocksOrCaptures(color);
             if (!blockOrCaptureFields.isEmpty()) {
+                // Remove all other moves that aren't blocking for your king or capturing the enemy piece
                 validMoves.removeIf(field ->
                         blockOrCaptureFields.stream()
                                 .noneMatch(fieldToBlockOrCapture -> fieldToBlockOrCapture.getFieldName().equals(field.getFieldName()))
                 );
             }
         }
+        // Remove all moves that makes your king vulnerable
         board.removeMoveIfSelfCheck(validMoves, this);
         return validMoves;
     }
