@@ -406,7 +406,6 @@ public class MainController extends Application implements Initializable {
                 if (kingsInCheck.contains(field.getPiece())) {
                     ImageView node = new ImageView(HIGHLIGHT_KING_CHECK);
                     gridPane_board.add(node, row, 7 - column);
-                    highlightedFieldNames.add(field.getFieldName());
                     highlightImageViews.add(node);
                 }
             }
