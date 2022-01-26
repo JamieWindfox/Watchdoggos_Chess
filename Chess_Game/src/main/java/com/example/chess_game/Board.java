@@ -42,6 +42,8 @@ public class Board {
                         colAlphabet, (int) (boardImage.getHeight() / 8));
 
                 this.fields[rowNum][colAlphabet] = currentField;
+
+                // Sets the pieces to their corresponding starting position
                 switch (rowNum) {
                     case 0 -> initPieces(colAlphabet, ChessColor.WHITE, currentField, white);
                     case 1 -> setPieceOnBoard(Pawn.class, ChessColor.WHITE, currentField, white);

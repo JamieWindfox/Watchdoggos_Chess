@@ -33,7 +33,7 @@ public class Pawn extends Piece {
             if (takePieceLeft.getPiece() != null) validateAndAddMove(takePieceLeft);
         }
 
-        // Check Field on the left if enemy piece can be captured
+        // Check Field on the right if enemy piece can be captured
         if (pieceColor == ChessColor.WHITE ? currentField.getColumn() < 7 : currentField.getColumn() > 0) {
             Field takePieceRight = fields[currentField.getRow() + moveCounter][currentField.getColumn() + moveCounter];
             if (takePieceRight.getPiece() != null) validateAndAddMove(takePieceRight);
